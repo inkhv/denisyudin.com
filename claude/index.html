@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <title>Claude Code — полный курс | Denis Yudin</title>
+  <meta content="Конспект видеокурса по Claude Code на русском языке — установка, настройка, скиллы, субагенты, MCP, Agent Teams." name="description"/>
+  <meta content="Claude Code — полный курс (конспект)" property="og:title"/>
+  <meta content="Конспект видеокурса по Claude Code на русском языке." property="og:description"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <link href="../assets/694eb3c01c94deb52f44b88a_p10 0062_24.png" rel="shortcut icon" type="image/x-icon"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-2: #1c2129;
+      --border: #30363d;
+      --border-light: #21262d;
+      --text: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted: #656d76;
+      --accent: #58a6ff;
+      --accent-hover: #79c0ff;
+      --green: #3fb950;
+      --orange: #d29922;
+      --red: #f85149;
+      --purple: #bc8cff;
+      --code-bg: #0d1117;
+      --inline-code-bg: rgba(110,118,129,0.2);
+      --blockquote-border: #3fb950;
+      --link: #58a6ff;
+      --radius: 8px;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* Back nav */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13, 17, 23, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-light);
+      padding: 12px 0;
+    }
+    .top-bar-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .top-bar a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .top-bar a:hover { color: var(--text); }
+    .top-bar .site-name { color: var(--text-muted); font-size: 13px; }
+
+    /* Article container */
+    .article {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 24px 120px;
+    }
+
+    /* Headings */
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-top: 56px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-top: 32px;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    /* Paragraphs */
+    p {
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    /* Links */
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; color: var(--accent-hover); }
+
+    /* Strong / emphasis */
+    strong { font-weight: 600; color: #fff; }
+    em { font-style: italic; color: var(--text-secondary); }
+
+    /* Lists */
+    ul, ol {
+      margin-bottom: 16px;
+      padding-left: 28px;
+    }
+    li {
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    li::marker { color: var(--text-muted); }
+
+    /* Blockquote */
+    blockquote {
+      margin: 20px 0;
+      padding: 12px 20px;
+      border-left: 4px solid var(--blockquote-border);
+      background: var(--surface);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    blockquote p {
+      margin-bottom: 0;
+      color: var(--text-secondary);
+    }
+    blockquote strong { color: var(--text); }
+
+    /* Horizontal rule */
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 40px 0;
+    }
+
+    /* Inline code */
+    code {
+      font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.875em;
+      background: var(--inline-code-bg);
+      padding: 2px 7px;
+      border-radius: 4px;
+      color: var(--accent-hover);
+      font-weight: 400;
+    }
+
+    /* Code blocks */
+    pre {
+      margin: 16px 0 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow-x: auto;
+      position: relative;
+    }
+    pre code {
+      display: block;
+      padding: 18px 20px;
+      background: none;
+      color: var(--text);
+      font-size: 0.85rem;
+      line-height: 1.6;
+      white-space: pre;
+      overflow-wrap: normal;
+    }
+
+    /* Syntax: comments */
+    pre code .c { color: var(--text-muted); }
+    /* Syntax: strings */
+    pre code .s { color: #a5d6ff; }
+    /* Syntax: keywords */
+    pre code .k { color: var(--red); }
+
+    /* Tables */
+    .table-wrapper {
+      margin: 16px 0 24px;
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    thead {
+      background: var(--surface-2);
+    }
+    th {
+      text-align: left;
+      padding: 10px 16px;
+      font-weight: 600;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-secondary);
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: var(--surface); }
+    td strong { color: var(--text); }
+    td code {
+      font-size: 0.82em;
+    }
+
+    /* TOC */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin: 24px 0 8px;
+    }
+    .toc ol {
+      padding-left: 22px;
+      margin-bottom: 0;
+    }
+    .toc li {
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+    .toc a {
+      color: var(--accent);
+    }
+
+    /* Lead paragraph */
+    .lead {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin-bottom: 8px;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      h1 { font-size: 1.7rem; }
+      h2 { font-size: 1.25rem; }
+      .article { padding: 32px 16px 80px; }
+      pre code { font-size: 0.8rem; padding: 14px 16px; }
+      table { font-size: 0.82rem; }
+      th, td { padding: 8px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <a href="../index.html">&larr; Назад на сайт</a>
+    <span class="site-name">denisyudin.com</span>
+  </div>
+</div>
+
+<article class="article">
+
+  <h1>Claude Code — полный курс (конспект)</h1>
+
+  <p class="lead">Конспект видеокурса по Claude Code на русском языке. Автор — практик, использующий Claude Code ежедневно с момента выхода для построения агентных систем, автоматизации бизнес-процессов (CRM, парсинг конкурентов, аналитика метрик, маркетинг, продажи). Опыт автоматизаций в бизнесе — более 5 лет.</p>
+
+  <hr>
+
+  <div class="toc">
+    <ol>
+      <li><a href="#s1">Введение и обзор курса</a></li>
+      <li><a href="#s2">Регистрация и тарифы Anthropic</a></li>
+      <li><a href="#s3">Установка Claude Code</a></li>
+      <li><a href="#s4">Среды разработки (IDE)</a></li>
+      <li><a href="#s5">Терминал vs расширение VS Code</a></li>
+      <li><a href="#s6">Токены, контекст и стоимость</a></li>
+      <li><a href="#s7">Модели: Opus, Sonnet, Haiku</a></li>
+      <li><a href="#s8">Режимы работы и Bypass Permissions</a></li>
+      <li><a href="#s9">Файл CLAUDE.md — мозг проекта</a></li>
+      <li><a href="#s10">Практика: создание сайта с нуля</a></li>
+      <li><a href="#s11">Папка .claude и её структура</a></li>
+      <li><a href="#s12">Скиллы (Skills)</a></li>
+      <li><a href="#s13">Субагенты</a></li>
+      <li><a href="#s14">MCP (Model Context Protocol)</a></li>
+      <li><a href="#s15">Agent Teams — агентные команды</a></li>
+      <li><a href="#s16">Агентная система на практике</a></li>
+      <li><a href="#s17">Деплой и подключение Telegram</a></li>
+      <li><a href="#s18">Remote Control с телефона</a></li>
+    </ol>
+  </div>
+
+  <hr>
+
+  <!-- 1 -->
+  <h2 id="s1">1. Введение и обзор курса</h2>
+
+  <p><strong>Ключевой тезис:</strong> Claude Code кратно усиливает продуктивность не только в программировании, но и в любых задачах жизни и бизнеса. Техническая подготовка не требуется — автор сам не программист.</p>
+
+  <h3>Программа курса</h3>
+
+  <ul>
+    <li>Установка и настройка Claude Code с нуля (Mac / Windows / Linux)</li>
+    <li>Среды разработки: терминал, VS Code, десктоп-приложение</li>
+    <li>Основные принципы: промты, токены, контекстное окно, стоимость</li>
+    <li>Модели внутри Claude Code</li>
+    <li>Thinking mode и настройка режимов размышлений</li>
+    <li>Файл <code>CLAUDE.md</code> — главная системная инструкция</li>
+    <li>Уровни <code>CLAUDE.md</code> (локальный / глобальный)</li>
+    <li>Создание реального сайта с подключёнными внешними модулями</li>
+    <li>Скиллы, настройка папки <code>.claude</code>, системные инструкции, роли, агенты</li>
+    <li>Slash-команды, создание собственных скиллов, хуки, MCP-серверы, CLI-инструменты</li>
+    <li>Субагенты, Agent Teams, GitHub-ветки, коммуникация между агентами</li>
+  </ul>
+
+  <hr>
+
+  <!-- 2 -->
+  <h2 id="s2">2. Регистрация и тарифы Anthropic</h2>
+
+  <h3>Тарифные планы</h3>
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Тариф</th><th>Цена</th><th>Claude Code</th><th>Примечание</th></tr></thead>
+      <tbody>
+        <tr><td>Free</td><td>$0</td><td>Нет</td><td>Claude Code недоступен</td></tr>
+        <tr><td>Pro</td><td>~$20</td><td>Да</td><td>Стартовый вариант, базовые лимиты</td></tr>
+        <tr><td>Max (5x)</td><td>$100</td><td>Да</td><td>5x больше использования, чем Pro</td></tr>
+        <tr><td>Max (20x)</td><td>$200</td><td>Да</td><td>20x больше использования, чем Pro</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>Рекомендация:</strong> начинать с Pro ($20), при нехватке лимитов апгрейд до Max.</p>
+
+  <h3>Регистрация</h3>
+
+  <ul>
+    <li>Сайт: <code>claude.ai</code></li>
+    <li>Требуется: зарубежная карта + зарубежный номер телефона</li>
+    <li>Альтернативы: сервисы оплаты с российской карты, покупка готовых аккаунтов</li>
+  </ul>
+
+  <hr>
+
+  <!-- 3 -->
+  <h2 id="s3">3. Установка Claude Code</h2>
+
+  <h3>Варианты использования</h3>
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Вариант</th><th>Возможности</th><th>Ограничения</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Веб-версия</strong> (claude.ai → Code)</td><td>Подключение GitHub-репозиториев</td><td>Нет доступа к локальным файлам</td></tr>
+        <tr><td><strong>Десктоп-приложение</strong></td><td>Локальные файлы + GitHub</td><td>Ограниченный функционал</td></tr>
+        <tr><td><strong>Терминал</strong> ⭐</td><td>Полный функционал, все slash-команды, скиллы, MCP</td><td>Интерфейс терминала</td></tr>
+        <tr><td><strong>Расширение VS Code</strong> ⭐</td><td>Удобный интерфейс + файловый менеджер</td><td>Часть команд недоступна</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>Оптимальный вариант:</strong> терминал + VS Code (или Windsurf/Antigravity) для файлового менеджера.</p>
+
+  <h3>Установка терминального Claude Code</h3>
+
+  <p><strong>macOS:</strong></p>
+  <pre><code><span class="c"># Команда с официального сайта docs.anthropic.com</span>
+npm install -g @anthropic-ai/claude-code</code></pre>
+
+  <p><strong>Windows:</strong> аналогичная команда через PowerShell или командную строку.</p>
+
+  <p>После установки запуск:</p>
+  <pre><code>claude</code></pre>
+
+  <h3>Авторизация</h3>
+
+  <p>В терминале или расширении VS Code:</p>
+  <pre><code>/login</code></pre>
+
+  <hr>
+
+  <!-- 4 -->
+  <h2 id="s4">4. Среды разработки (IDE)</h2>
+
+  <h3>VS Code</h3>
+
+  <ul>
+    <li>Сайт: <code>code.visualstudio.com</code></li>
+    <li>Установка: скачать → установить → открыть папку проекта</li>
+    <li><strong>Преимущества:</strong> файловый менеджер слева, нативное открытие файлов, расширения, кастомизация интерфейса</li>
+  </ul>
+
+  <h3>Windsurf (Antigravity)</h3>
+
+  <ul>
+    <li>Сайт: <code>windsurf.com</code> (antigravity.google)</li>
+    <li>Визуально почти идентичен VS Code</li>
+    <li><strong>Преимущество:</strong> встроенный AI-агент от Google (с подпиской Google AI Pro)</li>
+  </ul>
+
+  <h3>Расширение Claude Code для VS Code</h3>
+
+  <ol>
+    <li>Открыть Extensions (плитка слева)</li>
+    <li>Найти "Claude Code" (официальное расширение)</li>
+    <li>Установить</li>
+    <li>Авторизоваться через <code>/login</code></li>
+  </ol>
+
+  <hr>
+
+  <!-- 5 -->
+  <h2 id="s5">5. Терминал vs расширение VS Code</h2>
+
+  <h3>Преимущества терминала</h3>
+
+  <ul>
+    <li><strong>Контекст:</strong> видно процент загрузки контекста в реальном времени</li>
+    <li><strong>Токены:</strong> точное количество токенов в контексте</li>
+    <li><strong>Лимиты:</strong> отображение оставшихся лимитов (5-часовые, 7-дневные)</li>
+    <li><strong>Кастомизация:</strong> custom status line с лимитами</li>
+    <li><strong>Slash-команды:</strong> полный набор команд (больше, чем в расширении)</li>
+    <li><strong>Субагенты:</strong> переключение между диалогами субагентов</li>
+    <li><strong>Параллельные сессии:</strong> можно запустить несколько Claude Code одновременно</li>
+    <li><strong>Bash-режим:</strong> команда <code>!</code> для выполнения терминальных команд прямо из Claude Code</li>
+    <li><strong>Agent Teams:</strong> визуальное переключение между агентами</li>
+  </ul>
+
+  <h3>Преимущества расширения VS Code</h3>
+
+  <ul>
+    <li>Более привычный, user-friendly интерфейс</li>
+    <li>Удобная интеграция с файловым менеджером</li>
+    <li>Встроенная история диалогов (локальные + веб)</li>
+    <li>Переключение моделей, effort через UI</li>
+  </ul>
+
+  <h3>Ограничения расширения</h3>
+
+  <ul>
+    <li>Нет отображения контекста (только иконка при &gt;50%)</li>
+    <li>Нет отображения лимитов</li>
+    <li>Некоторые slash-команды доступны только в терминале</li>
+    <li>Нельзя переключаться между диалогами субагентов</li>
+  </ul>
+
+  <hr>
+
+  <!-- 6 -->
+  <h2 id="s6">6. Токены, контекст и стоимость</h2>
+
+  <h3>Что такое токены</h3>
+
+  <ul>
+    <li>1 токен ≈ 0.75 слова (примерно 2 токена = 1 слово)</li>
+    <li>Контекст загружается при каждом сообщении</li>
+  </ul>
+
+  <h3>Что попадает в контекст</h3>
+
+  <ul>
+    <li>Файл <code>CLAUDE.md</code> (системная инструкция) — <strong>при каждом сообщении</strong></li>
+    <li>Все предыдущие сообщения диалога</li>
+    <li>Прочитанные файлы</li>
+    <li>Описания установленных MCP-серверов</li>
+    <li>Краткие описания скиллов (YAML: name + description)</li>
+  </ul>
+
+  <h3>Золотое правило контекста</h3>
+
+  <blockquote><p><strong>Одна задача — один диалог.</strong> Не перегружать контекст. Желательно не более 50%.</p></blockquote>
+
+  <p><strong>Аналогия:</strong> контекст как рабочий день — утром голова свежая (контекст пустой), к вечеру голова забита (контекст переполнен), качество мышления падает.</p>
+
+  <h3>Последствия переполненного контекста</h3>
+
+  <ul>
+    <li>Модель тупеет</li>
+    <li>Лимиты расходуются быстрее</li>
+    <li>Ответы становятся менее точными</li>
+    <li>Стоимость растёт</li>
+  </ul>
+
+  <h3>Управление контекстом — ключевые команды</h3>
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Команда</th><th>Действие</th></tr></thead>
+      <tbody>
+        <tr><td><code>/context</code></td><td>Показать содержимое контекста с процентным разбиением</td></tr>
+        <tr><td><code>/compact</code></td><td>Сжать диалог в краткое summary</td></tr>
+        <tr><td><code>/new</code> или <code>/clear</code></td><td>Начать новый диалог с нуля</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr>
+
+  <!-- 7 -->
+  <h2 id="s7">7. Модели: Opus, Sonnet, Haiku</h2>
+
+  <h3>Переключение модели</h3>
+
+  <ul>
+    <li>Терминал: <code>/model</code></li>
+    <li>Расширение: Switch Model в меню</li>
+  </ul>
+
+  <h3>Сравнение моделей</h3>
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Модель</th><th>Назначение</th><th>Контекст</th><th>Стоимость</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Opus 4.6</strong></td><td>Архитектурные решения, глубокий research, сложные задачи</td><td>1M токенов</td><td>Высокая</td></tr>
+        <tr><td><strong>Sonnet</strong></td><td>Исполнительные задачи, написание кода по готовой спецификации</td><td>Стандартный</td><td>Средняя</td></tr>
+        <tr><td><strong>Haiku</strong></td><td>Быстрые простые задачи, массовая обработка (API)</td><td>Стандартный</td><td>Низкая</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Рекомендации по выбору</h3>
+
+  <ul>
+    <li><strong>Opus</strong> — когда нужно глубокое погружение, высокое качество, изобретательские задачи</li>
+    <li><strong>Sonnet</strong> — когда архитектура уже определена, нужно реализовать задачу по описанию</li>
+    <li><strong>Haiku</strong> — когда нужна скорость и дешевизна (массовый парсинг, обработка сотен записей)</li>
+  </ul>
+
+  <h3>Лайфхак: Opus Plan</h3>
+
+  <pre><code>/model opus-plan</code></pre>
+
+  <p>Модель автоматически выбирает Opus или Sonnet в зависимости от сложности задачи. Экономит токены, но для критически сложных задач лучше вручную включить Opus.</p>
+
+  <h3>Thinking Mode и Effort</h3>
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Параметр</th><th>Значения</th><th>Влияние</th></tr></thead>
+      <tbody>
+        <tr><td>Thinking Mode</td><td>On / Off</td><td>Включает/выключает режим размышлений</td></tr>
+        <tr><td>Effort</td><td>Low / High / Max / Auto</td><td>Глубина размышлений и расход токенов</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>Рекомендация:</strong> для Opus на сложных задачах — Max effort. Для исполнительных задач — можно снижать.</p>
+
+  <hr>
+
+  <!-- 8 -->
+  <h2 id="s8">8. Режимы работы и Bypass Permissions</h2>
+
+  <h3>Четыре режима</h3>
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Режим</th><th>Описание</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Ask Before Edits</strong></td><td>Подтверждение каждого действия вручную</td></tr>
+        <tr><td><strong>Edit Automatically</strong></td><td>Файлы редактируются автоматически, но инструменты (MCP, терминал) требуют подтверждения</td></tr>
+        <tr><td><strong>Plan Mode</strong></td><td>Только планирование, без изменений файлов</td></tr>
+        <tr><td><strong>Bypass Permissions</strong></td><td>Полная автономия, никаких подтверждений</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Включение Bypass Permissions</h3>
+
+  <p><strong>Способ 1:</strong> через <code>settings.json</code> (глобальный или локальный)</p>
+  <pre><code>{
+  "default_mode": "bypass_permissions"
+}</code></pre>
+
+  <p><strong>Способ 2:</strong> флаг при запуске</p>
+  <pre><code>claude --dangerously-skip-permissions</code></pre>
+
+  <h3>Безопасность при Bypass Permissions</h3>
+
+  <p>Обязательно настроить <code>deny</code> permissions в <code>settings.json</code>:</p>
+
+  <pre><code>{
+  "permissions": {
+    "allow": ["Read", "Write", "Bash(...)"],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(export *)",
+      "Bash(curl *)",
+      "Read(.env)"
+    ]
+  }
+}</code></pre>
+
+  <p><strong>Критические запреты:</strong></p>
+  <ul>
+    <li><code>rm -rf *</code> — удаление всего диска</li>
+    <li><code>export</code> — экспорт секретных ключей</li>
+    <li><code>curl</code> — отправка данных на внешние серверы</li>
+    <li>Чтение <code>.env</code> — файл с API-ключами и паролями</li>
+  </ul>
+
+  <hr>
+
+  <!-- 9 -->
+  <h2 id="s9">9. Файл CLAUDE.md — мозг проекта</h2>
+
+  <h3>Назначение</h3>
+
+  <p><code>CLAUDE.md</code> — главная системная инструкция проекта. Читается агентом <strong>при каждом запуске</strong>, перед любым действием.</p>
+
+  <h3>Что включает</h3>
+
+  <ul>
+    <li>Описание проекта и его назначение</li>
+    <li>Архитектура проекта</li>
+    <li>Какие файлы где находятся</li>
+    <li>Технологический стек</li>
+    <li>Дизайн-система (цвета, шрифты)</li>
+    <li>Секции/структура (для сайтов)</li>
+    <li>Соглашения по коду</li>
+    <li>Список агентов и порядок их запуска (для агентных систем)</li>
+    <li>Pipeline взаимодействия агентов</li>
+  </ul>
+
+  <h3>Зачем нужен</h3>
+
+  <p>При открытии нового диалога агент не знает контекст проекта. <code>CLAUDE.md</code> позволяет ему <strong>понять всё из одного файла</strong>, не читая каждый файл проекта отдельно.</p>
+
+  <h3>Уровни CLAUDE.md</h3>
+
+  <ul>
+    <li><strong>Локальный</strong> — в корне проекта или в <code>.claude/</code> проекта → действует только для этого проекта</li>
+    <li><strong>Глобальный</strong> — в глобальной директории <code>.claude/</code> → действует для всех проектов</li>
+  </ul>
+
+  <hr>
+
+  <!-- 10 -->
+  <h2 id="s10">10. Практика: создание сайта с нуля</h2>
+
+  <h3>Порядок работы</h3>
+
+  <ol>
+    <li>Создать пустую папку, открыть в VS Code</li>
+    <li>Создать файл <code>instructions.md</code> — описание ТЗ (даже в свободной форме)</li>
+    <li>Загрузить файл в Claude Code через <code>@instructions.md</code></li>
+    <li>Попросить агента задать уточняющие вопросы</li>
+    <li>Ответить на вопросы</li>
+    <li>Агент создаёт <code>CLAUDE.md</code> (системная инструкция проекта)</li>
+    <li>После утверждения — агент приступает к реализации</li>
+  </ol>
+
+  <h3>Markdown-файлы — стандарт работы с AI-агентами</h3>
+
+  <ul>
+    <li>Формат <code>.md</code> — золотой стандарт коммуникации с агентами</li>
+    <li>Удобно и для человека, и для модели</li>
+    <li>Заголовки, форматирование, структура</li>
+  </ul>
+
+  <h3>Профессиональный подход (для сложных сайтов)</h3>
+
+  <ul>
+    <li>Подключение библиотек UI-компонентов</li>
+    <li>MCP-серверы</li>
+    <li>Скиллы для дизайна</li>
+    <li>Техническая документация и спецификация</li>
+    <li>Готовые визуальные элементы</li>
+  </ul>
+
+  <h3>Правило экономии контекста в разработке</h3>
+
+  <ul>
+    <li>Написание <code>CLAUDE.md</code> — одна задача (один диалог)</li>
+    <li>Реализация сайта — другая задача (новый диалог)</li>
+    <li>В больших проектах <strong>всегда</strong> разделять</li>
+  </ul>
+
+  <hr>
+
+  <!-- 11 -->
+  <h2 id="s11">11. Папка .claude и её структура</h2>
+
+  <h3>Типы папки .claude</h3>
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Тип</th><th>Расположение</th><th>Область действия</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Локальная</strong></td><td>В корне проекта <code>.claude/</code></td><td>Только текущий проект</td></tr>
+        <tr><td><strong>Глобальная</strong></td><td>Скрытая папка на компьютере <code>~/.claude/</code></td><td>Все проекты</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Структура папки .claude</h3>
+
+  <pre><code>.claude/
+├── settings.json     <span class="c"># Настройки (permissions, mode, hooks)</span>
+├── agents/           <span class="c"># Субагенты (MD-файлы с инструкциями)</span>
+├── skills/           <span class="c"># Скиллы (папки с SKILL.md + скрипты)</span>
+├── rules/            <span class="c"># Отдельные модули правил</span>
+├── worktrees/        <span class="c"># Ветки кода (Git worktrees)</span>
+└── CLAUDE.md         <span class="c"># (опционально) системная инструкция</span></code></pre>
+
+  <h3>Глобальная директория содержит</h3>
+
+  <ul>
+    <li><code>settings.json</code> — главный файл настроек для всех проектов</li>
+    <li><code>skills/</code> — скиллы, доступные во всех проектах</li>
+    <li><code>sessions/</code> — диалоги и история</li>
+    <li><code>plugins/</code> — плагины Claude Code</li>
+  </ul>
+
+  <h3>settings.json — ключевые настройки</h3>
+
+  <pre><code>{
+  "default_mode": "bypass_permissions",
+  "experimental": {
+    "agent_teams": true
+  },
+  "permissions": {
+    "allow": [...],
+    "deny": [...]
+  },
+  "hooks": {...},
+  "effort_level": "max",
+  "model": "opus",
+  "theme": "dark",
+  "auto_update": "latest",
+  "notifications": "terminal_bell",
+  "auto_compact": true,
+  "verbose_output": true,
+  "terminal_progress_bar": true,
+  "rewind_checkpoints": true
+}</code></pre>
+
+  <hr>
+
+  <!-- 12 -->
+  <h2 id="s12">12. Скиллы (Skills)</h2>
+
+  <h3>Что такое скилл</h3>
+
+  <p>Скилл = <strong>инструкция (SKILL.md) + сопутствующие материалы</strong> (скрипты, шаблоны, референсы).</p>
+
+  <p>В отличие от простого MD-файла, скилл может включать:</p>
+  <ul>
+    <li>Python/JS/Shell-скрипты</li>
+    <li>Шаблоны (templates)</li>
+    <li>Референсы (примеры, дизайн-пакеты, Tone of Voice)</li>
+    <li>Assets (активы, ресурсы)</li>
+  </ul>
+
+  <h3>Структура скилла (стандарт Anthropic)</h3>
+
+  <pre><code>skill-name/
+├── SKILL.md          <span class="c"># Главная инструкция скилла</span>
+├── scripts/          <span class="c"># Python, JS, Shell-скрипты</span>
+├── references/       <span class="c"># Референсные материалы</span>
+├── templates/        <span class="c"># Шаблоны</span>
+└── assets/           <span class="c"># Активы, ресурсы</span></code></pre>
+
+  <h3>YAML-форматирование в SKILL.md</h3>
+
+  <p>В начале каждого SKILL.md есть скрытый YAML-блок:</p>
+
+  <pre><code>---
+name: skill-name
+description: Краткое описание того, что делает скилл
+---</code></pre>
+
+  <p><strong>Зачем:</strong> агент при каждом запросе читает <strong>только name + description</strong> всех установленных скиллов (не весь файл). Это экономит контекст. Полный SKILL.md загружается только при вызове конкретного скилла.</p>
+
+  <h3>Как агент выбирает скилл</h3>
+
+  <ol>
+    <li>Пользователь пишет задачу</li>
+    <li>Агент читает name + description всех установленных скиллов</li>
+    <li>Определяет, какой скилл подходит</li>
+    <li>Загружает полный SKILL.md только нужного скилла</li>
+    <li>Выполняет задачу по инструкции</li>
+  </ol>
+
+  <p><strong>Важно:</strong> скилл может быть вызван автоматически (без явного указания) или через slash-команду <code>/skill-name</code>.</p>
+
+  <h3>Установка скиллов</h3>
+
+  <p><strong>Маркетплейсы:</strong></p>
+  <ul>
+    <li><strong>Skills.ai</strong> — быстрая установка в 2 клика, сортировка по популярности</li>
+    <li><strong>Smithery</strong> — категории (research, coding, planning, design, analytics), указание провайдера</li>
+  </ul>
+
+  <p><strong>Команда установки:</strong></p>
+  <pre><code><span class="c"># Из терминала (не из Claude Code)</span>
+claude skills install &lt;repository-url&gt; [skill-name]</code></pre>
+
+  <p>При установке выбрать:</p>
+  <ul>
+    <li>Платформу (Claude Code, Antigravity, Cursor и др.)</li>
+    <li>Область: <strong>Project</strong> (локально) или <strong>Global</strong> (для всех проектов)</li>
+  </ul>
+
+  <h3>Безопасность скиллов</h3>
+
+  <blockquote><p><strong>Внимание:</strong> проверяйте содержимое скиллов перед установкой! Вредоносные скиллы могут содержать инструкции для отправки API-ключей и паролей злоумышленникам.</p></blockquote>
+
+  <p>Безопасные источники: Anthropic, Vercel, OpenAI, Microsoft, GitHub (официальные).</p>
+
+  <h3>Примеры скиллов</h3>
+
+  <ul>
+    <li><strong>PDF</strong> — создание PDF-документов</li>
+    <li><strong>PPTX</strong> — создание PowerPoint-презентаций</li>
+    <li><strong>Excel</strong> — создание таблиц</li>
+    <li><strong>Agent Browser</strong> — автоматизация браузера (скриншоты, парсинг, клики)</li>
+    <li><strong>Skill Creator</strong> — создание новых скиллов (от Anthropic)</li>
+    <li><strong>Frontend Design</strong> — дизайн интерфейсов</li>
+  </ul>
+
+  <hr>
+
+  <!-- 13 -->
+  <h2 id="s13">13. Субагенты</h2>
+
+  <h3>Проблема без субагентов</h3>
+
+  <ul>
+    <li>Одна задача — один диалог → при сложных задачах контекст переполняется</li>
+    <li>Параллельные диалоги нужно создавать вручную</li>
+    <li>Копирование результатов между диалогами вручную</li>
+    <li>Качество падает при смешении разных задач в одном контексте</li>
+  </ul>
+
+  <h3>Что такое субагент</h3>
+
+  <p>Субагент — <strong>изолированный диалог</strong>, который Claude Code запускает автоматически, без участия пользователя. Каждый субагент:</p>
+
+  <ul>
+    <li>Имеет <strong>чистый контекст</strong> (не загружен историей основного диалога)</li>
+    <li>Загружает только <strong>свою инструкцию</strong></li>
+    <li>Выполняет <strong>конкретную задачу</strong></li>
+    <li>Возвращает <strong>результат</strong> главному агенту</li>
+  </ul>
+
+  <h3>Размещение субагентов</h3>
+
+  <pre><code>.claude/agents/
+├── analyst.md
+├── coordinator.md
+├── reporter.md
+├── scraper.md
+└── youtube-analyzer.md</code></pre>
+
+  <h3>YAML-форматирование субагента</h3>
+
+  <pre><code>---
+name: analyst
+description: Анализирует собранные данные
+tools:
+  - Read
+  - Write
+  - Bash
+model: opus
+color: green
+---</code></pre>
+
+  <p><strong>Параметры:</strong></p>
+  <ul>
+    <li><code>name</code> — название агента</li>
+    <li><code>description</code> — описание роли</li>
+    <li><code>tools</code> — разрешённые инструменты</li>
+    <li><code>model</code> — модель (можно Sonnet для простых задач, Opus для аналитики)</li>
+    <li><code>color</code> — цвет при отображении в терминале</li>
+  </ul>
+
+  <h3>Оркестрация субагентов</h3>
+
+  <p>Управление описывается в <code>CLAUDE.md</code> (или отдельном <code>pipeline.md</code>):</p>
+
+  <pre><code>Pipeline: Координатор → Скрейпер → Аналитик → Репортёр → Координатор</code></pre>
+
+  <h3>Применение в разработке</h3>
+
+  <p>Большие проекты разбиваются на <strong>чанки</strong> (chunks):</p>
+  <ul>
+    <li>Каждый чанк — отдельный субагент</li>
+    <li>Внутри чанка — задачи могут разбиваться на ещё более мелкие субагенты</li>
+    <li>Последовательное выполнение: Чанк 1 → новый диалог → Чанк 2 → ...</li>
+  </ul>
+
+  <h3>Переключение между субагентами (только терминал)</h3>
+
+  <p>В терминале можно стрелками переключаться между:</p>
+  <ul>
+    <li><code>main</code> — основной агент</li>
+    <li><code>reporter</code> — субагент-репортёр</li>
+    <li><code>coordinator</code> — субагент-координатор</li>
+    <li>и т.д.</li>
+  </ul>
+
+  <p><strong>В расширении VS Code это недоступно</strong> — видно только запуск и финальный результат.</p>
+
+  <hr>
+
+  <!-- 14 -->
+  <h2 id="s14">14. MCP (Model Context Protocol)</h2>
+
+  <h3>Что такое MCP</h3>
+
+  <p>MCP — протокол от Anthropic, объединяющий все API-запросы к внешним сервисам в единую схему. Аналогия: USB-хаб, через который подключаются внешние сервисы к AI-агенту.</p>
+
+  <h3>Что даёт MCP</h3>
+
+  <ul>
+    <li>Список инструментов сервиса с описанием</li>
+    <li>Структура данных для каждого инструмента</li>
+    <li>Агенту не нужно ничего объяснять — он сам знает, как вызывать инструменты</li>
+  </ul>
+
+  <h3>Альтернатива без MCP</h3>
+
+  <p>Без MCP нужно вручную описывать каждый endpoint:</p>
+  <ul>
+    <li>Структуру запроса</li>
+    <li>Структуру ответа</li>
+    <li>URL, методы, параметры</li>
+    <li>Документацию каждого действия</li>
+  </ul>
+
+  <h3>Установка MCP</h3>
+
+  <p><strong>Способ 1 — через агента:</strong><br>
+  Скопировать промт с маркетплейса → вставить в Claude Code → агент сам установит.</p>
+
+  <p><strong>Способ 2 — через терминал:</strong></p>
+  <pre><code>claude mcp install &lt;command&gt;</code></pre>
+
+  <p><strong>Маркетплейсы:</strong> Smithery, GitHub</p>
+
+  <h3>Управление MCP</h3>
+
+  <pre><code>/mcp          <span class="c"># Показать установленные MCP</span></code></pre>
+
+  <h3>Проблема MCP: нагрузка на контекст</h3>
+
+  <p>Каждый MCP загружает описания <strong>всех своих инструментов</strong> в контекст <strong>при каждом сообщении</strong>.</p>
+
+  <p>Пример: Google Sheets MCP = 38 инструментов ≈ 2000 токенов.<br>
+  10 MCP-серверов = ~20000 токенов в контексте <strong>постоянно</strong>.</p>
+
+  <h3>Правило использования MCP</h3>
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Частота использования</th><th>Рекомендация</th></tr></thead>
+      <tbody>
+        <tr><td>Каждый диалог</td><td>MCP ✅</td></tr>
+        <tr><td>Раз в неделю</td><td>Скилл ✅, MCP ❌</td></tr>
+        <tr><td>Редко</td><td>HTTP-запросы в скилле ✅</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Лайфхак: конвертация MCP в скилл</h3>
+
+  <p>Можно попросить Claude Code создать скилл из существующего MCP:</p>
+
+  <blockquote><p>"У нас есть MCP Google Sheets. Проанализируй его документацию и создай скилл, который будет вызываться только по необходимости, используя Skill Creator."</p></blockquote>
+
+  <p>Скилл загружается в контекст <strong>только при вызове</strong>, в отличие от MCP.</p>
+
+  <h3>Примеры MCP</h3>
+
+  <ul>
+    <li><strong>Google Sheets</strong> — управление таблицами (38 инструментов)</li>
+    <li><strong>Chrome DevTools</strong> — автоматизация браузера (навигация, клики, скриншоты)</li>
+    <li><strong>Google Calendar</strong> — календари</li>
+    <li><strong>YouTube</strong> — парсинг видео</li>
+    <li><strong>Notion</strong> — управление документами</li>
+    <li><strong>RSS</strong> — чтение новостей</li>
+  </ul>
+
+  <hr>
+
+  <!-- 15 -->
+  <h2 id="s15">15. Agent Teams — агентные команды</h2>
+
+  <h3>Отличие от субагентов</h3>
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Параметр</th><th>Субагенты</th><th>Agent Teams</th></tr></thead>
+      <tbody>
+        <tr><td>Контекст</td><td>Изолированный</td><td>Общий (обмен информацией)</td></tr>
+        <tr><td>Коммуникация</td><td>Только через главного агента</td><td>Напрямую между агентами</td></tr>
+        <tr><td>Расход токенов</td><td>Умеренный</td><td>Высокий</td></tr>
+        <tr><td>Назначение</td><td>Простые параллельные задачи</td><td>Сложные задачи, требующие координации</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Включение Agent Teams</h3>
+
+  <p>В <code>settings.json</code>:</p>
+  <pre><code>{
+  "experimental": {
+    "agent_teams": true
+  }
+}</code></pre>
+
+  <p>В <code>CLAUDE.md</code> указать режим работы Agent Teams.</p>
+
+  <h3>Как работает</h3>
+
+  <ol>
+    <li>Агенты запускаются в параллельных сессиях</li>
+    <li>Могут обмениваться данными между собой</li>
+    <li>Могут запрашивать дополнительную информацию у других агентов</li>
+    <li>Координатор управляет процессом</li>
+  </ol>
+
+  <h3>Визуализация с Tmux</h3>
+
+  <pre><code>tmux                    <span class="c"># Запуск Tmux</span>
+claude                  <span class="c"># Запуск Claude Code внутри Tmux</span></code></pre>
+
+  <p>Tmux позволяет Claude Code <strong>автоматически создавать новые окна</strong> для каждого агента. Агенты отображаются в отдельных панелях с цветовой кодировкой.</p>
+
+  <h3>Когда использовать</h3>
+
+  <ul>
+    <li>Сложные аналитические задачи с несколькими источниками</li>
+    <li>Задачи, где агентам нужно перепроверять друг друга</li>
+    <li>Когда качество результата важнее стоимости</li>
+  </ul>
+
+  <h3>Предостережение</h3>
+
+  <blockquote><p>Agent Teams расходуют <strong>значительно больше токенов</strong>, чем обычные субагенты. Используйте только для сложных комплексных задач.</p></blockquote>
+
+  <hr>
+
+  <!-- 16 -->
+  <h2 id="s16">16. Агентная система на практике</h2>
+
+  <h3>Архитектура демо-системы</h3>
+
+  <pre><code>CLAUDE.md (оркестратор)
+│
+├── agents/
+│   ├── router.md          <span class="c"># Координатор, маршрутизатор запросов</span>
+│   ├── deep-research.md   <span class="c"># Глубокий research по теме</span>
+│   ├── parser.md          <span class="c"># Парсинг веб-сайтов</span>
+│   ├── news-digest.md     <span class="c"># Поиск и дайджест новостей</span>
+│   ├── doc-analyzer.md    <span class="c"># Анализ документов (Word, PDF, CSV, Excel)</span>
+│   ├── report-generator.md <span class="c"># Генерация отчётов (PDF, Sheets, Excel)</span>
+│   ├── meeting-notes.md   <span class="c"># Выжимка из записей встреч</span>
+│   └── youtube-analyzer.md <span class="c"># Транскрипция и анализ YouTube</span>
+│
+├── agent-runtime/
+│   ├── outputs/           <span class="c"># Готовые отчёты (PDF, HTML, MD)</span>
+│   └── shared/            <span class="c"># Данные для обмена между агентами</span>
+│
+└── skills/                <span class="c"># Установленные скиллы</span></code></pre>
+
+  <h3>Маршрутизация запросов (Router)</h3>
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Ключевые слова в запросе</th><th>Агент</th></tr></thead>
+      <tbody>
+        <tr><td>"найди", "сравни", "исследуй"</td><td>Deep Research</td></tr>
+        <tr><td>"собери с сайта", "скачай"</td><td>Parser</td></tr>
+        <tr><td>"новости"</td><td>News Digest</td></tr>
+        <tr><td>"проанализируй документ" + файл</td><td>Doc Analyzer</td></tr>
+        <tr><td>"сделай отчёт"</td><td>Report Generator</td></tr>
+        <tr><td>"заметки к встрече"</td><td>Meeting Notes</td></tr>
+        <tr><td>YouTube-ссылка</td><td>YouTube Analyzer</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Цепочки агентов</h3>
+
+  <ul>
+    <li>Парсинг + отчёт: <code>Parser → Report Generator</code></li>
+    <li>Новости + PDF: <code>News Digest → Report Generator</code></li>
+    <li>YouTube + выжимка: <code>YouTube Analyzer → Report Generator</code></li>
+    <li>Полный analysis: <code>Parser + News Digest + Deep Research → Report Generator</code></li>
+  </ul>
+
+  <h3>Принципы написания инструкций агентов</h3>
+
+  <ul>
+    <li><strong>Простота:</strong> писать настолько просто, насколько возможно</li>
+    <li><strong>Конкретика:</strong> описать всё, что нужно, без лишнего</li>
+    <li><strong>Баланс:</strong> не больше и не меньше, чем нужно для задачи</li>
+    <li><strong>Chain of Thought:</strong> пошаговый алгоритм действий</li>
+    <li><strong>Не усложнять архитектуру:</strong> чем сложнее — тем больше точек отказа</li>
+  </ul>
+
+  <hr>
+
+  <!-- 17 -->
+  <h2 id="s17">17. Деплой и подключение Telegram</h2>
+
+  <h3>Подключение Telegram-бота</h3>
+
+  <p><strong>Шаг 1:</strong> Создать бота в @BotFather</p>
+  <pre><code>/start → /newbot → имя бота → @username_bot</code></pre>
+  <p>Получить Bot Token.</p>
+
+  <p><strong>Шаг 2:</strong> Установить плагин Telegram в Claude Code</p>
+  <pre><code><span class="c"># Команда с официального сайта Anthropic</span>
+claude plugins install telegram</code></pre>
+
+  <p><strong>Шаг 3:</strong> Сохранить токен бота</p>
+  <pre><code>claude telegram set-token "YOUR_BOT_TOKEN"</code></pre>
+
+  <p><strong>Шаг 4:</strong> Установить Bun (runtime)</p>
+  <ul>
+    <li>macOS: <code>curl -fsSL https://bun.sh/install | bash</code></li>
+    <li>Windows: аналогичная команда</li>
+  </ul>
+
+  <p><strong>Шаг 5:</strong> Запустить в режиме channels</p>
+  <pre><code>claude --channels</code></pre>
+
+  <p><strong>Шаг 6:</strong> Написать боту в Telegram → скопировать команду → вставить в Claude Code.</p>
+
+  <h3>Результат</h3>
+
+  <p>Полный доступ к агентной системе из Telegram:</p>
+  <ul>
+    <li>Запуск агентов</li>
+    <li>Получение отчётов</li>
+    <li>Все функции Claude Code</li>
+  </ul>
+
+  <h3>Ограничение текущей интеграции</h3>
+
+  <ul>
+    <li>Работа только с одним диалогом одновременно</li>
+    <li>Компьютер должен быть включён</li>
+    <li>Для нескольких проектов нужна более продвинутая настройка</li>
+  </ul>
+
+  <hr>
+
+  <!-- 18 -->
+  <h2 id="s18">18. Remote Control с телефона</h2>
+
+  <h3>Настройка</h3>
+
+  <p>В терминальном Claude Code:</p>
+  <pre><code>/remote-control</code></pre>
+
+  <p>Появится QR-код → отсканировать с телефона в приложении Claude.</p>
+
+  <h3>Требования</h3>
+
+  <ul>
+    <li>Один и тот же аккаунт Claude на компьютере и телефоне</li>
+    <li>Мобильное приложение Claude (раздел Code)</li>
+    <li>Компьютер с активным Claude Code</li>
+  </ul>
+
+  <h3>Преимущества</h3>
+
+  <ul>
+    <li>Полный доступ к агентной системе с телефона</li>
+    <li>Все агенты доступны</li>
+    <li>Реальное время — сообщения дублируются</li>
+  </ul>
+
+  <h3>Идеальный сценарий</h3>
+
+  <p>Claude Code развёрнут на выделенном VPS-сервере (24/7) → доступ с телефона или любого устройства через:</p>
+  <ul>
+    <li>Remote Control (мобильное приложение Claude)</li>
+    <li>Telegram-бот</li>
+    <li>Веб-интерфейс (при подключении GitHub-репозитория)</li>
+  </ul>
+
+  <hr>
+
+  <!-- Commands -->
+  <h2>Сводка ключевых команд</h2>
+
+  <h3>Slash-команды (терминал)</h3>
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Команда</th><th>Назначение</th></tr></thead>
+      <tbody>
+        <tr><td><code>/context</code></td><td>Показать содержимое и загрузку контекста</td></tr>
+        <tr><td><code>/compact</code></td><td>Сжать диалог в summary</td></tr>
+        <tr><td><code>/new</code>, <code>/clear</code></td><td>Новый диалог</td></tr>
+        <tr><td><code>/model</code></td><td>Переключить модель</td></tr>
+        <tr><td><code>/config</code></td><td>Настройки Claude Code</td></tr>
+        <tr><td><code>/mcp</code></td><td>Управление MCP-серверами</td></tr>
+        <tr><td><code>/usage</code></td><td>Показать использование лимитов</td></tr>
+        <tr><td><code>/status</code></td><td>Версия, папка, показатели</td></tr>
+        <tr><td><code>/effort</code></td><td>Уровень размышлений (low/high/max/auto)</td></tr>
+        <tr><td><code>/voice</code></td><td>Голосовой ввод</td></tr>
+        <tr><td><code>/resume</code></td><td>Вернуться к предыдущему диалогу</td></tr>
+        <tr><td><code>/rewind</code></td><td>Откатиться до предыдущего сообщения (с откатом файлов)</td></tr>
+        <tr><td><code>/remote-control</code></td><td>Подключение телефона</td></tr>
+        <tr><td><code>!команда</code></td><td>Выполнить bash-команду из Claude Code</td></tr>
+        <tr><td><code>Esc Esc</code></td><td>Быстрый вызов Rewind</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Флаги запуска</h3>
+
+  <pre><code>claude                                    <span class="c"># Обычный запуск</span>
+claude --dangerously-skip-permissions     <span class="c"># Bypass Permissions</span>
+claude --channels                          <span class="c"># Режим каналов (Telegram)</span></code></pre>
+
+  <hr>
+
+  <!-- Principles -->
+  <h2>Ключевые принципы работы с Claude Code</h2>
+
+  <ol>
+    <li><strong>Одна задача — один диалог.</strong> Не смешивать разные задачи в одном контексте.</li>
+    <li><strong>Контролировать контекст.</strong> Регулярно проверять <code>/context</code>, не превышать 50%.</li>
+    <li><strong>CLAUDE.md — основа проекта.</strong> Всё описание, архитектура, правила — в одном файле.</li>
+    <li><strong>Скиллы &gt; MCP для редких задач.</strong> MCP загружает контекст постоянно, скиллы — по вызову.</li>
+    <li><strong>Субагенты для больших задач.</strong> Разбивать сложные задачи на изолированные субагенты.</li>
+    <li><strong>Agent Teams для комплексных задач.</strong> Когда агентам нужно обмениваться информацией.</li>
+    <li><strong>Безопасность:</strong> настраивать deny permissions, проверять скиллы перед установкой, не хранить секреты в доступных файлах.</li>
+    <li><strong>Правильная модель для задачи:</strong> Opus для сложного, Sonnet для исполнения, Haiku для массовой обработки.</li>
+    <li><strong>Markdown — стандарт коммуникации</strong> с AI-агентами.</li>
+    <li><strong>Простота инструкций:</strong> конкретно, но без лишнего. Чем проще — тем надёжнее.</li>
+  </ol>
+
+</article>
+
+</body>
+</html>
