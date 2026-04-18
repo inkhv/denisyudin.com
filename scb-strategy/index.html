@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCB — Стратегия арт-дирекшена 2026 | Denis Yudin</title>
+<meta content="Стратегия арт-директора Совкомбанка на 2026: 4 автономные связки, система качества, AI-пайплайны, антицели, ритм коммуникации." name="description"/>
+<meta content="SCB — Стратегия арт-дирекшена 2026" property="og:title"/>
+<meta content="Автономные связки, стандарт качества, AI-пайплайны — без постоянного ручного вмешательства." property="og:description"/>
+<link href="../assets/694eb3c01c94deb52f44b88a_p10 0062_24.png" rel="shortcut icon" type="image/x-icon"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --color-bg: #0a0a0f;
+    --color-surface: #12121a;
+    --color-card: #1a1a26;
+    --color-border: #2a2a3a;
+    --color-accent: #6c5ce7;
+    --color-accent-light: #a29bfe;
+    --color-green: #00cec9;
+    --color-green-dark: #00b894;
+    --color-orange: #fdcb6e;
+    --color-red: #ff7675;
+    --color-text: #e8e8f0;
+    --color-text-muted: #8888a0;
+    --color-text-dim: #5a5a72;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    overflow: hidden;
+  }
+
+  .top-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    background: rgba(10, 10, 15, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+    padding: 10px 0;
+  }
+  .top-bar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .top-bar a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .top-bar a:hover { color: var(--color-text); }
+  .top-bar .site-name { color: var(--color-text-dim); font-size: 12px; }
+
+  .deck { width: 100%; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 80px;
+    padding-top: 80px;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+  .slide.prev { opacity: 0; transform: translateX(-60px); }
+
+  .nav {
+    position: fixed;
+    bottom: 30px; right: 40px;
+    display: flex; gap: 12px;
+    z-index: 100;
+  }
+  .nav button {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav button:hover { background: var(--color-accent); border-color: var(--color-accent); }
+
+  .progress {
+    position: fixed;
+    top: 43px; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-accent), var(--color-green));
+    transition: width 0.4s ease;
+    z-index: 201;
+  }
+
+  .slide-counter {
+    position: fixed;
+    bottom: 38px; left: 40px;
+    font-size: 14px;
+    color: var(--color-text-dim);
+    font-weight: 500;
+    z-index: 100;
+  }
+
+  h1 { font-size: 56px; font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 20px; }
+  h2 { font-size: 40px; font-weight: 700; line-height: 1.15; letter-spacing: -1px; margin-bottom: 24px; }
+  h3 { font-size: 22px; font-weight: 600; margin-bottom: 16px; color: var(--color-accent-light); }
+  h4 { font-size: 17px; font-weight: 600; margin-bottom: 6px; color: var(--color-text); }
+
+  p, li { font-size: 18px; line-height: 1.6; color: var(--color-text-muted); }
+
+  .subtitle {
+    font-size: 22px;
+    color: var(--color-text-muted);
+    font-weight: 400;
+    margin-bottom: 40px;
+    max-width: 820px;
+  }
+
+  .accent { color: var(--color-accent-light); }
+  .green { color: var(--color-green); }
+  .orange { color: var(--color-orange); }
+  .red { color: var(--color-red); }
+  .muted { color: var(--color-text-muted); }
+  .dim { color: var(--color-text-dim); }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--color-accent-light), var(--color-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .cards { display: grid; gap: 20px; margin-top: 16px; }
+  .cards-2 { grid-template-columns: repeat(2, 1fr); }
+  .cards-3 { grid-template-columns: repeat(3, 1fr); }
+  .cards-4 { grid-template-columns: repeat(4, 1fr); }
+  .cards-5 { grid-template-columns: repeat(5, 1fr); }
+
+  .card {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 28px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .card:hover { transform: translateY(-2px); border-color: var(--color-accent); }
+  .card .number { font-size: 36px; font-weight: 800; margin-bottom: 8px; line-height: 1; }
+  .card .label {
+    font-size: 12px; color: var(--color-text-dim);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .card p { font-size: 15px; color: var(--color-text-muted); line-height: 1.5; }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  th, td { padding: 14px 18px; text-align: left; font-size: 15px; border-bottom: 1px solid var(--color-border); }
+  th {
+    color: var(--color-text-dim);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    background: var(--color-surface);
+  }
+  td { color: var(--color-text-muted); }
+  tr:hover td { background: rgba(108, 92, 231, 0.05); }
+
+  .tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .tag-green { background: rgba(0, 206, 201, 0.15); color: var(--color-green); }
+  .tag-accent { background: rgba(108, 92, 231, 0.15); color: var(--color-accent-light); }
+  .tag-orange { background: rgba(253, 203, 110, 0.15); color: var(--color-orange); }
+  .tag-red { background: rgba(255, 118, 117, 0.15); color: var(--color-red); }
+  .tag-muted { background: rgba(136, 136, 160, 0.1); color: var(--color-text-muted); }
+
+  .styled-list { list-style: none; padding: 0; }
+  .styled-list li {
+    padding: 12px 0;
+    padding-left: 28px;
+    position: relative;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 17px;
+  }
+  .styled-list li:last-child { border-bottom: none; }
+  .styled-list li::before {
+    content: '\2192';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent-light);
+    font-weight: 600;
+  }
+
+  .cross-list li::before { content: '\00d7'; color: var(--color-red); }
+  .check-list li::before { content: '\2713'; color: var(--color-green); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+
+  .timeline { margin-top: 20px; }
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 110px 24px 1fr;
+    gap: 16px;
+    align-items: start;
+    margin-bottom: 20px;
+  }
+  .timeline-period {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-accent-light);
+    text-align: right;
+    padding-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .timeline-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    margin-top: 8px;
+    justify-self: center;
+    box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.2);
+  }
+  .timeline-content p { font-size: 15px; color: var(--color-text-muted); margin-top: 4px; }
+
+  .insight {
+    background: linear-gradient(135deg, rgba(108, 92, 231, 0.12), rgba(0, 206, 201, 0.08));
+    border: 1px solid rgba(108, 92, 231, 0.3);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-top: 28px;
+  }
+  .insight p { color: var(--color-text); font-weight: 500; }
+
+  .schedule {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 4px;
+    margin-top: 20px;
+  }
+  .schedule th {
+    text-align: center;
+    padding: 10px;
+    background: var(--color-surface);
+    border-radius: 8px;
+  }
+  .schedule td {
+    padding: 12px 10px;
+    text-align: center;
+    font-size: 13px;
+    border-radius: 8px;
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    vertical-align: top;
+    min-height: 70px;
+  }
+  .schedule td.focus { background: rgba(0, 206, 201, 0.08); border-color: var(--color-green); color: var(--color-green); }
+  .schedule td.meet { background: rgba(108, 92, 231, 0.08); border-color: var(--color-accent); color: var(--color-accent-light); }
+  .schedule td.async { background: rgba(253, 203, 110, 0.08); border-color: var(--color-orange); color: var(--color-orange); }
+  .schedule td.empty { background: transparent; border: 1px dashed var(--color-border); color: var(--color-text-dim); }
+
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .kpi {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    padding: 22px;
+    text-align: center;
+  }
+  .kpi .val {
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .kpi .lbl { font-size: 13px; color: var(--color-text-dim); }
+
+  .mission {
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.5px;
+    max-width: 960px;
+  }
+
+  .caption {
+    font-size: 14px;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .hero-footer {
+    margin-top: 60px;
+    display: flex; gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 40px 24px; padding-top: 70px; }
+    h1 { font-size: 36px; }
+    h2 { font-size: 28px; }
+    .mission { font-size: 22px; }
+    .cards-3, .cards-4, .cards-5, .two-col, .three-col, .kpi-row { grid-template-columns: 1fr; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .timeline-item { grid-template-columns: 80px 20px 1fr; }
+    .schedule { display: block; overflow-x: auto; }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <a href="../index.html">&larr; denisyudin.com</a>
+    <span class="site-name">SCB — стратегия 2026</span>
+  </div>
+</div>
+
+<div class="progress" id="progress" style="width: 0%"></div>
+<div class="slide-counter" id="counter">1 / 14</div>
+
+<div class="deck">
+
+  <!-- SLIDE 1 — COVER -->
+  <div class="slide active">
+    <div class="caption">Арт-дирекшен · Совкомбанк · 2026</div>
+    <h1>Стратегия<br><span class="gradient-text">без ручного управления</span></h1>
+    <p class="subtitle">Как построить дизайн-направление из четырёх автономных связок, системы качества и AI-пайплайнов — так, чтобы оно работало без постоянного вмешательства руководства.</p>
+    <div class="hero-footer">
+      <span class="tag tag-accent">4 связки</span>
+      <span class="tag tag-green">4 тимлида</span>
+      <span class="tag tag-orange">горизонт — декабрь 2026</span>
+      <span class="tag tag-muted">Денис Юдин, арт-директор</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 — MISSION -->
+  <div class="slide">
+    <div class="caption">Главная цель</div>
+    <p class="mission">
+      Создать <span class="accent">структурные условия</span>, которые позволяют
+      <span class="green">повысить эффективность работы</span>,
+      не полагаясь на <span class="muted">постоянное вмешательство руководства</span>.
+    </p>
+    <div class="cards cards-4" style="margin-top: 60px;">
+      <div class="card">
+        <div class="number accent">80%</div>
+        <p>решений оперативного уровня принимает тимлид, не я</p>
+      </div>
+      <div class="card">
+        <div class="number green">&leq;2</div>
+        <p>итерации арт-ревью до сдачи задачи заказчику</p>
+      </div>
+      <div class="card">
+        <div class="number orange">4/4</div>
+        <p>связки используют AI-пайплайны как штатный инструмент</p>
+      </div>
+      <div class="card">
+        <div class="number gradient-text">0</div>
+        <p>потерь ключевых людей в кризис 2026</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3 — CONTEXT -->
+  <div class="slide">
+    <h2>Контекст <span class="orange">2026</span></h2>
+    <p class="subtitle">В каких условиях строим систему. Это не фон — это ограничения, которые задают форму решений.</p>
+    <div class="cards cards-3">
+      <div class="card">
+        <h3 style="color: var(--color-red);">Фриз найма</h3>
+        <p>Новых людей не берём. Работаем составом, который есть. Каждый уход — потеря скорости.</p>
+      </div>
+      <div class="card">
+        <h3 style="color: var(--color-orange);">Повышения затруднены</h3>
+        <p>Деньги двигаются медленно. Компенсируем ростом роли, зоной, обучением, видимостью.</p>
+      </div>
+      <div class="card">
+        <h3 style="color: var(--color-green);">Нейросети — рычаг</h3>
+        <p>AI-пайплайны — не «когда-нибудь», а основной инструмент сохранения темпа в кризис.</p>
+      </div>
+    </div>
+    <div class="insight">
+      <p>Удержание &gt; рост. Автоматизация &gt; подвиги. Стандарт &gt; ручное ревью.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 4 — ARCHITECTURE -->
+  <div class="slide">
+    <h2>Архитектура <span class="accent">направления</span></h2>
+    <p class="subtitle">Четыре автономные связки под арт-дирекшеном. Каждая — с тимлидом, своей командой, своими заказчиками.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Связка</th>
+          <th>Тимлид</th>
+          <th>Профиль</th>
+          <th>Статус</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong class="accent">ДКЦ</strong><br><span class="dim">корп. ценности</span></td>
+          <td>Алина Авилова</td>
+          <td>Лига достижений, мерч, ценности, СММ</td>
+          <td><span class="tag tag-green">действующий</span></td>
+        </tr>
+        <tr>
+          <td><strong class="accent">ДПМ</strong><br><span class="dim">партнёрский маркетинг</span></td>
+          <td>Женя Шитеева</td>
+          <td>Халва, зарплатные проекты, федеральные акции</td>
+          <td><span class="tag tag-orange">30 дней входа</span></td>
+        </tr>
+        <tr>
+          <td><strong class="accent">Брендинг</strong></td>
+          <td>Настя Пужанова</td>
+          <td>Страхование, Аэрофлот, КИБ, СОТА, форум</td>
+          <td><span class="tag tag-orange">30 дней входа</span></td>
+        </tr>
+        <tr>
+          <td><strong class="accent">B2B</strong><br><span class="dim">новая связка</span></td>
+          <td>Саша Никитина</td>
+          <td>FinTender, SMM-каналы, презентации</td>
+          <td><span class="tag tag-orange">30 дней входа</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="insight">
+      <p>Саша (креативный директор департамента) — отдельный кросс-контур. Все входящие фильтруются протоколом <span class="accent">«Беру / Согласен если / Не беру»</span>, не попадают в связки напрямую.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 5 — 5 DIRECTIONS -->
+  <div class="slide">
+    <h2>Пять стратегических <span class="gradient-text">направлений</span></h2>
+    <p class="subtitle">Каждое направление — с метриками и вехами. Без метрики направление превращается в лозунг.</p>
+    <div class="cards cards-5">
+      <div class="card" style="border-color: var(--color-accent);">
+        <div class="label accent">01</div>
+        <h4>Люди</h4>
+        <p>Автономные связки с тимлидами</p>
+      </div>
+      <div class="card" style="border-color: var(--color-green);">
+        <div class="label green">02</div>
+        <h4>Стандарт</h4>
+        <p>Качество прошито в процесс</p>
+      </div>
+      <div class="card" style="border-color: var(--color-orange);">
+        <div class="label orange">03</div>
+        <h4>Процессы</h4>
+        <p>Честные брифы и квотирование</p>
+      </div>
+      <div class="card" style="border-color: var(--color-accent-light);">
+        <div class="label accent">04</div>
+        <h4>Инструменты</h4>
+        <p>AI-пайплайны как норма</p>
+      </div>
+      <div class="card" style="border-color: var(--color-green-dark);">
+        <div class="label green">05</div>
+        <h4>Авторский контур</h4>
+        <p>1–2 личных проекта арт-директора</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6 — DIRECTION 1: PEOPLE -->
+  <div class="slide">
+    <div class="caption">Направление 01</div>
+    <h2>Люди — <span class="accent">автономные связки</span></h2>
+    <p class="subtitle">Четыре тимлида ведут оперативку своих связок без моего вмешательства. Я — арт-директор, не диспетчер.</p>
+    <div class="two-col">
+      <div>
+        <h3>Метрики</h3>
+        <ul class="styled-list">
+          <li>≥80% решений оперативного уровня — без эскалации</li>
+          <li>4/4 связок шлют пятничный апдейт по шаблону</li>
+          <li>Текучка ключевых людей — ноль</li>
+          <li>Каждая связка ведёт живой статус-файл</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Вехи</h3>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-period">Май 2026</div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-content"><h4>Новые тимлиды</h4><p>Женя, Настя, Саша Н. прошли 30-дневный вход.</p></div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-period">Июль 2026</div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-content"><h4>Алина — формализована</h4><p>Закрыт вопрос ЗП или согласована альтернативная компенсация.</p></div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-period">Дек 2026</div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-content"><h4>Не чаще 1/нед</h4><p>Ни одна связка не эскалирует оперативку мне чаще раза в неделю.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7 — DIRECTION 2: STANDARD -->
+  <div class="slide">
+    <div class="caption">Направление 02</div>
+    <h2>Стандарт — <span class="green">качество в процессе</span></h2>
+    <p class="subtitle">Арт-дир-ревью — финальная точка, а не третий-четвёртый цикл правок. Чек-лист качества прошит в работу тимлида.</p>
+    <div class="two-col">
+      <div>
+        <h3>Метрики</h3>
+        <ul class="styled-list">
+          <li>Задача сдаётся за ≤2 итерации арт-ревью</li>
+          <li>Grading 360 — 100% связок</li>
+          <li>≥50% задач проходят арт-ревью с первой итерации (к декабрю)</li>
+          <li>Чек-лист качества применяется тимлидом до показа мне</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Вехи</h3>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-period">Май 2026</div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-content"><h4>Чек-лист в деле</h4><p>Обкатан в ДКЦ и Брендинге, тимлиды отсеивают до меня.</p></div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-period">Июнь 2026</div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-content"><h4>Grading v1</h4><p>Пилот системы оценки на 1–2 сотрудниках.</p></div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-period">Сент 2026</div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-content"><h4>Grading 360</h4><p>Развёрнут во всех связках, опросники интегрированы в ИПР.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8 — DIRECTION 3: PROCESSES -->
+  <div class="slide">
+    <div class="caption">Направление 03</div>
+    <h2>Процессы — <span class="orange">честные брифы</span></h2>
+    <p class="subtitle">Задача не берётся без брифа. Сроки считаются по матрице. Субъективные правки — фильтр тимлида, не задача дизайнера.</p>
+    <div class="two-col">
+      <div>
+        <h3>Метрики</h3>
+        <ul class="styled-list">
+          <li>Доля задач со «сломанным» брифом &lt; 20%</li>
+          <li>Ноль проектов с внезапной переработкой &gt; 20% команды</li>
+          <li>Матрица расчёта времени — рабочий инструмент</li>
+          <li>Guardrails у ключевых заказчиков</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Вехи</h3>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-period">Май 2026</div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-content"><h4>Квотирование ДПМ</h4><p>Внедрено после поломки процессов 20.03.</p></div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-period">Июль 2026</div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-content"><h4>Брендинг и B2B</h4><p>Квотирование распространено на две остальные связки.</p></div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-period">Окт 2026</div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-content"><h4>Регламенты приёмки</h4><p>У каждой связки — одностраничный регламент приёмки задач.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9 — DIRECTION 4: AI -->
+  <div class="slide">
+    <div class="caption">Направление 04</div>
+    <h2>Инструменты — <span class="gradient-text">AI-пайплайны</span></h2>
+    <p class="subtitle">В 2026 нейросети — не эксперимент, а штатный инструмент. Каждая связка имеет свой измеримый AI-кейс.</p>
+    <div class="cards cards-4">
+      <div class="card" style="border-color: var(--color-accent);">
+        <div class="number accent">Халва</div>
+        <p>Видео-пайплайн (RND). Concept → раскадровка → генерация → сборка.</p>
+      </div>
+      <div class="card" style="border-color: var(--color-green);">
+        <div class="number green">Презы</div>
+        <p>AI-автоматизация сборки корпоративных презентаций из шаблонов.</p>
+      </div>
+      <div class="card" style="border-color: var(--color-orange);">
+        <div class="number orange">SMM</div>
+        <p>In-house оптимизация для B2B и ДПМ: ресайзы, адаптации, копи.</p>
+      </div>
+      <div class="card" style="border-color: var(--color-accent-light);">
+        <div class="number accent">Бренд</div>
+        <p>LoRA / ControlNet под стилистику страхования, КИБ, форума.</p>
+      </div>
+    </div>
+    <div class="insight">
+      <p>К декабрю 2026 — карта AI-пайплайнов по связкам с цифрой экономии «до / после» для каждого кейса.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 10 — DIRECTION 5: AUTHOR -->
+  <div class="slide">
+    <div class="caption">Направление 05</div>
+    <h2>Авторский контур <span class="accent">арт-директора</span></h2>
+    <p class="subtitle">1–2 проекта в моей личной работе — это топливо системы. Без авторского слоя Reserved + Leisurely уводят в серую операционку.</p>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-period">Апр–май</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content"><h4>Брендбук страхования</h4><p>4 концепции + 3D-система + 9 макетов. Сдача 30.04.</p></div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-period">Июнь</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content"><h4>ПМЭФ 2026</h4><p>Стенд и видео. Концепт и продакшен-ведение.</p></div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-period">Сент</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content"><h4>КИБ-брендбук</h4><p>Финализация системы.</p></div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-period">IV кв.</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content"><h4>Свободный слот</h4><p>Один авторский проект по выбору: форум / спецпроект / айдентика.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11 — RHYTHM -->
+  <div class="slide">
+    <h2>Ритм <span class="accent">коммуникации</span></h2>
+    <p class="subtitle">Защищённый календарь: два глубоких дня, один день тимлидов, четверг — кросс и ревью, пятница — асинхрон.</p>
+    <table class="schedule">
+      <thead>
+        <tr>
+          <th>ПН</th>
+          <th>ВТ</th>
+          <th>СР</th>
+          <th>ЧТ</th>
+          <th>ПТ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="focus"><strong>Глубокая работа</strong><br><span class="dim">Без встреч до 14:00. Разбор _INBOX.</span></td>
+          <td class="meet"><strong>День тимлидов</strong><br><span class="dim">10:30 и 11:30 — 1:1 по 30 мин. Чередование связок.</span></td>
+          <td class="focus"><strong>Глубокий день</strong><br><span class="dim">Без встреч. Авторские проекты.</span></td>
+          <td class="meet"><strong>Кросс и ревью</strong><br><span class="dim">1:1 с Сашей. Арт-дир-ревью 15:00–17:00.</span></td>
+          <td class="async"><strong>Асинхрон</strong><br><span class="dim">4 апдейта от тимлидов. Саша-фильтр. Ретро недели.</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="cards cards-4" style="margin-top: 32px;">
+      <div class="card"><div class="number accent">≤4</div><p>созвонов в день максимум</p></div>
+      <div class="card"><div class="number green">15</div><p>минут — минимум перерыв между встречами</p></div>
+      <div class="card"><div class="number orange">45</div><p>минут — максимум длина встречи</p></div>
+      <div class="card"><div class="number gradient-text">2</div><p>защищённых дня без созвонов — ПН и СР</p></div>
+    </div>
+  </div>
+
+  <!-- SLIDE 12 — ANTIGOALS -->
+  <div class="slide">
+    <h2>Антицели — <span class="red">чего НЕ делаем</span></h2>
+    <p class="subtitle">Антицели важнее половины целей. Они защищают от распыления и героизма в одиночку. Открыто проговорены, чтобы не скатиться.</p>
+    <div class="two-col">
+      <div>
+        <ul class="styled-list cross-list">
+          <li>Не расти в команде ради роста</li>
+          <li>Не делать макеты своими руками (кроме авторских)</li>
+          <li>Не закрывать собой регулярные пожары</li>
+          <li>Не согласовывать каждую субъективную правку заказчика</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="styled-list cross-list">
+          <li>Не вводить процессы ради процессов</li>
+          <li>Не брать кросс-задачи без фильтра «Беру / Если / Не беру»</li>
+          <li>Не держать &gt; 3 активных приоритетов на себя</li>
+          <li>Не заменять тимлида в его оперативке</li>
+        </ul>
+      </div>
+    </div>
+    <div class="insight">
+      <p><span class="red">Правило одного «нет».</span> Если за неделю я не сказал «не беру» никому — я беру лишнее. Это индикатор, не лозунг.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 13 — SUCCESS -->
+  <div class="slide">
+    <h2>Критерии успеха — <span class="green">декабрь 2026</span></h2>
+    <p class="subtitle">По чему честно поймём: да или нет. Без «ну вроде двигается».</p>
+    <ul class="styled-list check-list">
+      <li>Работаю ≤ 45 часов в неделю при стабильном зелёном статусе 4 связок</li>
+      <li>Могу уйти в отпуск на 2 недели — связки работают без эскалаций</li>
+      <li>Текучка ключевых людей за год — ноль</li>
+      <li>Заказчики (ПМ, бизнес, Саша) дают позитивную оценку направления на полугодовом опросе</li>
+      <li>Есть 1–2 авторских проекта, которыми горжусь как арт-директор</li>
+      <li>Есть ≥ 4 рабочих AI-кейса с цифрой экономии «до / после»</li>
+    </ul>
+    <div class="insight">
+      <p>Пересмотр — раз в 2 недели короткая сверка, раз в квартал ретро с тимлидами, раз в полугодие большая ревизия.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 14 — NEXT STEPS -->
+  <div class="slide">
+    <h2>Следующие <span class="gradient-text">шаги</span></h2>
+    <p class="subtitle">Что делаем в ближайшие две недели, чтобы система заработала.</p>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-period">2 дня</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h4>Регламенты — тимлидам</h4>
+          <p>Разослать Жене, Насте, Саше Н. ссылки на регламент тимлида и ритм коммуникации. Первый пятничный апдейт — в ближайшую пятницу.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-period">Эта неделя</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h4>Календарь — повторяющиеся события</h4>
+          <p>ВТ 10:30 / 11:30 (тимлиды), ЧТ 11:00 (Саша), ЧТ 15:00–17:00 (арт-дир-ревью), ПТ 15:00–16:00 (Саша-фильтр).</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-period">Эта неделя</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h4>Саша-фильтр по всем открытым</h4>
+          <p>Hippo Parking, форум, рефреш, КИБ, СОТА — Беру / Если / Не беру, одним проходом.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-period">Неделя</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h4>Кадровые — разобрать «красные»</h4>
+          <p>Эльвира, Илья, Элина — по протоколу «Решение в 2 шага»: черновое сегодня → ревизия через 48 часов.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-period">Первый 1:1</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h4>Алина — зона и компенсация</h4>
+          <p>Честно: 170–180к — цель через 3 мес., но фриз её плавит. Компенсация — формальное тимлидство + расширение зоны + обучение.</p>
+        </div>
+      </div>
+    </div>
+    <div class="insight">
+      <p style="font-size: 18px;">Полная система — в рабочей директории <span class="accent">SOVCOMBANK/</span>: <code class="dim">scb-goals.md</code> (цели), <code class="dim">scb-status.md</code> (неделя), <code class="dim">КОМАНДА/регламенты/</code> (регламент тимлида, ритм), <code class="dim">_СИСТЕМА/подрядчики.md</code>.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button onclick="prevSlide()" id="btnPrev">&larr;</button>
+  <button onclick="nextSlide()" id="btnNext">&rarr;</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('counter');
+  let current = 0;
+
+  function updateSlide() {
+    slides.forEach((s, i) => {
+      s.classList.remove('active', 'prev');
+      if (i === current) s.classList.add('active');
+      else if (i < current) s.classList.add('prev');
+    });
+    const pct = ((current + 1) / slides.length) * 100;
+    progress.style.width = pct + '%';
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+  }
+
+  function nextSlide() {
+    if (current < slides.length - 1) { current++; updateSlide(); }
+  }
+
+  function prevSlide() {
+    if (current > 0) { current--; updateSlide(); }
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+  });
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', (e) => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) { diff > 0 ? nextSlide() : prevSlide(); }
+  });
+
+  updateSlide();
+</script>
+
+</body>
+</html>
