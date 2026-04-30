@@ -144,7 +144,7 @@
 <body>
   <div class="toolbar" role="region" aria-label="Управление VFX">
     <p class="toolbar-note">
-      Локальный WebGL на сайте (хроматическая аберрация + виньетка по курсору). Это не копия шейдеров Endless Tools.
+      Аппроксимация цепочки Endless Tools (Aberration → Nymph → Funny) по сохранённым параметрам проекта&nbsp;<a href="https://app.endlesstools.io/embed/61be25ed-c099-4d8b-a3cf-489c77c742b7" style="color:#aab;">embed</a> — не побитовое совпадение.
     </p>
     <label class="file-btn" for="img-input">Загрузить изображение</label>
     <input id="img-input" type="file" accept="image/*">
@@ -169,6 +169,7 @@
     '  gl_Position = vec4(a_pos, 0.0, 1.0);' +
     '}';
 
+  // Параметры из __NEXT_DATA__ embed 61be25ed-c099-4d8b-a3cf-489c77c742b7 (PPC-порядок Aberration/Nymph/Funny)
   var FRAG = '' +
     'precision mediump float;' +
     'varying vec2 v_uv;' +
@@ -185,23 +186,38 @@
     '  return (uv - 0.5) / scale + 0.5;' +
     '}' +
     'void main() {' +
-    '  vec2 suv = tex_uv_contain(v_uv);' +
-    '  if (suv.x < 0.0 || suv.x > 1.0 || suv.y < 0.0 || suv.y > 1.0) { gl_FragColor = vec4(0.03, 0.03, 0.04, 1.0); return; }' +
+    '  vec2 suvRaw = tex_uv_contain(v_uv);' +
+    '  if (suvRaw.x < 0.0 || suvRaw.x > 1.0 || suvRaw.y < 0.0 || suvRaw.y > 1.0) {' +
+    '    gl_FragColor = vec4(0.028, 0.028, 0.032, 1.0); return;' +
+    '  }' +
+    '  float wf = 42.72 * 0.324;' +
+    '  float tMs = u_time * 3.96 * 2.35;' +
+    '  float tOsc = u_time * 1.2 * 4.1;' +
+    '  vec2 wig = vec2(sin(suvRaw.y * wf + tMs), cos(suvRaw.x * wf * 1.06 - tOsc));' +
+    '  vec2 suv = suvRaw + wig * (0.8 * 0.83 * 0.095);' +
+    '  float ang = 34.51 * 3.14159265 / 180.0;' +
+    '  vec2 axis = vec2(cos(ang), sin(ang));' +
     '  vec2 mp = u_mouse;' +
-    '  vec2 delta = suv - mp;' +
-    '  float dist = length(delta) + 0.0008;' +
-    '  vec2 dir = delta / dist;' +
-    '  float pulse = 0.65 + 0.35 * sin(u_time * 2.8);' +
-    '  float strength = (0.01 + dist * 0.022) * pulse;' +
-    '  vec2 off = dir * strength;' +
-    '  float r = texture2D(u_tex, suv + off * 1.15).r;' +
+    '  vec2 dM = suv - mp;' +
+    '  float distM = length(dM) + 0.0009;' +
+    '  vec2 dirM = dM / distM;' +
+    '  float abAxis = 0.36 * 0.058;' +
+    '  float abFollow = distM * 0.11 * 0.81;' +
+    '  vec2 chr = normalize(axis + dirM * 0.35) * (abAxis + abFollow);' +
+    '  float r = texture2D(u_tex, suv + chr * 1.88).r;' +
     '  float g = texture2D(u_tex, suv).g;' +
-    '  float b = texture2D(u_tex, suv - off * 1.05).b;' +
-    '  vec3 col = vec3(r, g, b);' +
+    '  float b = texture2D(u_tex, suv - chr * 0.75).b;' +
+    '  vec3 baseChr = vec3(r, g, b);' +
+    '  vec3 w1 = texture2D(u_tex, suv + vec2(0.0036, 0.0)).rgb;' +
+    '  vec3 w2 = texture2D(u_tex, suv - vec2(0.0036, 0.0)).rgb;' +
+    '  vec3 w3 = texture2D(u_tex, suv + vec2(0.0, 0.0036)).rgb;' +
+    '  vec3 w4 = texture2D(u_tex, suv - vec2(0.0, 0.0036)).rgb;' +
+    '  vec3 wide = (baseChr + w1 + w2 + w3 + w4) * 0.2;' +
+    '  vec3 col = mix(baseChr, wide, 0.38);' +
     '  float lum = dot(col, vec3(0.299, 0.587, 0.114));' +
-    '  col = mix(vec3(lum), col, 1.06);' +
-    '  float vig = smoothstep(0.92, 0.38, length(v_uv - 0.5));' +
-    '  col *= mix(0.52, 1.08, vig);' +
+    '  col = mix(vec3(lum), col, 1.055);' +
+    '  float vig = smoothstep(0.94, 0.36, length(v_uv - 0.5));' +
+    '  col *= mix(0.55, 1.06, vig);' +
     '  gl_FragColor = vec4(col, 1.0);' +
     '}';
 
