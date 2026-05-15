@@ -271,7 +271,10 @@ a { color: inherit; text-decoration: none; }
   width: auto;
 }
 .partners-row .partner-scb { height: 24px; }
-.partners-row .partner-prodobro { height: 44px; }
+.partners-row .partner-prodobro {
+  height: 44px;
+  transform: translateY(3px); /* выравнивание baseline с scb */
+}
 
 .hero-visual {
   position: relative;
@@ -996,7 +999,10 @@ a { color: inherit; text-decoration: none; }
   flex-shrink: 0;
 }
 .footer-brand .scb-logos .partner-scb { height: 24px; }
-.footer-brand .scb-logos .partner-prodobro { height: 44px; }
+.footer-brand .scb-logos .partner-prodobro {
+  height: 44px;
+  transform: translateY(3px); /* выравнивание baseline с scb */
+}
 .footer-brand .scb-text {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.55);
