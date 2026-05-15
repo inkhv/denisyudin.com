@@ -259,25 +259,19 @@ a { color: inherit; text-decoration: none; }
   background: var(--line);
   margin-bottom: 24px;
 }
-.trust-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px 28px;
-  font-size: 13px;
-  color: var(--text-muted);
-}
-.trust-row .item {
+.partners-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 18px 28px;
 }
-.trust-row .dot {
-  width: 6px; height: 6px;
-  background: var(--text-muted);
-  border-radius: 50%;
-  opacity: 0.6;
+.partners-row img {
+  display: block;
   flex-shrink: 0;
+  width: auto;
 }
+.partners-row .partner-scb { height: 24px; }
+.partners-row .partner-prodobro { height: 44px; }
 
 .hero-visual {
   position: relative;
@@ -987,20 +981,22 @@ a { color: inherit; text-decoration: none; }
 .footer-brand .scb-block {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   margin-top: 8px;
 }
-.footer-brand .scb-logo {
-  display: inline-flex;
+.footer-brand .scb-logos {
+  display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 18px 40px;
 }
-.footer-brand .scb-logo img,
-.footer-brand .scb-logo svg {
+.footer-brand .scb-logos img {
   display: block;
-  width: 170px;
-  height: 24px;
+  width: auto;
   flex-shrink: 0;
 }
+.footer-brand .scb-logos .partner-scb { height: 24px; }
+.footer-brand .scb-logos .partner-prodobro { height: 44px; }
 .footer-brand .scb-text {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.55);
@@ -1127,10 +1123,9 @@ a { color: inherit; text-decoration: none; }
           <a href="#idea" class="btn btn-ghost btn-lg">Узнать больше&nbsp;→</a>
         </div>
         <div class="hero-divider"></div>
-        <div class="trust-row">
-          <div class="item"><span class="dot"></span>При поддержке Совкомбанка</div>
-          <div class="item"><span class="dot"></span>Юридически защищённая инфраструктура</div>
-          <div class="item"><span class="dot"></span>Публичная отчётность</div>
+        <div class="partners-row" aria-label="Партнёры">
+          <img class="partner-scb" src="img/scb-black.svg" alt="Совкомбанк" height="24"/>
+          <img class="partner-prodobro" src="img/scb-pro-dobro-color.svg" alt="Совкомбанк — Про Добро" height="44"/>
         </div>
       </div>
       <div class="hero-visual">
@@ -1404,7 +1399,10 @@ a { color: inherit; text-decoration: none; }
         <div class="f-logo"><img src="img/logo-uber-nko-dark.svg" alt="UBER НКО" width="128" height="22"/></div>
         <div class="f-tagline">Проект по&nbsp;запуску и&nbsp;сопровождению<br/>социальных инициатив.</div>
         <div class="scb-block">
-          <div class="scb-logo"><img src="img/scb-logo.svg" alt="Совкомбанк" width="170" height="24"/></div>
+          <div class="scb-logos">
+            <img class="partner-scb" src="img/scb-logo.svg" alt="Совкомбанк" height="24"/>
+            <img class="partner-prodobro" src="img/scb-pro-dobro-white.svg" alt="Совкомбанк — Про Добро" height="44"/>
+          </div>
           <div class="scb-text">При поддержке Совкомбанка.<br/>Оператор эквайринга и&nbsp;сопровождения.</div>
         </div>
       </div>
