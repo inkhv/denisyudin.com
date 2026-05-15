@@ -80,12 +80,16 @@ a { color: inherit; text-decoration: none; }
   position: sticky;
   top: 0;
   z-index: 100;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
   background: rgba(242, 245, 249, 0.85);
   backdrop-filter: saturate(140%) blur(14px);
   -webkit-backdrop-filter: saturate(140%) blur(14px);
   border-bottom: 1px solid var(--line);
 }
 .header .container {
+  max-width: none;
   padding-left: clamp(20px, 4vw, 56px);
   padding-right: clamp(20px, 4vw, 56px);
 }
@@ -936,11 +940,17 @@ a { color: inherit; text-decoration: none; }
 
 /* ====== FOOTER ====== */
 .footer {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
   background: var(--accent);
   color: var(--accent-text);
   padding: 100px var(--pad-x-section) 56px;
 }
-.footer-content { max-width: var(--content); margin: 0 auto; }
+.footer-content {
+  max-width: var(--container);
+  margin: 0 auto;
+}
 .footer-top {
   display: grid;
   grid-template-columns: 1fr 180px 180px;
