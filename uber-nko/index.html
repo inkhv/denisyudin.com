@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/lottie-web@5.12.2/build/player/lottie_light.min.js" defer></script>
 
 <style>
 :root {
@@ -181,6 +182,29 @@ a { color: inherit; text-decoration: none; }
   padding-bottom: clamp(96px, 11.5vw, 165px);
   background: var(--bg);
   overflow: hidden;
+  isolation: isolate;
+}
+.hero-bg {
+  position: absolute;
+  inset: -80px;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.7;
+  filter: blur(70px) saturate(115%);
+  transform: translateZ(0);
+}
+.hero-bg svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.hero > .container {
+  position: relative;
+  z-index: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-bg { display: none; }
 }
 .hero-grid {
   display: grid;
@@ -1072,6 +1096,7 @@ a { color: inherit; text-decoration: none; }
 
 <!-- ====== HERO ====== -->
 <section class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true"></div>
   <div class="container">
     <div class="hero-grid">
       <div class="hero-text">
@@ -1397,6 +1422,27 @@ a { color: inherit; text-decoration: none; }
 </a>
 
 <script>
+  // Hero shimmer — фоновая Lottie-анимация (серо-бело-голубые блобы).
+  (function initHeroShimmer() {
+    const container = document.querySelector('.hero-bg');
+    if (!container) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return;
+    const start = () => {
+      if (!window.lottie) return;
+      window.lottie.loadAnimation({
+        container,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: 'img/hero-shimmer.json',
+        rendererSettings: { progressiveLoad: true, preserveAspectRatio: 'xMidYMid slice' }
+      });
+    };
+    if (window.lottie) start();
+    else window.addEventListener('load', start, { once: true });
+  })();
+
   const cta = document.getElementById('floatCta');
   const trigger = document.querySelector('.hero');
   if (trigger) {
