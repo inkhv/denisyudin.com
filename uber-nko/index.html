@@ -321,6 +321,13 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ====== MANIFESTO ====== */
+/* Белая плашка заходит на нижнюю часть hero, перекрывая lottie-фон
+   и убирая видимую границу между секциями. */
+#idea.section-card {
+  position: relative;
+  z-index: 2;
+  margin-top: clamp(-160px, -8vw, -60px);
+}
 .manifesto-grid {
   display: grid;
   grid-template-columns: 380px 1fr;
