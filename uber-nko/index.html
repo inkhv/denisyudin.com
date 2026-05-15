@@ -660,12 +660,25 @@ a { color: inherit; text-decoration: none; }
   text-transform: uppercase;
 }
 .lc-roman {
-  width: 22px;
-  height: 22px;
-  display: block;
+  display: inline-block;
+  width: 28px;
+  height: 28px;
   flex-shrink: 0;
-  opacity: 0.85;
+  background-color: var(--text-soft);
+  -webkit-mask-position: center;
+          mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+          mask-size: contain;
+  transition: background-color .2s ease, transform .2s ease;
 }
+.leader-card:hover .lc-roman {
+  background-color: var(--accent);
+}
+.lc-roman--1 { -webkit-mask-image: url("img/stage-1.svg"); mask-image: url("img/stage-1.svg"); }
+.lc-roman--2 { -webkit-mask-image: url("img/stage-2.svg"); mask-image: url("img/stage-2.svg"); }
+.lc-roman--3 { -webkit-mask-image: url("img/stage-3.svg"); mask-image: url("img/stage-3.svg"); }
 .leader-card h3 {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
@@ -1270,7 +1283,7 @@ a { color: inherit; text-decoration: none; }
       <div class="leader-card">
         <div class="lc-head">
           <span class="lc-stage">Первый этап</span>
-          <img class="lc-roman" src="img/stage-1.svg" alt="" width="22" height="22"/>
+          <span class="lc-roman lc-roman--1" aria-hidden="true"></span>
         </div>
         <h3>Первый шаг</h3>
         <p>Тест идеи, запуск первого небольшого проекта при&nbsp;поддержке фонда.</p>
@@ -1278,7 +1291,7 @@ a { color: inherit; text-decoration: none; }
       <div class="leader-card">
         <div class="lc-head">
           <span class="lc-stage">Второй этап</span>
-          <img class="lc-roman" src="img/stage-2.svg" alt="" width="22" height="22"/>
+          <span class="lc-roman lc-roman--2" aria-hidden="true"></span>
         </div>
         <h3>Инкубация</h3>
         <p>Развитие инициативы, формирование команды, накопление опыта и&nbsp;компетенций.</p>
@@ -1286,7 +1299,7 @@ a { color: inherit; text-decoration: none; }
       <div class="leader-card">
         <div class="lc-head">
           <span class="lc-stage">Третий этап</span>
-          <img class="lc-roman" src="img/stage-3.svg" alt="" width="22" height="22"/>
+          <span class="lc-roman lc-roman--3" aria-hidden="true"></span>
         </div>
         <h3>Социальное лидерство</h3>
         <p>Запуск новых проектов, масштабирование инициатив, влияние на&nbsp;целые сообщества.</p>
