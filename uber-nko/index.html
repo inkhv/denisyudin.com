@@ -14,32 +14,31 @@
 :root {
   --bg:           #F2F5F9;
   --bg-elev:      #FFFFFF;
-  --surface:     rgba(225, 232, 240, 0.55);
-  --surface-2:    #E8EDF3;
+  --bg-elev-2:    #FAFBFD;
+  --bg-grad-end:  #F4F7FB;
   --line:         rgba(20, 25, 35, 0.09);
   --line-strong:  rgba(20, 25, 35, 0.18);
+  --line-dark:    #131720;
   --text:         #131720;
   --text-soft:    #2C333E;
   --text-muted:   #5C6675;
   --text-faint:   #8893A2;
-  --italic-blue:  #808FB1;
   --accent:       #1A1E27;
   --accent-text:  #FFFFFF;
-  --halo-blue:    #C7D6E6;
-  --halo-blue-2:  #DCE6F1;
-  --sky-1:        #E9F0F7;
-  --sky-2:        #F4F7FB;
-  --radius:       12px;
+  --radius:       6px;
   --radius-lg:    20px;
-  --pad-x:        clamp(20px, 4vw, 56px);
-  --section-y:    clamp(72px, 10vw, 140px);
+  --radius-xl:    60px;
+  --container:    1280px;
+  --pad-x-section: clamp(20px, 5.5vw, 80px);
+  --py-section:   clamp(72px, 10vw, 140px);
+  --py-section-card: clamp(72px, 8.4vw, 120px);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.55;
   color: var(--text);
   background: var(--bg);
@@ -55,31 +54,13 @@ img, svg { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
 
 .serif { font-family: 'IBM Plex Serif', Georgia, serif; }
-.italic { font-style: italic; font-family: 'IBM Plex Serif', Georgia, serif; font-weight: 400; }
 
 .container {
   width: 100%;
-  max-width: 1280px;
+  max-width: var(--container);
   margin: 0 auto;
-  padding-left: var(--pad-x);
-  padding-right: var(--pad-x);
-}
-
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-.eyebrow::before {
-  content: "";
-  width: 28px;
-  height: 1px;
-  background: var(--line-strong);
+  padding-left: var(--pad-x-section);
+  padding-right: var(--pad-x-section);
 }
 
 /* ====== HEADER ====== */
@@ -87,7 +68,7 @@ a { color: inherit; text-decoration: none; }
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(242, 245, 249, 0.78);
+  background: rgba(242, 245, 249, 0.85);
   backdrop-filter: saturate(140%) blur(14px);
   -webkit-backdrop-filter: saturate(140%) blur(14px);
   border-bottom: 1px solid var(--line);
@@ -96,41 +77,20 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 18px;
-  padding-bottom: 18px;
+  height: 76px;
   gap: 32px;
 }
 .logo {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 8px;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 18px;
-  letter-spacing: 0.04em;
-  color: var(--text);
-  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  height: 18px;
+  flex-shrink: 0;
 }
-.logo .accent-pipe {
-  display: inline-block;
-  width: 1px;
-  height: 16px;
-  background: var(--line-strong);
-  align-self: center;
-  margin: 0 2px;
-}
-.logo .italic-mark {
-  font-family: 'IBM Plex Serif', Georgia, serif;
-  font-style: italic;
-  font-weight: 400;
-  font-size: 18px;
-  letter-spacing: 0.02em;
-  color: var(--italic-blue);
-  text-transform: none;
-}
+.logo svg, .logo img { height: 18px; width: auto; }
+
 .nav-links {
   display: flex;
-  gap: 32px;
+  gap: 28px;
   align-items: center;
   font-size: 14px;
   color: var(--text-soft);
@@ -151,20 +111,10 @@ a { color: inherit; text-decoration: none; }
   transition: right .25s ease;
 }
 .nav-links a:hover::after { right: 0; }
-.nav-right { display: flex; align-items: center; gap: 20px; }
+.nav-right { display: flex; align-items: center; gap: 24px; }
 .partner-tag {
   font-size: 12px;
   color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  letter-spacing: 0.01em;
-}
-.partner-tag::before {
-  content: "";
-  width: 1px;
-  height: 14px;
-  background: var(--line-strong);
 }
 
 .btn {
@@ -191,10 +141,13 @@ a { color: inherit; text-decoration: none; }
   background: transparent;
   color: var(--text);
   border-color: var(--line-strong);
+  padding: 13px 22px;
 }
 .btn-ghost:hover { background: rgba(255,255,255,0.6); border-color: var(--text); }
-.btn-arrow svg { width: 14px; height: 14px; transition: transform .2s ease; }
-.btn-arrow:hover svg { transform: translateX(3px); }
+.btn-lg {
+  padding: 14px 26px;
+  font-size: 15px;
+}
 
 @media (max-width: 900px) {
   .nav-links, .partner-tag { display: none; }
@@ -206,32 +159,24 @@ a { color: inherit; text-decoration: none; }
   position: relative;
   padding-top: clamp(60px, 9vw, 110px);
   padding-bottom: clamp(80px, 10vw, 140px);
+  background: var(--bg);
   overflow: hidden;
-}
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: -10% -10% auto -10%;
-  height: 80%;
-  background: radial-gradient(60% 60% at 70% 0%, var(--halo-blue) 0%, transparent 70%),
-              radial-gradient(50% 50% at 10% 30%, var(--halo-blue-2) 0%, transparent 60%);
-  z-index: -1;
-  opacity: 0.55;
-  pointer-events: none;
 }
 .hero-grid {
   display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: clamp(28px, 5vw, 64px);
+  grid-template-columns: 736px 480px;
+  gap: 64px;
   align-items: center;
+  justify-content: space-between;
 }
+.hero-text { max-width: 736px; }
 .hero h1 {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
   letter-spacing: -0.02em;
-  font-size: clamp(40px, 6.2vw, 84px);
+  font-size: clamp(40px, 6vw, 72px);
   line-height: 1.02;
-  margin: 26px 0 28px;
+  margin-bottom: 28px;
   color: var(--text);
 }
 .hero h1 em {
@@ -239,7 +184,7 @@ a { color: inherit; text-decoration: none; }
   font-weight: 400;
 }
 .hero p.lead {
-  font-size: clamp(17px, 1.4vw, 19px);
+  font-size: 18px;
   color: var(--text-soft);
   max-width: 600px;
   margin-bottom: 36px;
@@ -250,14 +195,17 @@ a { color: inherit; text-decoration: none; }
   flex-wrap: wrap;
   gap: 14px;
   align-items: center;
+  margin-bottom: 48px;
+}
+.hero-divider {
+  height: 1px;
+  background: var(--line);
+  margin-bottom: 24px;
 }
 .trust-row {
-  margin-top: 48px;
-  padding-top: 26px;
-  border-top: 1px solid var(--line);
   display: flex;
   flex-wrap: wrap;
-  gap: 18px 28px;
+  gap: 14px 28px;
   font-size: 13px;
   color: var(--text-muted);
 }
@@ -271,117 +219,71 @@ a { color: inherit; text-decoration: none; }
   background: var(--text-muted);
   border-radius: 50%;
   opacity: 0.6;
+  flex-shrink: 0;
 }
 
-/* Hero visual */
 .hero-visual {
   position: relative;
-  aspect-ratio: 4/5;
+  width: 480px;
+  height: 600px;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: linear-gradient(155deg, var(--halo-blue) 0%, var(--sky-2) 60%, var(--halo-blue-2) 100%);
+  background: var(--bg-elev);
   box-shadow: 0 30px 80px -40px rgba(20, 30, 50, 0.35);
 }
-.hero-visual::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(70% 50% at 30% 30%, rgba(255,255,255,0.45) 0%, transparent 60%),
-    radial-gradient(60% 40% at 80% 80%, rgba(180, 200, 220, 0.4) 0%, transparent 60%);
-}
-.photo-meta {
-  position: absolute;
-  inset: auto 0 0 0;
-  padding: 18px 22px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  color: var(--text);
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  z-index: 2;
-}
-.photo-meta .sticker {
-  background: var(--accent);
-  color: var(--accent-text);
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-weight: 500;
-}
-.placeholder-icon {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
-}
-.placeholder-icon svg {
-  width: 56px;
-  height: 56px;
-  opacity: 0.3;
-}
-.placeholder-note {
-  position: absolute;
-  top: 22px;
-  left: 22px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255,255,255,0.65);
-  backdrop-filter: blur(6px);
-  padding: 7px 14px;
-  border-radius: 999px;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text);
-  z-index: 2;
-  border: 1px solid rgba(255,255,255,0.8);
-}
-.placeholder-note .pulse {
-  width: 6px; height: 6px;
-  background: var(--accent);
-  border-radius: 50%;
-  animation: pulse 1.6s infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 0.4; }
-  50%      { opacity: 1; transform: scale(1.3); }
+.hero-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
+@media (max-width: 1200px) {
+  .hero-grid { grid-template-columns: 1.2fr 1fr; }
+  .hero-visual { width: 100%; height: auto; aspect-ratio: 4/5; }
+}
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; }
   .hero-visual { max-width: 560px; }
 }
 
-/* ====== MANIFESTO ====== */
-.manifesto {
-  padding: var(--section-y) 0;
-  border-top: 1px solid var(--line);
-  position: relative;
+/* ====== Elevated card sections ====== */
+.section-card {
+  background: var(--bg-elev);
+  border-radius: var(--radius-xl);
+  padding: var(--py-section-card) var(--pad-x-section);
+  margin: 0;
 }
+.section-plain {
+  background: var(--bg);
+  padding: var(--py-section) var(--pad-x-section);
+}
+.section-content {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+}
+
+/* ====== MANIFESTO ====== */
 .manifesto-grid {
   display: grid;
-  grid-template-columns: 0.7fr 1.3fr;
-  gap: clamp(24px, 5vw, 80px);
+  grid-template-columns: 380px 1fr;
+  gap: 80px;
   align-items: start;
 }
 .manifesto-grid .col-left h2 {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
-  font-size: clamp(28px, 3vw, 40px);
-  line-height: 1.15;
+  font-size: clamp(28px, 3.2vw, 36px);
+  line-height: 1.17;
   letter-spacing: -0.015em;
 }
 .manifesto-grid .col-left h2 em { font-style: italic; }
 .manifesto-grid .col-right p {
-  font-size: clamp(18px, 1.5vw, 22px);
-  line-height: 1.5;
-  color: var(--text);
+  font-family: 'Inter', sans-serif;
   font-weight: 300;
+  font-size: clamp(20px, 1.8vw, 24px);
+  line-height: 1.45;
+  color: var(--text);
 }
 .manifesto-grid .col-right .pullquote {
   font-family: 'IBM Plex Serif', Georgia, serif;
@@ -389,33 +291,30 @@ a { color: inherit; text-decoration: none; }
   font-weight: 300;
   font-size: clamp(22px, 2.2vw, 30px);
   color: var(--text);
-  line-height: 1.35;
+  line-height: 1.3;
   padding: 28px 0;
-  margin: 32px 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  margin: 24px 0;
+  border-top: 1px solid var(--line-dark);
+  border-bottom: 1px solid var(--line-dark);
+}
+.manifesto-grid .col-right .pullquote + p { margin-top: 0; }
+
+@media (max-width: 900px) {
+  .manifesto-grid { grid-template-columns: 1fr; gap: 32px; }
 }
 
-@media (max-width: 800px) {
-  .manifesto-grid { grid-template-columns: 1fr; gap: 30px; }
-}
-
-/* ====== WHAT WE DO ====== */
-.what {
-  padding: var(--section-y) 0;
-  border-top: 1px solid var(--line);
-}
+/* ====== Section head (used in 04, 05) ====== */
 .section-head {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 700px 1fr;
   gap: 40px;
-  align-items: end;
-  margin-bottom: clamp(40px, 6vw, 80px);
+  align-items: start;
+  margin-bottom: 70px;
 }
 .section-head h2 {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
-  font-size: clamp(36px, 5vw, 64px);
+  font-size: clamp(36px, 4.8vw, 56px);
   letter-spacing: -0.02em;
   line-height: 1.05;
 }
@@ -423,29 +322,27 @@ a { color: inherit; text-decoration: none; }
 .section-head .head-aside {
   font-size: 16px;
   color: var(--text-soft);
-  max-width: 380px;
   line-height: 1.55;
-  justify-self: end;
+  max-width: 380px;
+  align-self: end;
+  padding-bottom: 6px;
 }
-@media (max-width: 760px) {
-  .section-head { grid-template-columns: 1fr; gap: 16px; }
-  .section-head .head-aside { justify-self: start; }
+@media (max-width: 900px) {
+  .section-head { grid-template-columns: 1fr; gap: 16px; margin-bottom: 40px; }
 }
 
+/* ====== WHAT WE DO ====== */
 .what-list {
   border-top: 1px solid var(--line-strong);
 }
 .what-item {
   display: grid;
-  grid-template-columns: 80px 1.2fr 1.8fr;
+  grid-template-columns: 80px 400px 1fr;
   gap: 30px;
   align-items: start;
   padding: 32px 0;
   border-bottom: 1px solid var(--line);
-  position: relative;
-  transition: background .2s ease;
 }
-.what-item:hover { background: linear-gradient(90deg, rgba(255,255,255,0.4), transparent 70%); }
 .what-num {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-style: italic;
@@ -456,7 +353,7 @@ a { color: inherit; text-decoration: none; }
 .what-title {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
-  font-size: clamp(20px, 2vw, 26px);
+  font-size: 24px;
   letter-spacing: -0.01em;
   line-height: 1.2;
 }
@@ -465,271 +362,241 @@ a { color: inherit; text-decoration: none; }
   color: var(--text-soft);
   line-height: 1.55;
 }
-@media (max-width: 800px) {
+@media (max-width: 900px) {
   .what-item { grid-template-columns: 1fr; gap: 8px; padding: 24px 0; }
   .what-num { font-size: 18px; }
 }
 
 /* ====== AUDIENCE ====== */
-.audience {
-  padding: var(--section-y) 0;
-  border-top: 1px solid var(--line);
-  background: linear-gradient(180deg, var(--bg) 0%, var(--sky-2) 100%);
-}
 .audience-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
 }
-.persona {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
 .persona-img {
-  aspect-ratio: 3/4;
-  border-radius: 14px;
-  background: linear-gradient(160deg, var(--halo-blue-2) 0%, var(--sky-2) 100%);
-  position: relative;
+  width: 100%;
+  height: 380px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 12px 36px -22px rgba(20, 30, 50, 0.4);
+  background: var(--bg-elev-2);
+  margin-bottom: 24px;
 }
-.persona-img.warm { background: linear-gradient(155deg, #DFE6EF 0%, #C7D3E0 100%); }
-.persona-img.cool { background: linear-gradient(165deg, #E2EAF3 0%, #C8D6E5 100%); }
-.persona-img.mid  { background: linear-gradient(150deg, #DDE6EF 0%, #B9C8D9 100%); }
-.persona-img.soft { background: linear-gradient(170deg, #EAEFF5 0%, #CDD9E6 100%); }
-
-.persona-img::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(40% 30% at 50% 35%, rgba(255,255,255,0.45) 0%, transparent 60%),
-    radial-gradient(60% 40% at 30% 80%, rgba(180, 195, 215, 0.5) 0%, transparent 60%);
-}
-.persona-img .silhouette {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-.persona-img .silhouette svg {
-  width: 65%;
-  height: auto;
-  opacity: 0.35;
-  fill: var(--text);
+.persona-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .persona-meta h3 {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
-  font-size: 22px;
+  font-size: 24px;
   letter-spacing: -0.01em;
-  margin-bottom: 8px;
+  line-height: 1.15;
+  margin-bottom: 12px;
 }
 .persona-meta p {
   font-size: 14px;
   color: var(--text-muted);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
-@media (max-width: 900px) { .audience-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 500px) { .audience-grid { grid-template-columns: 1fr; } }
+@media (max-width: 1100px) { .audience-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .audience-grid { grid-template-columns: 1fr; } .persona-img { height: 320px; } }
 
 /* ====== PROCESS / TIMELINE ====== */
-.process {
-  padding: var(--section-y) 0;
-  border-top: 1px solid var(--line);
-}
 .process-grid {
   display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: clamp(28px, 5vw, 80px);
+  grid-template-columns: 580px 1fr;
+  gap: 80px;
   align-items: start;
-}
-.process-grid .col-left {
-  position: sticky;
-  top: 100px;
 }
 .process-grid .col-left h2 {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
-  font-size: clamp(36px, 4vw, 56px);
+  font-size: clamp(36px, 4.2vw, 58px);
   letter-spacing: -0.02em;
-  line-height: 1.05;
-  margin: 18px 0 24px;
+  line-height: 1.08;
+  margin-bottom: 24px;
 }
 .process-grid .col-left h2 em { font-style: italic; }
 .process-grid .col-left p {
-  font-size: 16px;
+  font-size: 15px;
   color: var(--text-soft);
-  max-width: 380px;
+  max-width: 420px;
   line-height: 1.55;
 }
 
-.steps { position: relative; }
+.steps { position: relative; padding-top: 0; }
 .steps::before {
   content: "";
   position: absolute;
-  left: 12px;
-  top: 6px;
-  bottom: 0;
+  left: 19.5px;
+  top: 20px;
+  bottom: 20px;
   width: 1px;
-  background: linear-gradient(180deg, var(--line-strong) 0%, var(--line) 100%);
+  background: rgba(20, 25, 35, 0.2);
 }
 .step {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  margin-bottom: 40px;
   position: relative;
-  padding-left: 56px;
-  padding-bottom: 40px;
 }
-.step:last-child { padding-bottom: 0; }
-.step-marker {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 26px;
-  height: 26px;
-  background: var(--bg);
-  border: 1px solid var(--line-strong);
-  border-radius: 50%;
+.step:last-child { margin-bottom: 0; }
+.step-indicator {
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text);
-  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
-.step:last-child .step-marker {
+.step-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid rgba(20, 25, 35, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+.step:last-child .step-circle {
   background: var(--accent);
   color: var(--accent-text);
   border-color: var(--accent);
 }
+.step-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
 .step-title {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
-  font-size: 22px;
-  letter-spacing: -0.01em;
-  margin-bottom: 8px;
+  font-size: 26px;
+  letter-spacing: -0.008em;
+  line-height: 1.2;
 }
 .step-desc {
   font-size: 15px;
-  color: var(--text-muted);
+  color: var(--text-soft);
   line-height: 1.55;
 }
 .step-stat {
-  display: inline-block;
-  margin-top: 12px;
-  font-size: 12px;
-  letter-spacing: 0.08em;
+  margin-top: 8px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
-@media (max-width: 800px) {
-  .process-grid { grid-template-columns: 1fr; }
-  .process-grid .col-left { position: static; }
+@media (max-width: 900px) {
+  .process-grid { grid-template-columns: 1fr; gap: 32px; }
 }
 
 /* ====== IMPACT NUMBERS ====== */
-.impact {
-  padding: var(--section-y) 0;
-  border-top: 1px solid var(--line);
-  background: var(--bg-elev);
+.impact-top {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-bottom: 80px;
 }
-.impact-head {
-  margin-bottom: clamp(40px, 6vw, 64px);
-}
-.impact-head h2 {
+.impact-top h2 {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
-  font-size: clamp(32px, 4vw, 52px);
-  letter-spacing: -0.02em;
-  margin-top: 18px;
-  margin-bottom: 18px;
-  max-width: 1000px;
-  line-height: 1.1;
+  font-size: clamp(36px, 4.5vw, 64px);
+  letter-spacing: -0.024em;
+  line-height: 1.08;
+  max-width: 1100px;
 }
-.impact-head h2 em { font-style: italic; }
-.impact-head p {
-  font-size: 17px;
+.impact-top h2 em { font-style: italic; }
+.impact-top p {
+  font-size: 16px;
   color: var(--text-soft);
   max-width: 640px;
-  line-height: 1.55;
+  line-height: 1.6;
+}
+.impact-divider {
+  height: 1px;
+  background: rgba(20, 25, 35, 0.14);
+  margin-bottom: 56px;
 }
 .numbers {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0;
-  border-top: 1px solid var(--line-strong);
+  gap: 40px;
 }
 .num-block {
-  padding: 36px 28px 28px 0;
-  border-bottom: 1px solid var(--line);
-  border-right: 1px solid var(--line);
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
-.num-block:last-child { border-right: 0; }
-.num-block .num-label {
-  font-size: 11px;
+.num-label {
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-muted);
-  margin-bottom: 18px;
+  font-weight: 500;
 }
-.num-block .num-value {
+.num-value {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 300;
-  font-size: clamp(56px, 7vw, 96px);
-  line-height: 1;
+  font-size: clamp(64px, 8vw, 112px);
+  line-height: 0.95;
   letter-spacing: -0.035em;
   color: var(--text);
-  margin-bottom: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
 }
-.num-block .num-value sup {
-  font-size: 0.4em;
-  vertical-align: super;
-  margin-left: 4px;
-  color: var(--text-muted);
+.num-value .suffix {
+  font-size: 0.36em;
   font-weight: 300;
+  line-height: 1;
+  color: var(--text-soft);
+  letter-spacing: -0.01em;
 }
-.num-block .num-desc {
+.num-desc {
   font-size: 14px;
-  color: var(--text-muted);
-  line-height: 1.5;
-  max-width: 320px;
+  color: var(--text-soft);
+  line-height: 1.55;
+  max-width: 360px;
 }
-@media (max-width: 800px) {
-  .numbers { grid-template-columns: 1fr; }
-  .num-block { padding-right: 0; border-right: 0; }
+@media (max-width: 900px) {
+  .numbers { grid-template-columns: 1fr; gap: 32px; }
 }
 
 /* ====== LEADER PATH ====== */
-.leader {
-  padding: var(--section-y) 0;
-  border-top: 1px solid var(--line);
+.leader-top {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 64px;
 }
-.leader-head {
-  margin-bottom: clamp(40px, 6vw, 64px);
-}
-.leader-head h2 {
+.leader-top h2 {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
-  font-size: clamp(40px, 5vw, 72px);
+  font-size: clamp(40px, 5.2vw, 72px);
   letter-spacing: -0.025em;
-  margin-top: 18px;
-  margin-bottom: 18px;
-  line-height: 1.05;
+  line-height: 1.06;
 }
-.leader-head h2 em {
-  font-style: italic;
-  color: var(--italic-blue);
-}
-.leader-head p {
-  font-size: 16px;
+.leader-top h2 em { font-style: italic; }
+.leader-top p {
+  font-size: 15px;
   color: var(--text-soft);
   max-width: 520px;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 .leader-cards {
   display: grid;
@@ -737,45 +604,43 @@ a { color: inherit; text-decoration: none; }
   gap: 24px;
 }
 .leader-card {
-  background: var(--bg-elev);
-  border: 1px solid var(--line);
-  border-radius: 6px;
+  background: var(--bg-elev-2);
+  border: 1px solid rgba(20, 25, 35, 0.06);
+  border-radius: 4px;
   padding: 36px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
   transition: transform .2s ease, box-shadow .2s ease;
 }
 .leader-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 48px -28px rgba(20, 30, 50, 0.18);
+  box-shadow: 0 16px 48px -28px rgba(20, 30, 50, 0.2);
 }
-.leader-card .lc-head {
+.lc-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 36px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  color: var(--text-muted);
 }
-.leader-card .lc-stage {
+.lc-stage {
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--text-muted);
-  font-weight: 500;
 }
-.leader-card .lc-roman {
-  font-family: 'IBM Plex Serif', Georgia, serif;
-  font-size: 22px;
-  color: var(--text-faint);
-  opacity: 0.55;
-  letter-spacing: 0.04em;
+.lc-roman {
+  font-size: 16px;
+  letter-spacing: 0.16em;
 }
 .leader-card h3 {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
-  font-size: 26px;
-  letter-spacing: -0.01em;
-  line-height: 1.2;
+  font-size: 28px;
+  letter-spacing: -0.008em;
+  line-height: 1.18;
+  margin-bottom: 16px;
 }
 .leader-card p {
   font-size: 14px;
@@ -788,84 +653,91 @@ a { color: inherit; text-decoration: none; }
 
 /* ====== DONATE ====== */
 .donate {
-  padding: var(--section-y) 0;
-  background: linear-gradient(180deg, var(--bg-elev) 0%, var(--sky-1) 100%);
-  border-top: 1px solid var(--line);
-  position: relative;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-grad-end) 100%);
+  padding: var(--py-section-card) var(--pad-x-section);
 }
 .donate-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(32px, 5vw, 72px);
+  grid-template-columns: 1fr 520px;
+  gap: 80px;
   align-items: start;
 }
 .donate-left h2 {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
-  font-size: clamp(36px, 4.5vw, 56px);
+  font-size: clamp(36px, 4.4vw, 52px);
   letter-spacing: -0.02em;
-  line-height: 1.08;
-  margin: 18px 0 24px;
+  line-height: 1.05;
+  margin-bottom: 24px;
 }
-.donate-left h2 em { font-style: italic; }
-.donate-left p {
-  font-size: 16px;
+.donate-left p.intro {
+  font-size: 17px;
   color: var(--text-soft);
-  max-width: 540px;
-  margin-bottom: 36px;
-  line-height: 1.6;
+  line-height: 1.55;
+  max-width: 680px;
+  margin-bottom: 44px;
 }
 .donate-bullets {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 .donate-bullets li {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--text-soft);
-  line-height: 1.5;
+  line-height: 1.45;
 }
 .donate-bullets li::before {
   content: "·";
+  width: 16px;
+  height: 16px;
+  background: var(--accent);
+  color: var(--accent-text);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
   font-weight: 700;
-  font-size: 22px;
   line-height: 1;
-  color: var(--text);
   flex-shrink: 0;
-  margin-top: -2px;
+  padding-bottom: 3px;
 }
 
 .donate-form {
   background: var(--bg-elev);
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-lg);
-  padding: clamp(28px, 3vw, 36px);
-  box-shadow: 0 30px 80px -50px rgba(20,30,50,0.35), 0 1px 0 rgba(255,255,255,0.6) inset;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
-.donate-form .form-title {
+.form-title {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
-  font-size: 28px;
-  letter-spacing: -0.01em;
-  margin-bottom: 8px;
+  font-size: 26px;
+  letter-spacing: -0.005em;
   line-height: 1.2;
+  margin-bottom: 8px;
 }
-.donate-form .form-sub {
+.form-sub {
   font-size: 13px;
   color: var(--text-muted);
+  line-height: 1.4;
   margin-bottom: 28px;
-  letter-spacing: 0.02em;
 }
 .form-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
   font-size: 11px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-muted);
-  font-weight: 500;
   margin-bottom: 12px;
   display: block;
 }
@@ -876,10 +748,13 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: 12px;
 }
 .amount-btn {
-  padding: 14px 8px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: 1px solid var(--line-strong);
-  border-radius: 8px;
+  border-radius: 22px;
   font-family: inherit;
   font-size: 14px;
   font-weight: 500;
@@ -887,7 +762,7 @@ a { color: inherit; text-decoration: none; }
   cursor: pointer;
   transition: all .15s ease;
 }
-.amount-btn:hover { background: var(--surface-2); }
+.amount-btn:hover { background: rgba(20, 25, 35, 0.04); }
 .amount-btn.active {
   background: var(--accent);
   color: var(--accent-text);
@@ -899,14 +774,23 @@ a { color: inherit; text-decoration: none; }
 }
 .amount-custom input, .email-input input {
   width: 100%;
-  padding: 16px 50px 16px 18px;
+  height: 56px;
+  padding: 0 50px 0 18px;
   border: 1px solid var(--line-strong);
-  border-radius: 8px;
+  border-radius: 28px;
   background: var(--bg-elev);
   font-family: inherit;
   font-size: 15px;
   color: var(--text);
   transition: border-color .2s ease;
+}
+.email-input input {
+  height: 52px;
+  border-radius: 26px;
+  padding-right: 18px;
+}
+.amount-custom input::placeholder, .email-input input::placeholder {
+  color: var(--text-faint);
 }
 .amount-custom input:focus, .email-input input:focus {
   outline: none;
@@ -920,14 +804,14 @@ a { color: inherit; text-decoration: none; }
   color: var(--text-muted);
   font-size: 15px;
   font-weight: 500;
+  pointer-events: none;
 }
-.email-input input { padding-right: 18px; }
 
 .form-check {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 12px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
   font-size: 13px;
   color: var(--text-soft);
   cursor: pointer;
@@ -936,139 +820,154 @@ a { color: inherit; text-decoration: none; }
 .form-check input {
   width: 16px;
   height: 16px;
-  margin-top: 2px;
-  accent-color: var(--accent);
   flex-shrink: 0;
+  accent-color: var(--accent);
+  border-radius: 3px;
 }
 .form-check a { text-decoration: underline; }
 
-.donate-form .big-cta {
+.big-cta {
   width: 100%;
+  height: 60px;
+  border-radius: 30px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  padding: 20px;
-  font-size: 15px;
-  margin-top: 14px;
+  gap: 8px;
+  cursor: pointer;
+  border: none;
+  margin-top: 24px;
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+.big-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 36px -12px rgba(20,25,35,0.5);
 }
 .donate-fineprint {
   margin-top: 14px;
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--text-faint);
   text-align: center;
 }
 
-@media (max-width: 850px) { .donate-grid { grid-template-columns: 1fr; } }
-@media (max-width: 480px) { .amount-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 950px) {
+  .donate-grid { grid-template-columns: 1fr; gap: 40px; }
+}
+@media (max-width: 480px) {
+  .amount-grid { grid-template-columns: repeat(2, 1fr); }
+}
 
 /* ====== FOOTER ====== */
 .footer {
   background: var(--accent);
   color: var(--accent-text);
-  padding: clamp(56px, 8vw, 96px) 0 36px;
+  padding: 100px var(--pad-x-section) 56px;
 }
-.footer .container { max-width: 1280px; }
+.footer-content { max-width: var(--container); margin: 0 auto; }
 .footer-top {
   display: grid;
-  grid-template-columns: 2.4fr 1fr 1fr;
-  gap: 40px;
-  padding-bottom: 56px;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
+  grid-template-columns: 1fr 180px 180px;
+  gap: 80px;
+  align-items: start;
+  padding-bottom: 60px;
 }
-.footer-brand .f-logo {
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 22px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  margin-bottom: 24px;
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-.footer-brand .f-logo .italic-mark {
-  font-family: 'IBM Plex Serif', Georgia, serif;
-  font-style: italic;
-  font-weight: 400;
-  font-size: 22px;
-  letter-spacing: 0.02em;
-  color: var(--italic-blue);
-  text-transform: none;
-}
-.footer-brand .f-logo .pipe {
-  width: 1px;
-  height: 18px;
-  background: rgba(255,255,255,0.25);
-  align-self: center;
-  margin: 0 2px;
-}
-.footer-brand .f-tag {
-  font-size: 14px;
-  color: rgba(255,255,255,0.7);
-  line-height: 1.6;
-  max-width: 460px;
-  margin-bottom: 36px;
-}
-.scb-line {
-  margin-top: 8px;
-}
-.scb-line .scb-mark {
-  display: inline-block;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.45);
-  margin-bottom: 8px;
-}
-.scb-line .scb-text {
-  font-size: 14px;
-  color: rgba(255,255,255,0.7);
-  line-height: 1.55;
-  max-width: 460px;
-}
-.footer-col h4 {
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
-  font-weight: 500;
-  margin-bottom: 22px;
-}
-.footer-col ul {
-  list-style: none;
+.footer-brand {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 24px;
+  max-width: 600px;
 }
-.footer-col a, .footer-col li {
+.footer-brand .f-logo {
+  height: 22px;
+  display: flex;
+  align-items: center;
+}
+.footer-brand .f-logo img,
+.footer-brand .f-logo svg { height: 22px; width: auto; }
+.footer-brand .f-tagline {
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 22px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 480px;
+}
+.footer-brand .scb-block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+.footer-brand .scb-logo {
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+.footer-brand .scb-logo img,
+.footer-brand .scb-logo svg { height: 24px; width: auto; }
+.footer-brand .scb-text {
   font-size: 14px;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.6;
+  max-width: 480px;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.footer-col h4 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 4px;
+}
+.footer-col a, .footer-col li, .footer-col span {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
   transition: color .15s;
 }
 .footer-col a:hover { color: #fff; }
-.footer-legal {
-  padding-top: 32px;
+
+.footer-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0 0 32px;
+}
+.footer-bottom {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   gap: 16px;
   font-size: 12px;
-  color: rgba(255,255,255,0.5);
-  letter-spacing: 0.02em;
 }
-.footer-legal-right {
+.footer-bottom-left {
+  color: rgba(255, 255, 255, 0.45);
+}
+.footer-bottom-right {
   display: flex;
-  flex-wrap: wrap;
-  gap: 28px;
+  gap: 24px;
+  color: rgba(255, 255, 255, 0.55);
 }
-.footer-legal-right a { transition: color .15s; }
-.footer-legal-right a:hover { color: rgba(255,255,255,0.85); }
+.footer-bottom-right a { transition: color .15s; }
+.footer-bottom-right a:hover { color: #fff; }
 
 @media (max-width: 900px) {
-  .footer-top { grid-template-columns: 1fr 1fr; }
+  .footer-top { grid-template-columns: 1fr; gap: 40px; }
 }
 @media (max-width: 600px) {
-  .footer-top { grid-template-columns: 1fr; }
-  .footer-legal { flex-direction: column; align-items: flex-start; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
 }
 
 /* ====== FLOATING CTA ====== */
@@ -1109,10 +1008,8 @@ a { color: inherit; text-decoration: none; }
 <!-- ====== HEADER ====== -->
 <header class="header">
   <div class="container header-inner">
-    <a href="#top" class="logo">
-      UBER
-      <span class="accent-pipe"></span>
-      <span class="italic-mark">нко</span>
+    <a href="#top" class="logo" aria-label="UBER НКО">
+      <img src="img/logo-uber-nko.svg" alt="UBER НКО" height="18"/>
     </a>
     <nav class="nav-links">
       <a href="#idea">Идея</a>
@@ -1132,22 +1029,13 @@ a { color: inherit; text-decoration: none; }
   <div class="container">
     <div class="hero-grid">
       <div class="hero-text">
-        <span class="eyebrow">Новый институт благотворительности · 2026</span>
-        <h1>
-          Превращаем&nbsp;<em>желание</em> помогать
-          в&nbsp;реальные проекты
-        </h1>
+        <h1>Превращаем <em>желание&nbsp;помогать</em>&nbsp;в реальные проекты</h1>
         <p class="lead">Запустите своё социальное дело без бюрократии, юридических барьеров и&nbsp;операционной работы. Мы&nbsp;берём на&nbsp;себя инфраструктуру, вы&nbsp;остаётесь с&nbsp;идеей.</p>
         <div class="hero-cta">
-          <a href="#donate" class="btn btn-primary">
-            Поддержать проект
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
-          <a href="#idea" class="btn btn-ghost btn-arrow">
-            Узнать больше
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
+          <a href="#donate" class="btn btn-primary btn-lg">Поддержать проект</a>
+          <a href="#idea" class="btn btn-ghost btn-lg">Узнать больше&nbsp;→</a>
         </div>
+        <div class="hero-divider"></div>
         <div class="trust-row">
           <div class="item"><span class="dot"></span>При поддержке Совкомбанка</div>
           <div class="item"><span class="dot"></span>Юридически защищённая инфраструктура</div>
@@ -1155,29 +1043,21 @@ a { color: inherit; text-decoration: none; }
         </div>
       </div>
       <div class="hero-visual">
-        <span class="placeholder-note"><span class="pulse"></span>Фото · заменить</span>
-        <div class="placeholder-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-5.5"/></svg>
-        </div>
-        <div class="photo-meta">
-          <span>Реальный кадр · наставник и подопечный</span>
-          <span class="sticker">01/04</span>
-        </div>
+        <img src="img/hero.jpg" alt="Социальные проекты UBER НКО" loading="eager"/>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ====== MANIFESTO ====== -->
-<section class="manifesto" id="idea">
-  <div class="container">
+<section class="section-card" id="idea">
+  <div class="section-content">
     <div class="manifesto-grid">
       <div class="col-left">
-        <span class="eyebrow">Идея</span>
-        <h2 style="margin-top:18px">Желание помогать <em>есть у&nbsp;каждого</em>. Инфраструктура&nbsp;— нет.</h2>
+        <h2>Желание помогать <em>есть у&nbsp;каждого.&nbsp;</em>Инфраструктура&nbsp;— нет.</h2>
       </div>
       <div class="col-right">
-        <p>Тысячи людей хотят делать полезные проекты — помогать людям, животным, своему городу. Но&nbsp;большинство не&nbsp;знает, как начать. Запуск НКО, отчётность, юридические тонкости, прозрачные сборы&nbsp;— всё это останавливает раньше, чем появляется первый проект.</p>
+        <p>Тысячи людей хотят делать полезные проекты&nbsp;— помогать людям, животным, своему городу. Но&nbsp;большинство не&nbsp;знает, как начать. Запуск НКО, отчётность, юридические тонкости, прозрачные сборы&nbsp;— всё это останавливает раньше, чем появляется первый проект.</p>
         <div class="pullquote">UBER НКО берёт операционную часть на&nbsp;себя. Вы&nbsp;остаётесь с&nbsp;идеей и&nbsp;людьми, которым она нужна.</div>
         <p>Это не&nbsp;ещё один фонд&nbsp;— это инкубатор инициатив и&nbsp;фабрика социальных лидеров. Каждый запущенный проект становится моделью для следующего.</p>
       </div>
@@ -1186,10 +1066,10 @@ a { color: inherit; text-decoration: none; }
 </section>
 
 <!-- ====== WHAT WE DO ====== -->
-<section class="what" id="what">
-  <div class="container">
+<section class="section-plain" id="what">
+  <div class="section-content">
     <div class="section-head">
-      <h2>Что мы берём <em>на&nbsp;себя</em></h2>
+      <h2>Что мы <em>берём<br/>на&nbsp;себя</em></h2>
       <p class="head-aside">Фонд и&nbsp;комплексная инфраструктура поддержки социальных инициатив. Позволяет запустить проект без создания отдельного юридического лица.</p>
     </div>
     <div class="what-list">
@@ -1211,59 +1091,43 @@ a { color: inherit; text-decoration: none; }
       <div class="what-item">
         <div class="what-num">/04</div>
         <div class="what-title">Операционное сопровождение</div>
-        <div class="what-desc">Полная поддержка на&nbsp;каждом этапе: от&nbsp;запуска до&nbsp;отчётности. Вы&nbsp;фокусируетесь на&nbsp;идее&nbsp;— мы&nbsp;берём остальное.</div>
+        <div class="what-desc">Полная поддержка на&nbsp;каждом этапе: от&nbsp;запуска до&nbsp;отчётности. Вы&nbsp;фокусируетесь на&nbsp;идее, мы&nbsp;берём остальное.</div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ====== AUDIENCE ====== -->
-<section class="audience" id="for-whom">
-  <div class="container">
+<section class="section-card" id="for-whom">
+  <div class="section-content">
     <div class="section-head">
-      <h2>Для&nbsp;кого <em>этот проект</em></h2>
+      <h2>Для&nbsp;кого<br/><em>этот&nbsp;проект</em></h2>
       <p class="head-aside">Не&nbsp;важно, есть&nbsp;ли у&nbsp;вас опыт в&nbsp;некоммерческом секторе. Нужны только идея и&nbsp;желание действовать.</p>
     </div>
     <div class="audience-grid">
       <div class="persona">
-        <div class="persona-img warm">
-          <div class="silhouette" aria-hidden="true">
-            <svg viewBox="0 0 100 130"><path d="M50 30 C 40 30 35 38 35 48 C 35 58 40 65 50 65 C 60 65 65 58 65 48 C 65 38 60 30 50 30 M 25 130 C 25 95 35 80 50 80 C 65 80 75 95 75 130"/></svg>
-          </div>
-        </div>
+        <div class="persona-img"><img src="img/persona-01.jpg" alt="Волонтёры и активисты" loading="lazy"/></div>
         <div class="persona-meta">
           <h3>Волонтёры и&nbsp;активисты</h3>
           <p>Люди с&nbsp;энергией и&nbsp;желанием менять мир вокруг себя.</p>
         </div>
       </div>
       <div class="persona">
-        <div class="persona-img cool">
-          <div class="silhouette" aria-hidden="true">
-            <svg viewBox="0 0 100 130"><path d="M40 28 C 32 28 28 34 28 44 C 28 54 32 60 40 60 C 48 60 52 54 52 44 C 52 34 48 28 40 28 M 60 38 C 54 38 52 44 52 52 C 52 60 54 64 60 64 C 66 64 68 60 68 52 C 68 44 66 38 60 38 M 15 130 C 15 95 25 78 40 78 C 55 78 65 95 65 130 M 50 130 C 50 95 55 80 60 80 C 65 80 78 95 78 130"/></svg>
-          </div>
-        </div>
+        <div class="persona-img"><img src="img/persona-02.jpg" alt="Родители и педагоги" loading="lazy"/></div>
         <div class="persona-meta">
           <h3>Родители и&nbsp;педагоги</h3>
           <p>Родители детей с&nbsp;особенностями, учителя, тренеры и&nbsp;наставники.</p>
         </div>
       </div>
       <div class="persona">
-        <div class="persona-img mid">
-          <div class="silhouette" aria-hidden="true">
-            <svg viewBox="0 0 100 130"><path d="M50 30 C 40 30 35 38 35 48 C 35 58 40 65 50 65 C 60 65 65 58 65 48 C 65 38 60 30 50 30 M 25 130 L 25 95 C 25 85 32 80 50 80 C 68 80 75 85 75 95 L 75 130"/></svg>
-          </div>
-        </div>
+        <div class="persona-img"><img src="img/persona-03.jpg" alt="Предприниматели" loading="lazy"/></div>
         <div class="persona-meta">
           <h3>Предприниматели</h3>
           <p>Те, кто хочет направить ресурсы и&nbsp;опыт на&nbsp;решение социальных задач.</p>
         </div>
       </div>
       <div class="persona">
-        <div class="persona-img soft">
-          <div class="silhouette" aria-hidden="true">
-            <svg viewBox="0 0 100 130"><path d="M30 30 C 22 30 18 36 18 44 C 18 52 22 58 30 58 C 38 58 42 52 42 44 C 42 36 38 30 30 30 M 70 32 C 62 32 58 38 58 46 C 58 54 62 60 70 60 C 78 60 82 54 82 46 C 82 38 78 32 70 32 M 5 130 C 5 100 12 80 30 80 C 48 80 50 100 50 130 M 50 130 C 50 100 55 80 70 80 C 88 80 95 100 95 130"/></svg>
-          </div>
-        </div>
+        <div class="persona-img"><img src="img/persona-04.jpg" alt="Жители городов" loading="lazy"/></div>
         <div class="persona-meta">
           <h3>Жители городов</h3>
           <p>Активные граждане, готовые улучшать жизнь в&nbsp;своём районе и&nbsp;сообществе.</p>
@@ -1274,44 +1138,53 @@ a { color: inherit; text-decoration: none; }
 </section>
 
 <!-- ====== PROCESS ====== -->
-<section class="process" id="process">
-  <div class="container">
+<section class="section-plain" id="process">
+  <div class="section-content">
     <div class="process-grid">
       <div class="col-left">
-        <span class="eyebrow">Как работает</span>
-        <h2>Путь от&nbsp;идеи до&nbsp;реализации&nbsp;— <em>простой</em> и&nbsp;поддерживаемый на&nbsp;каждом шаге.</h2>
+        <h2>Путь от&nbsp;идеи<br/>до&nbsp;реализации&nbsp;—<br/><em>простой</em><br/>и&nbsp;поддерживаемый<br/>на&nbsp;каждом шаге.</h2>
         <p>Вы&nbsp;приходите с&nbsp;идеей или желанием помочь. Дальше&nbsp;— наша работа: всё, что мешает вам делать, мы&nbsp;закроем со&nbsp;своей стороны.</p>
       </div>
       <div class="steps">
         <div class="step">
-          <div class="step-marker">01</div>
-          <div class="step-title">Приходит с&nbsp;идеей</div>
-          <div class="step-desc">Человек обращается в&nbsp;фонд с&nbsp;желанием помочь конкретной аудитории или с&nbsp;готовой идеей проекта.</div>
-          <span class="step-stat">5&nbsp;минут — заявка онлайн</span>
+          <div class="step-indicator"><div class="step-circle">01</div></div>
+          <div class="step-content">
+            <div class="step-title">Приходит с&nbsp;идеей</div>
+            <div class="step-desc">Человек обращается в&nbsp;фонд с&nbsp;желанием помочь конкретной аудитории или с&nbsp;готовой идеей проекта.</div>
+            <span class="step-stat">5 минут — заявка онлайн</span>
+          </div>
         </div>
         <div class="step">
-          <div class="step-marker">02</div>
-          <div class="step-title">Обсуждает с&nbsp;экспертом</div>
-          <div class="step-desc">Команда фонда помогает уточнить формат, цель и&nbsp;аудиторию проекта. Выдаёт первичный план действий.</div>
-          <span class="step-stat">3–7&nbsp;дней</span>
+          <div class="step-indicator"><div class="step-circle">02</div></div>
+          <div class="step-content">
+            <div class="step-title">Обсуждает с&nbsp;экспертом</div>
+            <div class="step-desc">Команда фонда помогает уточнить формат, цель и&nbsp;аудиторию проекта. Выдаёт первичный план действий.</div>
+            <span class="step-stat">3–7 дней</span>
+          </div>
         </div>
         <div class="step">
-          <div class="step-marker">03</div>
-          <div class="step-title">Формирует проект</div>
-          <div class="step-desc">С&nbsp;помощью экспертов структурирует идею, рассчитывает бюджет, готовится к&nbsp;запуску. Юр-часть&nbsp;— на&nbsp;нас.</div>
-          <span class="step-stat">2–4&nbsp;недели</span>
+          <div class="step-indicator"><div class="step-circle">03</div></div>
+          <div class="step-content">
+            <div class="step-title">Формирует проект</div>
+            <div class="step-desc">С&nbsp;помощью экспертов структурирует идею, рассчитывает бюджет, готовится к&nbsp;запуску. Юр-часть&nbsp;— на&nbsp;нас.</div>
+            <span class="step-stat">2–4 недели</span>
+          </div>
         </div>
         <div class="step">
-          <div class="step-marker">04</div>
-          <div class="step-title">Верификация фондом</div>
-          <div class="step-desc">Проект проходит экспертную оценку, получает одобрение и&nbsp;поддержку фонда. Назначается куратор.</div>
-          <span class="step-stat">До&nbsp;14&nbsp;дней</span>
+          <div class="step-indicator"><div class="step-circle">04</div></div>
+          <div class="step-content">
+            <div class="step-title">Верификация фондом</div>
+            <div class="step-desc">Проект проходит экспертную оценку, получает одобрение и&nbsp;поддержку фонда. Назначается куратор.</div>
+            <span class="step-stat">До 14 дней</span>
+          </div>
         </div>
         <div class="step">
-          <div class="step-marker">05</div>
-          <div class="step-title">Запуск и&nbsp;реализация</div>
-          <div class="step-desc">Фонд организует сбор средств, юридическое и&nbsp;операционное сопровождение на&nbsp;всём пути. Прозрачные отчёты — донорам.</div>
-          <span class="step-stat">Идёт работа</span>
+          <div class="step-indicator"><div class="step-circle">05</div></div>
+          <div class="step-content">
+            <div class="step-title">Запуск и&nbsp;реализация</div>
+            <div class="step-desc">Фонд организует сбор средств, юридическое и&nbsp;операционное сопровождение на&nbsp;всём пути. Прозрачные отчёты&nbsp;— донорам.</div>
+            <span class="step-stat">Идёт работа</span>
+          </div>
         </div>
       </div>
     </div>
@@ -1319,27 +1192,27 @@ a { color: inherit; text-decoration: none; }
 </section>
 
 <!-- ====== IMPACT ====== -->
-<section class="impact">
-  <div class="container">
-    <div class="impact-head">
-      <span class="eyebrow">Зачем мы это делаем</span>
-      <h2>Современное общество <em>насыщено энергией</em>. Разрыв между желанием и&nbsp;возможностью&nbsp;— огромен.</h2>
+<section class="section-card">
+  <div class="section-content">
+    <div class="impact-top">
+      <h2>Современное общество <em>насыщено энергией</em>.<br/>Разрыв между желанием<br/>и&nbsp;возможностью&nbsp;— огромен.</h2>
       <p>UBER НКО закрывает этот разрыв. Юридические, финансовые и&nbsp;операционные сложности больше не&nbsp;останавливают инициативных людей.</p>
     </div>
+    <div class="impact-divider"></div>
     <div class="numbers">
       <div class="num-block">
         <div class="num-label">Цель к&nbsp;2027</div>
-        <div class="num-value">1&nbsp;000<sup>+</sup></div>
+        <div class="num-value">1&nbsp;000<span class="suffix">+</span></div>
         <div class="num-desc">социальных инициатив, запущенных под&nbsp;юридической инфраструктурой фонда</div>
       </div>
       <div class="num-block">
         <div class="num-label">Команда</div>
-        <div class="num-value">25<sup>+</sup></div>
+        <div class="num-value">25<span class="suffix">+</span></div>
         <div class="num-desc">экспертов: юристы, бухгалтеры, фандрайзеры, кураторы и&nbsp;операционная команда</div>
       </div>
       <div class="num-block">
         <div class="num-label">Прозрачность</div>
-        <div class="num-value">100<sup>%</sup></div>
+        <div class="num-value">100<span class="suffix">%</span></div>
         <div class="num-desc">платежей и&nbsp;расходов публикуются в&nbsp;открытом отчёте на&nbsp;сайте фонда</div>
       </div>
     </div>
@@ -1347,12 +1220,11 @@ a { color: inherit; text-decoration: none; }
 </section>
 
 <!-- ====== LEADER PATH ====== -->
-<section class="leader">
-  <div class="container">
-    <div class="leader-head">
-      <span class="eyebrow">Развитие участников</span>
+<section class="section-plain">
+  <div class="section-content">
+    <div class="leader-top">
       <h2>Путь <em>социального лидера</em></h2>
-      <p>UBER НКО — пространство для роста человека как агента социальных изменений.</p>
+      <p>UBER НКО&nbsp;— пространство для роста человека как агента социальных изменений.</p>
     </div>
     <div class="leader-cards">
       <div class="leader-card">
@@ -1385,12 +1257,11 @@ a { color: inherit; text-decoration: none; }
 
 <!-- ====== DONATE ====== -->
 <section class="donate" id="donate">
-  <div class="container">
+  <div class="section-content">
     <div class="donate-grid">
       <div class="donate-left">
-        <span class="eyebrow">Поддержать</span>
-        <h2>Собираем средства<br/>на&nbsp;уставную <em>деятельность</em></h2>
-        <p>Каждый вклад помогает запустить первые проекты: юридическое оформление, операционная работа, люди. Отчёт о&nbsp;каждом рубле&nbsp;— публичный и&nbsp;открытый.</p>
+        <h2>Собираем средства<br/>на&nbsp;уставную деятельность</h2>
+        <p class="intro">Каждый вклад помогает запустить первые проекты: юридическое оформление, операционная работа, люди. Отчёт о&nbsp;каждом рубле&nbsp;— публичный и&nbsp;открытый.</p>
         <ul class="donate-bullets">
           <li>Юридически защищённый эквайринг Совкомбанка</li>
           <li>Публичный отчёт в&nbsp;конце каждого квартала</li>
@@ -1427,9 +1298,8 @@ a { color: inherit; text-decoration: none; }
           <span>Согласен на&nbsp;<a href="#">правила</a> и&nbsp;<a href="#">политику конфиденциальности</a></span>
         </label>
 
-        <button class="btn btn-primary big-cta" type="button">
-          Перейти к&nbsp;оплате
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <button class="big-cta" type="button">
+          Перейти к&nbsp;оплате <span>→</span>
         </button>
         <div class="donate-fineprint">Никаких комиссий. Данные карты защищены PCI&nbsp;DSS.</div>
       </div>
@@ -1439,42 +1309,35 @@ a { color: inherit; text-decoration: none; }
 
 <!-- ====== FOOTER ====== -->
 <footer class="footer">
-  <div class="container">
+  <div class="footer-content">
     <div class="footer-top">
       <div class="footer-brand">
-        <div class="f-logo">
-          UBER
-          <span class="pipe"></span>
-          <span class="italic-mark">нко</span>
-        </div>
-        <div class="f-tag">Проект по&nbsp;запуску и&nbsp;сопровождению социальных инициатив.</div>
-        <div class="scb-line">
-          <div class="scb-mark">Совкомбанк</div>
-          <div class="scb-text">При поддержке Совкомбанка. Оператор эквайринга и&nbsp;сопровождения.</div>
+        <div class="f-logo"><img src="img/logo-uber-nko-dark.svg" alt="UBER НКО" height="22"/></div>
+        <div class="f-tagline">Проект по&nbsp;запуску и&nbsp;сопровождению<br/>социальных инициатив.</div>
+        <div class="scb-block">
+          <div class="scb-logo"><img src="img/scb-logo.svg" alt="Совкомбанк" height="24"/></div>
+          <div class="scb-text">При поддержке Совкомбанка.<br/>Оператор эквайринга и&nbsp;сопровождения.</div>
         </div>
       </div>
       <div class="footer-col">
         <h4>Проект</h4>
-        <ul>
-          <li><a href="#idea">Идея</a></li>
-          <li><a href="#what">Что мы&nbsp;делаем</a></li>
-          <li><a href="#for-whom">Для кого</a></li>
-          <li><a href="#process">Как это работает</a></li>
-        </ul>
+        <a href="#idea">Идея</a>
+        <a href="#what">Что мы делаем</a>
+        <a href="#for-whom">Для кого</a>
+        <a href="#process">Как это работает</a>
       </div>
       <div class="footer-col">
         <h4>Контакты</h4>
-        <ul>
-          <li><a href="mailto:hello@ubernko.ru">hello@ubernko.ru</a></li>
-          <li>+7&nbsp;495&nbsp;— — —</li>
-          <li>Москва</li>
-          <li><a href="#">Telegram</a></li>
-        </ul>
+        <a href="mailto:hello@ubernko.ru">hello@ubernko.ru</a>
+        <span>+7&nbsp;495&nbsp;— — —</span>
+        <span>Москва</span>
+        <a href="#">Telegram</a>
       </div>
     </div>
-    <div class="footer-legal">
-      <div>© 2026 · UBER НКО · Пилот при&nbsp;поддержке Совкомбанка</div>
-      <div class="footer-legal-right">
+    <div class="footer-divider"></div>
+    <div class="footer-bottom">
+      <div class="footer-bottom-left">© 2026 · UBER НКО · Пилот при&nbsp;поддержке Совкомбанка</div>
+      <div class="footer-bottom-right">
         <a href="#">Правила</a>
         <a href="#">Политика конфиденциальности</a>
         <a href="#">Официальные документы</a>
