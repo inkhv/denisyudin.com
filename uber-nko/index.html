@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>UBER НКО — Новый институт благотворительности</title>
-<meta name="description" content="Инфраструктура, которая превращает желание помогать в реальные проекты. Запустите своё социальное дело без бюрократии и юридических барьеров."/>
+<title>UBER НКО — Превращаем желание помогать в реальные проекты</title>
+<meta name="description" content="Фонд-инфраструктура, который снимает с инициативных людей юридическую, финансовую и операционную нагрузку. При поддержке Совкомбанка."/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -22,6 +22,7 @@
   --text-soft:    #2C333E;
   --text-muted:   #5C6675;
   --text-faint:   #8893A2;
+  --italic-blue:  #808FB1;
   --accent:       #1A1E27;
   --accent-text:  #FFFFFF;
   --halo-blue:    #C7D6E6;
@@ -97,37 +98,39 @@ a { color: inherit; text-decoration: none; }
   justify-content: space-between;
   padding-top: 18px;
   padding-bottom: 18px;
+  gap: 32px;
 }
 .logo {
-  display: flex;
+  display: inline-flex;
   align-items: baseline;
-  gap: 10px;
-  font-family: 'IBM Plex Serif', Georgia, serif;
-  font-weight: 500;
-  font-size: 22px;
-  letter-spacing: -0.01em;
-  color: var(--text);
-}
-.logo-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--accent);
-  border-radius: 50%;
-  display: inline-block;
-  transform: translateY(-2px);
-}
-.logo small {
+  gap: 8px;
   font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.16em;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  color: var(--text);
   text-transform: uppercase;
-  color: var(--text-muted);
-  margin-left: 6px;
+}
+.logo .accent-pipe {
+  display: inline-block;
+  width: 1px;
+  height: 16px;
+  background: var(--line-strong);
+  align-self: center;
+  margin: 0 2px;
+}
+.logo .italic-mark {
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 18px;
+  letter-spacing: 0.02em;
+  color: var(--italic-blue);
+  text-transform: none;
 }
 .nav-links {
   display: flex;
-  gap: 28px;
+  gap: 32px;
   align-items: center;
   font-size: 14px;
   color: var(--text-soft);
@@ -148,13 +151,14 @@ a { color: inherit; text-decoration: none; }
   transition: right .25s ease;
 }
 .nav-links a:hover::after { right: 0; }
-.nav-right { display: flex; align-items: center; gap: 24px; }
+.nav-right { display: flex; align-items: center; gap: 20px; }
 .partner-tag {
   font-size: 12px;
   color: var(--text-muted);
   display: flex;
   align-items: center;
   gap: 8px;
+  letter-spacing: 0.01em;
 }
 .partner-tag::before {
   content: "";
@@ -175,6 +179,7 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid transparent;
   cursor: pointer;
   transition: transform .15s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+  font-family: inherit;
 }
 .btn-primary {
   background: var(--accent);
@@ -191,8 +196,9 @@ a { color: inherit; text-decoration: none; }
 .btn-arrow svg { width: 14px; height: 14px; transition: transform .2s ease; }
 .btn-arrow:hover svg { transform: translateX(3px); }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .nav-links, .partner-tag { display: none; }
+  .header-inner { gap: 16px; }
 }
 
 /* ====== HERO ====== */
@@ -228,15 +234,14 @@ a { color: inherit; text-decoration: none; }
   margin: 26px 0 28px;
   color: var(--text);
 }
-.hero h1 .accent-word {
+.hero h1 em {
   font-style: italic;
-  color: var(--accent);
+  font-weight: 400;
 }
-.hero h1 br + span { display: block; }
 .hero p.lead {
   font-size: clamp(17px, 1.4vw, 19px);
   color: var(--text-soft);
-  max-width: 540px;
+  max-width: 600px;
   margin-bottom: 36px;
   line-height: 1.55;
 }
@@ -268,7 +273,7 @@ a { color: inherit; text-decoration: none; }
   opacity: 0.6;
 }
 
-/* Hero photo placeholder */
+/* Hero visual */
 .hero-visual {
   position: relative;
   aspect-ratio: 4/5;
@@ -364,7 +369,6 @@ a { color: inherit; text-decoration: none; }
   gap: clamp(24px, 5vw, 80px);
   align-items: start;
 }
-.manifesto-grid .col-left .eyebrow { margin-bottom: 18px; }
 .manifesto-grid .col-left h2 {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
@@ -372,37 +376,28 @@ a { color: inherit; text-decoration: none; }
   line-height: 1.15;
   letter-spacing: -0.015em;
 }
+.manifesto-grid .col-left h2 em { font-style: italic; }
 .manifesto-grid .col-right p {
-  font-size: clamp(20px, 2vw, 26px);
-  line-height: 1.45;
+  font-size: clamp(18px, 1.5vw, 22px);
+  line-height: 1.5;
   color: var(--text);
   font-weight: 300;
 }
-.manifesto-grid .col-right p + p { margin-top: 24px; }
 .manifesto-grid .col-right .pullquote {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-style: italic;
   font-weight: 300;
-  font-size: clamp(24px, 2.4vw, 34px);
+  font-size: clamp(22px, 2.2vw, 30px);
   color: var(--text);
-  line-height: 1.3;
+  line-height: 1.35;
   padding: 28px 0;
   margin: 32px 0;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  position: relative;
-}
-.manifesto-grid .col-right .pullquote::before {
-  content: "«";
-  position: absolute;
-  left: -0.6em;
-  top: 18px;
-  color: var(--text-muted);
 }
 
 @media (max-width: 800px) {
   .manifesto-grid { grid-template-columns: 1fr; gap: 30px; }
-  .manifesto-grid .col-right .pullquote::before { display: none; }
 }
 
 /* ====== WHAT WE DO ====== */
@@ -512,20 +507,6 @@ a { color: inherit; text-decoration: none; }
     radial-gradient(40% 30% at 50% 35%, rgba(255,255,255,0.45) 0%, transparent 60%),
     radial-gradient(60% 40% at 30% 80%, rgba(180, 195, 215, 0.5) 0%, transparent 60%);
 }
-.persona-tag {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text);
-  background: rgba(255,255,255,0.7);
-  backdrop-filter: blur(6px);
-  padding: 5px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.9);
-}
 .persona-img .silhouette {
   position: absolute;
   inset: 0;
@@ -539,19 +520,12 @@ a { color: inherit; text-decoration: none; }
   opacity: 0.35;
   fill: var(--text);
 }
-.persona-meta .label {
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-}
 .persona-meta h3 {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
   font-size: 22px;
   letter-spacing: -0.01em;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 .persona-meta p {
   font-size: 14px;
@@ -585,6 +559,7 @@ a { color: inherit; text-decoration: none; }
   line-height: 1.05;
   margin: 18px 0 24px;
 }
+.process-grid .col-left h2 em { font-style: italic; }
 .process-grid .col-left p {
   font-size: 16px;
   color: var(--text-soft);
@@ -663,7 +638,6 @@ a { color: inherit; text-decoration: none; }
   background: var(--bg-elev);
 }
 .impact-head {
-  text-align: left;
   margin-bottom: clamp(40px, 6vw, 64px);
 }
 .impact-head h2 {
@@ -671,15 +645,16 @@ a { color: inherit; text-decoration: none; }
   font-weight: 400;
   font-size: clamp(32px, 4vw, 52px);
   letter-spacing: -0.02em;
+  margin-top: 18px;
   margin-bottom: 18px;
-  max-width: 720px;
+  max-width: 1000px;
   line-height: 1.1;
 }
 .impact-head h2 em { font-style: italic; }
 .impact-head p {
   font-size: 17px;
   color: var(--text-soft);
-  max-width: 620px;
+  max-width: 640px;
   line-height: 1.55;
 }
 .numbers {
@@ -689,7 +664,7 @@ a { color: inherit; text-decoration: none; }
   border-top: 1px solid var(--line-strong);
 }
 .num-block {
-  padding: 32px 28px 28px 0;
+  padding: 36px 28px 28px 0;
   border-bottom: 1px solid var(--line);
   border-right: 1px solid var(--line);
   position: relative;
@@ -700,31 +675,115 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-muted);
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 .num-block .num-value {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 300;
-  font-size: clamp(48px, 6vw, 84px);
+  font-size: clamp(56px, 7vw, 96px);
   line-height: 1;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
   color: var(--text);
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 .num-block .num-value sup {
   font-size: 0.4em;
   vertical-align: super;
   margin-left: 4px;
   color: var(--text-muted);
+  font-weight: 300;
 }
 .num-block .num-desc {
   font-size: 14px;
   color: var(--text-muted);
   line-height: 1.5;
+  max-width: 320px;
 }
 @media (max-width: 800px) {
   .numbers { grid-template-columns: 1fr; }
   .num-block { padding-right: 0; border-right: 0; }
+}
+
+/* ====== LEADER PATH ====== */
+.leader {
+  padding: var(--section-y) 0;
+  border-top: 1px solid var(--line);
+}
+.leader-head {
+  margin-bottom: clamp(40px, 6vw, 64px);
+}
+.leader-head h2 {
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(40px, 5vw, 72px);
+  letter-spacing: -0.025em;
+  margin-top: 18px;
+  margin-bottom: 18px;
+  line-height: 1.05;
+}
+.leader-head h2 em {
+  font-style: italic;
+  color: var(--italic-blue);
+}
+.leader-head p {
+  font-size: 16px;
+  color: var(--text-soft);
+  max-width: 520px;
+  line-height: 1.55;
+}
+.leader-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.leader-card {
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.leader-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 48px -28px rgba(20, 30, 50, 0.18);
+}
+.leader-card .lc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.leader-card .lc-stage {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.leader-card .lc-roman {
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  font-size: 22px;
+  color: var(--text-faint);
+  opacity: 0.55;
+  letter-spacing: 0.04em;
+}
+.leader-card h3 {
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  font-weight: 400;
+  font-size: 26px;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.leader-card p {
+  font-size: 14px;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+@media (max-width: 900px) {
+  .leader-cards { grid-template-columns: 1fr; }
 }
 
 /* ====== DONATE ====== */
@@ -738,29 +797,29 @@ a { color: inherit; text-decoration: none; }
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: clamp(32px, 5vw, 72px);
-  align-items: center;
+  align-items: start;
 }
 .donate-left h2 {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
-  font-size: clamp(36px, 4.5vw, 60px);
+  font-size: clamp(36px, 4.5vw, 56px);
   letter-spacing: -0.02em;
-  line-height: 1.05;
+  line-height: 1.08;
   margin: 18px 0 24px;
 }
 .donate-left h2 em { font-style: italic; }
 .donate-left p {
-  font-size: 17px;
+  font-size: 16px;
   color: var(--text-soft);
-  max-width: 460px;
-  margin-bottom: 28px;
-  line-height: 1.55;
+  max-width: 540px;
+  margin-bottom: 36px;
+  line-height: 1.6;
 }
 .donate-bullets {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 .donate-bullets li {
   display: flex;
@@ -768,76 +827,88 @@ a { color: inherit; text-decoration: none; }
   gap: 12px;
   font-size: 15px;
   color: var(--text-soft);
+  line-height: 1.5;
 }
-.donate-bullets li svg {
+.donate-bullets li::before {
+  content: "·";
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--text);
   flex-shrink: 0;
-  margin-top: 4px;
-  color: var(--accent);
+  margin-top: -2px;
 }
 
 .donate-form {
   background: var(--bg-elev);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-lg);
-  padding: clamp(28px, 4vw, 44px);
+  padding: clamp(28px, 3vw, 36px);
   box-shadow: 0 30px 80px -50px rgba(20,30,50,0.35), 0 1px 0 rgba(255,255,255,0.6) inset;
-}
-.donate-form .form-eyebrow {
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 14px;
 }
 .donate-form .form-title {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
-  font-size: 26px;
+  font-size: 28px;
   letter-spacing: -0.01em;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
   line-height: 1.2;
+}
+.donate-form .form-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+  letter-spacing: 0.02em;
+}
+.form-label {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 12px;
+  display: block;
 }
 .amount-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  margin-bottom: 14px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 .amount-btn {
-  padding: 16px 8px;
-  background: var(--sky-2);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
+  padding: 14px 8px;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
   font-weight: 500;
   color: var(--text);
   cursor: pointer;
   transition: all .15s ease;
-  letter-spacing: 0;
 }
-.amount-btn:hover { background: var(--halo-blue-2); border-color: var(--line-strong); }
+.amount-btn:hover { background: var(--surface-2); }
 .amount-btn.active {
   background: var(--accent);
   color: var(--accent-text);
   border-color: var(--accent);
 }
-.amount-custom {
+.amount-custom, .email-input {
   position: relative;
-  margin-bottom: 18px;
+  margin-bottom: 24px;
 }
-.amount-custom input {
+.amount-custom input, .email-input input {
   width: 100%;
   padding: 16px 50px 16px 18px;
   border: 1px solid var(--line-strong);
-  border-radius: 10px;
+  border-radius: 8px;
   background: var(--bg-elev);
-  font-family: 'Inter', sans-serif;
+  font-family: inherit;
   font-size: 15px;
   color: var(--text);
   transition: border-color .2s ease;
 }
-.amount-custom input:focus {
+.amount-custom input:focus, .email-input input:focus {
   outline: none;
   border-color: var(--accent);
 }
@@ -850,23 +921,40 @@ a { color: inherit; text-decoration: none; }
   font-size: 15px;
   font-weight: 500;
 }
-.donate-form .btn-primary {
+.email-input input { padding-right: 18px; }
+
+.form-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--text-soft);
+  cursor: pointer;
+  line-height: 1.45;
+}
+.form-check input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+.form-check a { text-decoration: underline; }
+
+.donate-form .big-cta {
   width: 100%;
   justify-content: center;
-  padding: 18px;
+  padding: 20px;
   font-size: 15px;
+  margin-top: 14px;
 }
 .donate-fineprint {
   margin-top: 14px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 16px;
   font-size: 12px;
   color: var(--text-muted);
-  justify-content: center;
+  text-align: center;
 }
-.donate-fineprint span { display: inline-flex; align-items: center; gap: 6px; }
-.donate-fineprint svg { width: 12px; height: 12px; }
 
 @media (max-width: 850px) { .donate-grid { grid-template-columns: 1fr; } }
 @media (max-width: 480px) { .amount-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -880,23 +968,61 @@ a { color: inherit; text-decoration: none; }
 .footer .container { max-width: 1280px; }
 .footer-top {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  grid-template-columns: 2.4fr 1fr 1fr;
   gap: 40px;
   padding-bottom: 56px;
   border-bottom: 1px solid rgba(255,255,255,0.12);
 }
-.footer-logo {
-  font-family: 'IBM Plex Serif', Georgia, serif;
-  font-weight: 400;
-  font-size: 28px;
-  margin-bottom: 18px;
-  letter-spacing: -0.01em;
+.footer-brand .f-logo {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
 }
-.footer-tagline {
+.footer-brand .f-logo .italic-mark {
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  color: var(--italic-blue);
+  text-transform: none;
+}
+.footer-brand .f-logo .pipe {
+  width: 1px;
+  height: 18px;
+  background: rgba(255,255,255,0.25);
+  align-self: center;
+  margin: 0 2px;
+}
+.footer-brand .f-tag {
   font-size: 14px;
-  color: rgba(255,255,255,0.65);
+  color: rgba(255,255,255,0.7);
   line-height: 1.6;
-  max-width: 320px;
+  max-width: 460px;
+  margin-bottom: 36px;
+}
+.scb-line {
+  margin-top: 8px;
+}
+.scb-line .scb-mark {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 8px;
+}
+.scb-line .scb-text {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.55;
+  max-width: 460px;
 }
 .footer-col h4 {
   font-size: 11px;
@@ -904,13 +1030,13 @@ a { color: inherit; text-decoration: none; }
   text-transform: uppercase;
   color: rgba(255,255,255,0.5);
   font-weight: 500;
-  margin-bottom: 18px;
+  margin-bottom: 22px;
 }
 .footer-col ul {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 }
 .footer-col a, .footer-col li {
   font-size: 14px;
@@ -919,7 +1045,7 @@ a { color: inherit; text-decoration: none; }
 }
 .footer-col a:hover { color: #fff; }
 .footer-legal {
-  padding-top: 28px;
+  padding-top: 32px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -929,21 +1055,20 @@ a { color: inherit; text-decoration: none; }
   color: rgba(255,255,255,0.5);
   letter-spacing: 0.02em;
 }
-.footer-legal .scb {
+.footer-legal-right {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 28px;
 }
-.footer-legal .scb-mark {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: rgba(255,255,255,0.4);
-}
+.footer-legal-right a { transition: color .15s; }
+.footer-legal-right a:hover { color: rgba(255,255,255,0.85); }
 
 @media (max-width: 900px) {
   .footer-top { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 600px) {
   .footer-top { grid-template-columns: 1fr; }
+  .footer-legal { flex-direction: column; align-items: flex-start; }
 }
 
 /* ====== FLOATING CTA ====== */
@@ -974,9 +1099,6 @@ a { color: inherit; text-decoration: none; }
 }
 .float-cta:hover { transform: translateY(-2px); }
 
-/* Util */
-.spacer { height: 1px; background: var(--line); margin: 0; border: 0; }
-
 @media (max-width: 760px) {
   .float-cta { padding: 12px 18px; font-size: 13px; bottom: 16px; right: 16px; }
 }
@@ -988,9 +1110,9 @@ a { color: inherit; text-decoration: none; }
 <header class="header">
   <div class="container header-inner">
     <a href="#top" class="logo">
-      <span class="logo-dot"></span>
-      UBER НКО
-      <small>Институт</small>
+      UBER
+      <span class="accent-pipe"></span>
+      <span class="italic-mark">нко</span>
     </a>
     <nav class="nav-links">
       <a href="#idea">Идея</a>
@@ -999,7 +1121,7 @@ a { color: inherit; text-decoration: none; }
       <a href="#process">Как работает</a>
     </nav>
     <div class="nav-right">
-      <div class="partner-tag">При поддержке СовкомБанка</div>
+      <div class="partner-tag">При поддержке Совкомбанка</div>
       <a href="#donate" class="btn btn-primary">Поддержать</a>
     </div>
   </div>
@@ -1012,10 +1134,10 @@ a { color: inherit; text-decoration: none; }
       <div class="hero-text">
         <span class="eyebrow">Новый институт благотворительности · 2026</span>
         <h1>
-          Превращаем&nbsp;<span class="accent-word">желание</span><br/>
-          помогать&nbsp;в&nbsp;реальные проекты
+          Превращаем&nbsp;<em>желание</em> помогать
+          в&nbsp;реальные проекты
         </h1>
-        <p class="lead">Запустите своё социальное дело без бюрократии, юридических барьеров и операционной работы. Мы&nbsp;берём на&nbsp;себя инфраструктуру, вы&nbsp;остаётесь с&nbsp;идеей.</p>
+        <p class="lead">Запустите своё социальное дело без бюрократии, юридических барьеров и&nbsp;операционной работы. Мы&nbsp;берём на&nbsp;себя инфраструктуру, вы&nbsp;остаётесь с&nbsp;идеей.</p>
         <div class="hero-cta">
           <a href="#donate" class="btn btn-primary">
             Поддержать проект
@@ -1027,7 +1149,7 @@ a { color: inherit; text-decoration: none; }
           </a>
         </div>
         <div class="trust-row">
-          <div class="item"><span class="dot"></span>При поддержке СовкомБанка</div>
+          <div class="item"><span class="dot"></span>При поддержке Совкомбанка</div>
           <div class="item"><span class="dot"></span>Юридически защищённая инфраструктура</div>
           <div class="item"><span class="dot"></span>Публичная отчётность</div>
         </div>
@@ -1052,7 +1174,7 @@ a { color: inherit; text-decoration: none; }
     <div class="manifesto-grid">
       <div class="col-left">
         <span class="eyebrow">Идея</span>
-        <h2>Желание помогать <em>есть у&nbsp;каждого</em>. Инфраструктура&nbsp;— нет.</h2>
+        <h2 style="margin-top:18px">Желание помогать <em>есть у&nbsp;каждого</em>. Инфраструктура&nbsp;— нет.</h2>
       </div>
       <div class="col-right">
         <p>Тысячи людей хотят делать полезные проекты — помогать людям, животным, своему городу. Но&nbsp;большинство не&nbsp;знает, как начать. Запуск НКО, отчётность, юридические тонкости, прозрачные сборы&nbsp;— всё это останавливает раньше, чем появляется первый проект.</p>
@@ -1067,7 +1189,7 @@ a { color: inherit; text-decoration: none; }
 <section class="what" id="what">
   <div class="container">
     <div class="section-head">
-      <h2>Что мы <em>берём на&nbsp;себя</em></h2>
+      <h2>Что мы берём <em>на&nbsp;себя</em></h2>
       <p class="head-aside">Фонд и&nbsp;комплексная инфраструктура поддержки социальных инициатив. Позволяет запустить проект без создания отдельного юридического лица.</p>
     </div>
     <div class="what-list">
@@ -1084,7 +1206,7 @@ a { color: inherit; text-decoration: none; }
       <div class="what-item">
         <div class="what-num">/03</div>
         <div class="what-title">Организация сбора средств</div>
-        <div class="what-desc">Фонд помогает выстроить кампанию по&nbsp;привлечению финансирования и&nbsp;наладить прозрачную работу с&nbsp;донорами. Эквайринг через СовкомБанк.</div>
+        <div class="what-desc">Фонд помогает выстроить кампанию по&nbsp;привлечению финансирования и&nbsp;наладить прозрачную работу с&nbsp;донорами. Эквайринг через&nbsp;Совкомбанк.</div>
       </div>
       <div class="what-item">
         <div class="what-num">/04</div>
@@ -1105,52 +1227,44 @@ a { color: inherit; text-decoration: none; }
     <div class="audience-grid">
       <div class="persona">
         <div class="persona-img warm">
-          <span class="persona-tag">Тип 01</span>
           <div class="silhouette" aria-hidden="true">
             <svg viewBox="0 0 100 130"><path d="M50 30 C 40 30 35 38 35 48 C 35 58 40 65 50 65 C 60 65 65 58 65 48 C 65 38 60 30 50 30 M 25 130 C 25 95 35 80 50 80 C 65 80 75 95 75 130"/></svg>
           </div>
         </div>
         <div class="persona-meta">
-          <div class="label">Кто</div>
           <h3>Волонтёры и&nbsp;активисты</h3>
           <p>Люди с&nbsp;энергией и&nbsp;желанием менять мир вокруг себя.</p>
         </div>
       </div>
       <div class="persona">
         <div class="persona-img cool">
-          <span class="persona-tag">Тип 02</span>
           <div class="silhouette" aria-hidden="true">
             <svg viewBox="0 0 100 130"><path d="M40 28 C 32 28 28 34 28 44 C 28 54 32 60 40 60 C 48 60 52 54 52 44 C 52 34 48 28 40 28 M 60 38 C 54 38 52 44 52 52 C 52 60 54 64 60 64 C 66 64 68 60 68 52 C 68 44 66 38 60 38 M 15 130 C 15 95 25 78 40 78 C 55 78 65 95 65 130 M 50 130 C 50 95 55 80 60 80 C 65 80 78 95 78 130"/></svg>
           </div>
         </div>
         <div class="persona-meta">
-          <div class="label">Кто</div>
           <h3>Родители и&nbsp;педагоги</h3>
           <p>Родители детей с&nbsp;особенностями, учителя, тренеры и&nbsp;наставники.</p>
         </div>
       </div>
       <div class="persona">
         <div class="persona-img mid">
-          <span class="persona-tag">Тип 03</span>
           <div class="silhouette" aria-hidden="true">
             <svg viewBox="0 0 100 130"><path d="M50 30 C 40 30 35 38 35 48 C 35 58 40 65 50 65 C 60 65 65 58 65 48 C 65 38 60 30 50 30 M 25 130 L 25 95 C 25 85 32 80 50 80 C 68 80 75 85 75 95 L 75 130"/></svg>
           </div>
         </div>
         <div class="persona-meta">
-          <div class="label">Кто</div>
           <h3>Предприниматели</h3>
           <p>Те, кто хочет направить ресурсы и&nbsp;опыт на&nbsp;решение социальных задач.</p>
         </div>
       </div>
       <div class="persona">
         <div class="persona-img soft">
-          <span class="persona-tag">Тип 04</span>
           <div class="silhouette" aria-hidden="true">
             <svg viewBox="0 0 100 130"><path d="M30 30 C 22 30 18 36 18 44 C 18 52 22 58 30 58 C 38 58 42 52 42 44 C 42 36 38 30 30 30 M 70 32 C 62 32 58 38 58 46 C 58 54 62 60 70 60 C 78 60 82 54 82 46 C 82 38 78 32 70 32 M 5 130 C 5 100 12 80 30 80 C 48 80 50 100 50 130 M 50 130 C 50 100 55 80 70 80 C 88 80 95 100 95 130"/></svg>
           </div>
         </div>
         <div class="persona-meta">
-          <div class="label">Кто</div>
           <h3>Жители городов</h3>
           <p>Активные граждане, готовые улучшать жизнь в&nbsp;своём районе и&nbsp;сообществе.</p>
         </div>
@@ -1209,13 +1323,13 @@ a { color: inherit; text-decoration: none; }
   <div class="container">
     <div class="impact-head">
       <span class="eyebrow">Зачем мы это делаем</span>
-      <h2 style="margin-top:18px">Современное общество <em>насыщено энергией</em>. Разрыв между желанием и&nbsp;возможностью&nbsp;— огромен.</h2>
+      <h2>Современное общество <em>насыщено энергией</em>. Разрыв между желанием и&nbsp;возможностью&nbsp;— огромен.</h2>
       <p>UBER НКО закрывает этот разрыв. Юридические, финансовые и&nbsp;операционные сложности больше не&nbsp;останавливают инициативных людей.</p>
     </div>
     <div class="numbers">
       <div class="num-block">
         <div class="num-label">Цель к&nbsp;2027</div>
-        <div class="num-value">1 000<sup>+</sup></div>
+        <div class="num-value">1&nbsp;000<sup>+</sup></div>
         <div class="num-desc">социальных инициатив, запущенных под&nbsp;юридической инфраструктурой фонда</div>
       </div>
       <div class="num-block">
@@ -1232,60 +1346,92 @@ a { color: inherit; text-decoration: none; }
   </div>
 </section>
 
+<!-- ====== LEADER PATH ====== -->
+<section class="leader">
+  <div class="container">
+    <div class="leader-head">
+      <span class="eyebrow">Развитие участников</span>
+      <h2>Путь <em>социального лидера</em></h2>
+      <p>UBER НКО — пространство для роста человека как агента социальных изменений.</p>
+    </div>
+    <div class="leader-cards">
+      <div class="leader-card">
+        <div class="lc-head">
+          <span class="lc-stage">Первый этап</span>
+          <span class="lc-roman">①</span>
+        </div>
+        <h3>Первый шаг</h3>
+        <p>Тест идеи, запуск первого небольшого проекта при&nbsp;поддержке фонда.</p>
+      </div>
+      <div class="leader-card">
+        <div class="lc-head">
+          <span class="lc-stage">Второй этап</span>
+          <span class="lc-roman">②</span>
+        </div>
+        <h3>Инкубация</h3>
+        <p>Развитие инициативы, формирование команды, накопление опыта и&nbsp;компетенций.</p>
+      </div>
+      <div class="leader-card">
+        <div class="lc-head">
+          <span class="lc-stage">Третий этап</span>
+          <span class="lc-roman">③</span>
+        </div>
+        <h3>Социальное лидерство</h3>
+        <p>Запуск новых проектов, масштабирование инициатив, влияние на&nbsp;целые сообщества.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ====== DONATE ====== -->
 <section class="donate" id="donate">
   <div class="container">
     <div class="donate-grid">
       <div class="donate-left">
         <span class="eyebrow">Поддержать</span>
-        <h2>Станьте частью <em>изменений</em></h2>
-        <p>Ваш вклад идёт на&nbsp;запуск уставной деятельности фонда: оформление, команду экспертов, инфраструктуру первых десяти пилотных проектов.</p>
+        <h2>Собираем средства<br/>на&nbsp;уставную <em>деятельность</em></h2>
+        <p>Каждый вклад помогает запустить первые проекты: юридическое оформление, операционная работа, люди. Отчёт о&nbsp;каждом рубле&nbsp;— публичный и&nbsp;открытый.</p>
         <ul class="donate-bullets">
-          <li>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-            Безопасный платёж через&nbsp;эквайер СовкомБанка
-          </li>
-          <li>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-            Публичная отчётность по&nbsp;каждому рублю
-          </li>
-          <li>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-            Официальный фонд, зарегистрированный в&nbsp;Минюсте РФ
-          </li>
+          <li>Юридически защищённый эквайринг Совкомбанка</li>
+          <li>Публичный отчёт в&nbsp;конце каждого квартала</li>
+          <li>Контроль налоговых вычетов</li>
         </ul>
       </div>
       <div class="donate-form">
-        <div class="form-eyebrow">Разовый платёж</div>
-        <div class="form-title">Выберите сумму поддержки</div>
+        <div class="form-title">Внести пожертвование</div>
+        <div class="form-sub">Платёж через эквайринг Совкомбанка · безопасно</div>
+
+        <label class="form-label">Сумма, ₽</label>
         <div class="amount-grid">
-          <button class="amount-btn" type="button">500 ₽</button>
-          <button class="amount-btn active" type="button">1 000 ₽</button>
-          <button class="amount-btn" type="button">3 000 ₽</button>
-          <button class="amount-btn" type="button">5 000 ₽</button>
+          <button class="amount-btn" type="button" data-amount="500">500</button>
+          <button class="amount-btn active" type="button" data-amount="1000">1 000</button>
+          <button class="amount-btn" type="button" data-amount="3000">3 000</button>
+          <button class="amount-btn" type="button" data-amount="5000">5 000</button>
         </div>
         <div class="amount-custom">
-          <input type="number" placeholder="Своя сумма" min="100"/>
+          <input type="number" id="custom-amount" placeholder="Своя сумма" min="100"/>
           <span class="rub">₽</span>
         </div>
-        <button class="btn btn-primary" type="button">
-          Пожертвовать
+
+        <label class="form-label" for="email">Email для отчётов</label>
+        <div class="email-input">
+          <input type="email" id="email" placeholder="your@email.com"/>
+        </div>
+
+        <label class="form-check">
+          <input type="checkbox" id="recurring"/>
+          <span>Сделать регулярным пожертвованием (ежемесячно)</span>
+        </label>
+        <label class="form-check">
+          <input type="checkbox" id="agree" checked/>
+          <span>Согласен на&nbsp;<a href="#">правила</a> и&nbsp;<a href="#">политику конфиденциальности</a></span>
+        </label>
+
+        <button class="btn btn-primary big-cta" type="button">
+          Перейти к&nbsp;оплате
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </button>
-        <div class="donate-fineprint">
-          <span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-            Шифрование PCI&nbsp;DSS
-          </span>
-          <span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1l3 6 6 .9-4.5 4.4 1 6.7L12 16l-5.5 3 1-6.7L3 7.9 9 7z"/></svg>
-            Эквайер СовкомБанк
-          </span>
-          <span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-            Чек в&nbsp;течение 24 ч
-          </span>
-        </div>
+        <div class="donate-fineprint">Никаких комиссий. Данные карты защищены PCI&nbsp;DSS.</div>
       </div>
     </div>
   </div>
@@ -1296,42 +1442,42 @@ a { color: inherit; text-decoration: none; }
   <div class="container">
     <div class="footer-top">
       <div class="footer-brand">
-        <div class="footer-logo">UBER НКО</div>
-        <div class="footer-tagline">Новый институт благотворительности. Инфраструктура, которая превращает желание помогать в&nbsp;реальные проекты.</div>
+        <div class="f-logo">
+          UBER
+          <span class="pipe"></span>
+          <span class="italic-mark">нко</span>
+        </div>
+        <div class="f-tag">Проект по&nbsp;запуску и&nbsp;сопровождению социальных инициатив.</div>
+        <div class="scb-line">
+          <div class="scb-mark">Совкомбанк</div>
+          <div class="scb-text">При поддержке Совкомбанка. Оператор эквайринга и&nbsp;сопровождения.</div>
+        </div>
       </div>
       <div class="footer-col">
-        <h4>Фонд</h4>
+        <h4>Проект</h4>
         <ul>
-          <li><a href="#idea">Об&nbsp;идее</a></li>
+          <li><a href="#idea">Идея</a></li>
           <li><a href="#what">Что мы&nbsp;делаем</a></li>
-          <li><a href="#process">Как работает</a></li>
-          <li><a href="#">Команда</a></li>
+          <li><a href="#for-whom">Для кого</a></li>
+          <li><a href="#process">Как это работает</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Документы</h4>
+        <h4>Контакты</h4>
         <ul>
-          <li><a href="#">Устав фонда</a></li>
-          <li><a href="#">Публичная отчётность</a></li>
-          <li><a href="#">Политика ПД</a></li>
-          <li><a href="#">Оферта</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Реквизиты</h4>
-        <ul>
-          <li>ОГРН&nbsp;0000000000000</li>
-          <li>ИНН&nbsp;0000000000</li>
-          <li>info@ubernko.ru</li>
-          <li>Москва, …</li>
+          <li><a href="mailto:hello@ubernko.ru">hello@ubernko.ru</a></li>
+          <li>+7&nbsp;495&nbsp;— — —</li>
+          <li>Москва</li>
+          <li><a href="#">Telegram</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-legal">
-      <div>© 2026 UBER НКО · Все права защищены</div>
-      <div class="scb">
-        <span class="scb-mark"></span>
-        Партнёр инфраструктуры платежей — ПАО «Совкомбанк»
+      <div>© 2026 · UBER НКО · Пилот при&nbsp;поддержке Совкомбанка</div>
+      <div class="footer-legal-right">
+        <a href="#">Правила</a>
+        <a href="#">Политика конфиденциальности</a>
+        <a href="#">Официальные документы</a>
       </div>
     </div>
   </div>
@@ -1344,22 +1490,33 @@ a { color: inherit; text-decoration: none; }
 </a>
 
 <script>
-  // Floating CTA appears after scrolling past hero
   const cta = document.getElementById('floatCta');
   const trigger = document.querySelector('.hero');
-  const observer = new IntersectionObserver(([entry]) => {
-    if (!entry.isIntersecting) cta.classList.add('visible');
-    else cta.classList.remove('visible');
-  }, { threshold: 0 });
-  if (trigger) observer.observe(trigger);
+  if (trigger) {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) cta.classList.add('visible');
+      else cta.classList.remove('visible');
+    }, { threshold: 0 });
+    observer.observe(trigger);
+  }
 
-  // Amount buttons toggle
   document.querySelectorAll('.amount-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      const custom = document.getElementById('custom-amount');
+      if (custom) custom.value = '';
     });
   });
+
+  const customField = document.getElementById('custom-amount');
+  if (customField) {
+    customField.addEventListener('input', () => {
+      if (customField.value) {
+        document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+      }
+    });
+  }
 </script>
 
 </body>
