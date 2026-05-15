@@ -323,16 +323,16 @@ a { color: inherit; text-decoration: none; }
 /* ====== MANIFESTO ====== */
 .manifesto-grid {
   display: grid;
-  grid-template-columns: 480px 1fr;
+  grid-template-columns: 380px 1fr;
   gap: 80px;
   align-items: start;
 }
 .manifesto-grid .col-left h2 {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
-  font-size: var(--h2-size);
-  line-height: var(--h2-line);
-  letter-spacing: var(--h2-tracking);
+  font-size: clamp(28px, 3.4vw, 42px);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
 }
 .manifesto-grid .col-left h2 em { font-style: italic; }
 .manifesto-grid .col-right p {
@@ -1213,7 +1213,7 @@ a { color: inherit; text-decoration: none; }
   <div class="section-content">
     <div class="process-grid">
       <div class="col-left">
-        <h2>Путь от&nbsp;идеи<br/>до&nbsp;реализации&nbsp;—<br/><em>простой<br/>и&nbsp;поддерживаемый<br/>на&nbsp;каждом шаге</em>.</h2>
+        <h2>Путь от&nbsp;идеи<br/>до&nbsp;реализации&nbsp;—<br/><em>простой</em><br/>и&nbsp;поддерживаемый<br/>на&nbsp;каждом шаге.</h2>
         <p>Вы&nbsp;приходите с&nbsp;идеей или желанием помочь.<br/>Дальше&nbsp;— наша работа: всё, что мешает вам делать, мы&nbsp;закроем со&nbsp;своей стороны.</p>
       </div>
       <div class="steps">
