@@ -251,16 +251,28 @@ a { color: inherit; text-decoration: none; }
   background: var(--bg-elev);
   border-radius: var(--radius-xl);
   padding: var(--py-section-card) var(--pad-x-section);
-  margin: 0;
+  width: calc(100% - 32px);
+  max-width: 1408px;
+  margin: 0 auto;
 }
 .section-plain {
   background: var(--bg);
   padding: var(--py-section) var(--pad-x-section);
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
 }
 .section-content {
   width: 100%;
   max-width: var(--container);
   margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+  .section-card {
+    width: calc(100% - 16px);
+    border-radius: 32px;
+  }
 }
 
 /* ====== MANIFESTO ====== */
