@@ -28,20 +28,27 @@
   --radius:       6px;
   --radius-lg:    20px;
   --radius-xl:    60px;
-  --container:    1280px;
+  --container:    1440px;
+  --content:      1280px;
   --pad-x-section: clamp(20px, 5.5vw, 80px);
   --py-section:   clamp(72px, 10vw, 140px);
   --py-section-card: clamp(72px, 8.4vw, 120px);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+  min-height: 100%;
+}
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.55;
   color: var(--text);
   background: var(--bg);
+  max-width: var(--container);
+  margin: 0 auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "ss01", "cv11";
@@ -72,6 +79,10 @@ a { color: inherit; text-decoration: none; }
   backdrop-filter: saturate(140%) blur(14px);
   -webkit-backdrop-filter: saturate(140%) blur(14px);
   border-bottom: 1px solid var(--line);
+}
+.header .container {
+  padding-left: clamp(20px, 4vw, 56px);
+  padding-right: clamp(20px, 4vw, 56px);
 }
 .header-inner {
   display: flex;
@@ -163,18 +174,17 @@ a { color: inherit; text-decoration: none; }
 .hero {
   position: relative;
   padding-top: clamp(60px, 9vw, 110px);
-  padding-bottom: clamp(80px, 10vw, 140px);
+  padding-bottom: clamp(96px, 11.5vw, 165px);
   background: var(--bg);
   overflow: hidden;
 }
 .hero-grid {
   display: grid;
-  grid-template-columns: 736px 480px;
+  grid-template-columns: minmax(0, 1fr) 480px;
   gap: 64px;
   align-items: center;
-  justify-content: space-between;
 }
-.hero-text { max-width: 736px; }
+.hero-text { min-width: 0; }
 .hero h1 {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
@@ -242,12 +252,12 @@ a { color: inherit; text-decoration: none; }
   object-fit: cover;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1280px) {
   .hero-grid { grid-template-columns: 1.2fr 1fr; }
   .hero-visual { width: 100%; height: auto; aspect-ratio: 4/5; }
 }
 @media (max-width: 900px) {
-  .hero-grid { grid-template-columns: 1fr; }
+  .hero-grid { grid-template-columns: 1fr; gap: 40px; }
   .hero-visual { max-width: 560px; }
 }
 
@@ -256,28 +266,30 @@ a { color: inherit; text-decoration: none; }
   background: var(--bg-elev);
   border-radius: var(--radius-xl);
   padding: var(--py-section-card) var(--pad-x-section);
-  width: calc(100% - 32px);
-  max-width: 1408px;
-  margin: 0 auto;
 }
 .section-plain {
   background: var(--bg);
   padding: var(--py-section) var(--pad-x-section);
-  width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
+}
+/* Figma overrides:
+   — section 04 «Что мы делаем» использует 120/120 (как card),
+   — section 07 «Цифры» использует 140/140 (как plain). */
+.section-plain.section--compact {
+  padding-top: var(--py-section-card);
+  padding-bottom: var(--py-section-card);
+}
+.section-card.section--tall {
+  padding-top: var(--py-section);
+  padding-bottom: var(--py-section);
 }
 .section-content {
   width: 100%;
-  max-width: var(--container);
+  max-width: var(--content);
   margin: 0 auto;
 }
 
 @media (max-width: 600px) {
-  .section-card {
-    width: calc(100% - 16px);
-    border-radius: 32px;
-  }
+  .section-card { border-radius: 32px; }
 }
 
 /* ====== MANIFESTO ====== */
@@ -341,7 +353,7 @@ a { color: inherit; text-decoration: none; }
   color: var(--text-soft);
   line-height: 1.55;
   max-width: 380px;
-  align-self: end;
+  align-self: start;
   padding-bottom: 6px;
 }
 @media (max-width: 900px) {
@@ -510,7 +522,7 @@ a { color: inherit; text-decoration: none; }
   line-height: 1.55;
 }
 .step-stat {
-  margin-top: 8px;
+  margin-top: 22px;
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -526,8 +538,8 @@ a { color: inherit; text-decoration: none; }
 .impact-top {
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  margin-bottom: 80px;
+  gap: clamp(40px, 5vw, 72px);
+  margin-bottom: clamp(48px, 5.5vw, 80px);
 }
 .impact-top h2 {
   font-family: 'IBM Plex Serif', Georgia, serif;
@@ -557,7 +569,7 @@ a { color: inherit; text-decoration: none; }
 .num-block {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 44px;
 }
 .num-label {
   font-size: 12px;
@@ -598,7 +610,7 @@ a { color: inherit; text-decoration: none; }
 .leader-top {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: clamp(28px, 4.8vw, 68px);
   margin-bottom: 64px;
 }
 .leader-top h2 {
@@ -648,8 +660,11 @@ a { color: inherit; text-decoration: none; }
   text-transform: uppercase;
 }
 .lc-roman {
-  font-size: 16px;
-  letter-spacing: 0.16em;
+  width: 22px;
+  height: 22px;
+  display: block;
+  flex-shrink: 0;
+  opacity: 0.85;
 }
 .leader-card h3 {
   font-family: 'IBM Plex Serif', Georgia, serif;
@@ -675,7 +690,7 @@ a { color: inherit; text-decoration: none; }
 }
 .donate-grid {
   display: grid;
-  grid-template-columns: 1fr 520px;
+  grid-template-columns: 1fr 1fr;
   gap: 80px;
   align-items: start;
 }
@@ -692,7 +707,7 @@ a { color: inherit; text-decoration: none; }
   color: var(--text-soft);
   line-height: 1.55;
   max-width: 680px;
-  margin-bottom: 44px;
+  margin-bottom: clamp(36px, 4.8vw, 68px);
 }
 .donate-bullets {
   list-style: none;
@@ -728,8 +743,8 @@ a { color: inherit; text-decoration: none; }
 .donate-form {
   background: var(--bg-elev);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 36px;
+  border-radius: var(--radius-xl);
+  padding: clamp(40px, 4.4vw, 64px);
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -737,16 +752,16 @@ a { color: inherit; text-decoration: none; }
 .form-title {
   font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 400;
-  font-size: 26px;
+  font-size: 28px;
   letter-spacing: -0.005em;
   line-height: 1.2;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .form-sub {
   font-size: 13px;
   color: var(--text-muted);
   line-height: 1.4;
-  margin-bottom: 28px;
+  margin-bottom: 36px;
 }
 .form-label {
   font-family: 'Inter', sans-serif;
@@ -885,7 +900,7 @@ a { color: inherit; text-decoration: none; }
   color: var(--accent-text);
   padding: 100px var(--pad-x-section) 56px;
 }
-.footer-content { max-width: var(--container); margin: 0 auto; }
+.footer-content { max-width: var(--content); margin: 0 auto; }
 .footer-top {
   display: grid;
   grid-template-columns: 1fr 180px 180px;
@@ -1054,7 +1069,7 @@ a { color: inherit; text-decoration: none; }
   <div class="container">
     <div class="hero-grid">
       <div class="hero-text">
-        <h1>Превращаем <em>желание&nbsp;помогать</em>&nbsp;в реальные проекты</h1>
+        <h1>Превращаем<br/><em>желание&nbsp;помогать</em><br/>в&nbsp;реальные<br/>проекты</h1>
         <p class="lead">Запустите своё социальное дело без бюрократии, юридических барьеров и&nbsp;операционной работы. Мы&nbsp;берём на&nbsp;себя инфраструктуру, вы&nbsp;остаётесь с&nbsp;идеей.</p>
         <div class="hero-cta">
           <a href="#donate" class="btn btn-primary btn-lg">Поддержать проект</a>
@@ -1079,11 +1094,11 @@ a { color: inherit; text-decoration: none; }
   <div class="section-content">
     <div class="manifesto-grid">
       <div class="col-left">
-        <h2>Желание помогать <em>есть у&nbsp;каждого.&nbsp;</em>Инфраструктура&nbsp;— нет.</h2>
+        <h2>Желание помогать<br/><em>есть у&nbsp;каждого.</em><br/>Инфраструктура&nbsp;—<br/>нет.</h2>
       </div>
       <div class="col-right">
         <p>Тысячи людей хотят делать полезные проекты&nbsp;— помогать людям, животным, своему городу. Но&nbsp;большинство не&nbsp;знает, как начать. Запуск НКО, отчётность, юридические тонкости, прозрачные сборы&nbsp;— всё это останавливает раньше, чем появляется первый проект.</p>
-        <div class="pullquote">UBER НКО берёт операционную часть на&nbsp;себя. Вы&nbsp;остаётесь с&nbsp;идеей и&nbsp;людьми, которым она нужна.</div>
+        <div class="pullquote">UBER НКО берёт операционную часть на&nbsp;себя.<br/>Вы&nbsp;остаётесь с&nbsp;идеей и&nbsp;людьми, которым она нужна.</div>
         <p>Это не&nbsp;ещё один фонд&nbsp;— это инкубатор инициатив и&nbsp;фабрика социальных лидеров. Каждый запущенный проект становится моделью для следующего.</p>
       </div>
     </div>
@@ -1091,7 +1106,7 @@ a { color: inherit; text-decoration: none; }
 </section>
 
 <!-- ====== WHAT WE DO ====== -->
-<section class="section-plain" id="what">
+<section class="section-plain section--compact" id="what">
   <div class="section-content">
     <div class="section-head">
       <h2>Что мы <em>берём<br/>на&nbsp;себя</em></h2>
@@ -1167,8 +1182,8 @@ a { color: inherit; text-decoration: none; }
   <div class="section-content">
     <div class="process-grid">
       <div class="col-left">
-        <h2>Путь от&nbsp;идеи<br/>до&nbsp;реализации&nbsp;—<br/><em>простой</em><br/>и&nbsp;поддерживаемый<br/>на&nbsp;каждом шаге.</h2>
-        <p>Вы&nbsp;приходите с&nbsp;идеей или желанием помочь. Дальше&nbsp;— наша работа: всё, что мешает вам делать, мы&nbsp;закроем со&nbsp;своей стороны.</p>
+        <h2>Путь от&nbsp;идеи<br/>до&nbsp;реализации&nbsp;—<br/>простой<br/>и&nbsp;поддерживаемый<br/>на&nbsp;каждом шаге.</h2>
+        <p>Вы&nbsp;приходите с&nbsp;идеей или желанием помочь.<br/>Дальше&nbsp;— наша работа: всё, что мешает вам делать, мы&nbsp;закроем со&nbsp;своей стороны.</p>
       </div>
       <div class="steps">
         <div class="step">
@@ -1217,10 +1232,10 @@ a { color: inherit; text-decoration: none; }
 </section>
 
 <!-- ====== IMPACT ====== -->
-<section class="section-card">
+<section class="section-card section--tall">
   <div class="section-content">
     <div class="impact-top">
-      <h2>Современное общество <em>насыщено энергией</em>.<br/>Разрыв между желанием<br/>и&nbsp;возможностью&nbsp;— огромен.</h2>
+      <h2>Современное общество<br/><em>насыщено энергией.</em><br/>Разрыв между желанием<br/>и&nbsp;возможностью&nbsp;— огромен.</h2>
       <p>UBER НКО закрывает этот разрыв. Юридические, финансовые и&nbsp;операционные сложности больше не&nbsp;останавливают инициативных людей.</p>
     </div>
     <div class="impact-divider"></div>
@@ -1255,7 +1270,7 @@ a { color: inherit; text-decoration: none; }
       <div class="leader-card">
         <div class="lc-head">
           <span class="lc-stage">Первый этап</span>
-          <span class="lc-roman">①</span>
+          <img class="lc-roman" src="img/stage-1.svg" alt="" width="22" height="22"/>
         </div>
         <h3>Первый шаг</h3>
         <p>Тест идеи, запуск первого небольшого проекта при&nbsp;поддержке фонда.</p>
@@ -1263,7 +1278,7 @@ a { color: inherit; text-decoration: none; }
       <div class="leader-card">
         <div class="lc-head">
           <span class="lc-stage">Второй этап</span>
-          <span class="lc-roman">②</span>
+          <img class="lc-roman" src="img/stage-2.svg" alt="" width="22" height="22"/>
         </div>
         <h3>Инкубация</h3>
         <p>Развитие инициативы, формирование команды, накопление опыта и&nbsp;компетенций.</p>
@@ -1271,7 +1286,7 @@ a { color: inherit; text-decoration: none; }
       <div class="leader-card">
         <div class="lc-head">
           <span class="lc-stage">Третий этап</span>
-          <span class="lc-roman">③</span>
+          <img class="lc-roman" src="img/stage-3.svg" alt="" width="22" height="22"/>
         </div>
         <h3>Социальное лидерство</h3>
         <p>Запуск новых проектов, масштабирование инициатив, влияние на&nbsp;целые сообщества.</p>
