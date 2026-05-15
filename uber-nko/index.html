@@ -820,7 +820,7 @@ a { color: inherit; text-decoration: none; }
 .amount-custom input, .email-input input {
   width: 100%;
   height: 56px;
-  padding: 0 50px 0 18px;
+  padding: 0 18px;
   border: 1px solid var(--line-strong);
   border-radius: 28px;
   background: var(--bg-elev);
@@ -841,17 +841,6 @@ a { color: inherit; text-decoration: none; }
   outline: none;
   border-color: var(--accent);
 }
-.amount-custom .rub {
-  position: absolute;
-  right: 18px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  font-size: 15px;
-  font-weight: 500;
-  pointer-events: none;
-}
-
 .form-check {
   display: flex;
   align-items: center;
@@ -1314,7 +1303,7 @@ a { color: inherit; text-decoration: none; }
     <div class="donate-grid">
       <div class="donate-left">
         <h2>Собираем средства<br/>на&nbsp;уставную деятельность</h2>
-        <p class="intro">Каждый вклад помогает запустить первые проекты: юридическое оформление, операционная работа, люди. Отчёт о&nbsp;каждом рубле&nbsp;— публичный и&nbsp;открытый.</p>
+        <p class="intro">Каждый вклад помогает запустить первые проекты: юридическое оформление, операционная работа, люди.<br/>Отчёт о&nbsp;каждом рубле&nbsp;— публичный и&nbsp;открытый.</p>
         <ul class="donate-bullets">
           <li>Юридически защищённый эквайринг Совкомбанка</li>
           <li>Публичный отчёт в&nbsp;конце каждого квартала</li>
@@ -1325,7 +1314,6 @@ a { color: inherit; text-decoration: none; }
         <div class="form-title">Внести пожертвование</div>
         <div class="form-sub">Платёж через эквайринг Совкомбанка · безопасно</div>
 
-        <label class="form-label">Сумма, ₽</label>
         <div class="amount-grid">
           <button class="amount-btn" type="button" data-amount="500">500</button>
           <button class="amount-btn active" type="button" data-amount="1000">1 000</button>
@@ -1334,7 +1322,6 @@ a { color: inherit; text-decoration: none; }
         </div>
         <div class="amount-custom">
           <input type="number" id="custom-amount" placeholder="Своя сумма" min="100"/>
-          <span class="rub">₽</span>
         </div>
 
         <label class="form-label" for="email">Email для отчётов</label>
