@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Magnific — vibrant vertical slats | Denis Yudin</title>
+  <meta name="description" content="A study generated with Magnific from a single prompt — vibrant vertical slats in neon pink, cyan and yellow against a weathered brick building."/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta property="og:title" content="Magnific — vibrant vertical slats"/>
+  <meta property="og:description" content="Sixteen variations from a single prompt, generated with Magnific."/>
+  <meta property="og:image" content="img/magnific_vibrant-vertical-slats-in_IaR4BHBtvE.jpg"/>
+  <link rel="shortcut icon" type="image/x-icon" href="../assets/694eb3c01c94deb52f44b88a_p10 0062_24.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"/>
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#0a0a0b;
+      --surface:#131316;
+      --border:#22232a;
+      --text:#ececf1;
+      --text-dim:#9498a6;
+      --text-mute:#5f6371;
+      --accent:#ff4da6;
+      --accent-2:#00e5ff;
+      --accent-3:#ffd60a;
+    }
+    html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    body{
+      font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+      background:var(--bg);color:var(--text);line-height:1.6;
+    }
+    a{color:inherit}
+
+    .top-bar{
+      position:sticky;top:0;z-index:50;
+      background:rgba(10,10,11,.78);
+      backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--border);
+    }
+    .top-bar-inner{
+      max-width:1280px;margin:0 auto;padding:14px 28px;
+      display:flex;align-items:center;justify-content:space-between;
+      font-size:13px;
+    }
+    .top-bar a{color:var(--text-dim);text-decoration:none;transition:color .2s}
+    .top-bar a:hover{color:var(--text)}
+    .top-bar .site{color:var(--text-mute);font-family:'JetBrains Mono',monospace;letter-spacing:.02em}
+
+    .hero{
+      max-width:1280px;margin:0 auto;padding:96px 28px 56px;
+    }
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;
+      font-family:'JetBrains Mono',monospace;font-size:12px;
+      color:var(--text-dim);letter-spacing:.12em;text-transform:uppercase;
+      margin-bottom:28px;
+    }
+    .dot{width:6px;height:6px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2))}
+    h1{
+      font-size:clamp(2.4rem,5.5vw,4.2rem);
+      font-weight:700;letter-spacing:-.03em;line-height:1.04;
+      margin-bottom:24px;
+    }
+    h1 .grad{
+      background:linear-gradient(90deg,var(--accent) 0%,var(--accent-3) 50%,var(--accent-2) 100%);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+    }
+    .lead{
+      max-width:760px;color:var(--text-dim);font-size:1.05rem;
+    }
+
+    .prompt-card{
+      max-width:1280px;margin:0 auto 56px;padding:0 28px;
+    }
+    .prompt-inner{
+      border:1px solid var(--border);
+      background:linear-gradient(180deg,#101015 0%,#0c0c0f 100%);
+      border-radius:14px;padding:24px 28px;
+      display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:start;
+    }
+    .prompt-label{
+      font-family:'JetBrains Mono',monospace;
+      font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+      color:var(--text-mute);padding-top:4px;white-space:nowrap;
+    }
+    .prompt-text{
+      font-family:'JetBrains Mono',monospace;
+      font-size:14px;line-height:1.75;color:var(--text);
+    }
+    .prompt-text .hl{color:var(--accent)}
+    .prompt-text .hl2{color:var(--accent-2)}
+    .prompt-text .hl3{color:var(--accent-3)}
+
+    .meta-row{
+      max-width:1280px;margin:0 auto;padding:0 28px 40px;
+      display:flex;flex-wrap:wrap;gap:14px;
+      font-family:'JetBrains Mono',monospace;font-size:12px;
+      color:var(--text-mute);
+    }
+    .meta-chip{
+      padding:6px 12px;border:1px solid var(--border);border-radius:999px;
+      background:var(--surface);
+    }
+    .meta-chip strong{color:var(--text);font-weight:500}
+
+    .grid{
+      max-width:1280px;margin:0 auto;padding:0 28px 120px;
+      display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+    }
+    @media (max-width:960px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:560px){.grid{grid-template-columns:1fr}}
+
+    .card{
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:12px;overflow:hidden;
+      transition:transform .25s ease,border-color .25s ease;
+    }
+    .card:hover{transform:translateY(-2px);border-color:#33343c}
+    .card-img-wrap{aspect-ratio:1/1;overflow:hidden;background:#0d0d10;display:block}
+    .card-img{
+      width:100%;height:100%;object-fit:cover;display:block;
+      transition:transform .5s ease;
+    }
+    .card:hover .card-img{transform:scale(1.025)}
+    .card-cap{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 14px;
+      font-family:'JetBrains Mono',monospace;font-size:12px;
+      color:var(--text-dim);border-top:1px solid var(--border);
+    }
+    .card-cap .name{
+      color:var(--text);font-weight:500;letter-spacing:.02em;
+      display:inline-flex;align-items:center;gap:8px;
+    }
+    .card-cap .name::before{
+      content:"";width:6px;height:6px;border-radius:50%;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    }
+    .card-cap .idx{color:var(--text-mute)}
+
+    footer{
+      border-top:1px solid var(--border);
+      padding:36px 28px 48px;text-align:center;
+      color:var(--text-mute);font-family:'JetBrains Mono',monospace;font-size:12px;
+    }
+    footer a{color:var(--text-dim);text-decoration:none}
+    footer a:hover{color:var(--text)}
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <a href="../">← denisyudin.com</a>
+    <span class="site">/ magnific</span>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="eyebrow"><span class="dot"></span> Single prompt · 16 variations</div>
+  <h1>Vibrant vertical slats,<br/><span class="grad">rendered by Magnific.</span></h1>
+  <p class="lead">A small study from one prompt — sixteen distinct outputs generated with the Magnific model. Neon slats meet a weathered brick wall, a classical meander frieze and a glass cupola under a flat pale-blue sky.</p>
+</section>
+
+<section class="prompt-card">
+  <div class="prompt-inner">
+    <span class="prompt-label">Prompt</span>
+    <p class="prompt-text">
+      <span class="hl">vibrant vertical slats</span> in <span class="hl">neon pink</span>, <span class="hl2">cyan</span> and <span class="hl3">yellow</span> forming geometric patterns, juxtaposed against historic weathered brick building, classical meander frieze, glass cupola, solid pale blue sky, crisp daytime lighting
+    </p>
+  </div>
+</section>
+
+<div class="meta-row">
+  <span class="meta-chip">Model · <strong>Magnific</strong></span>
+  <span class="meta-chip">Outputs · <strong>16</strong></span>
+  <span class="meta-chip">Aspect · <strong>Square</strong></span>
+  <span class="meta-chip">Series · <strong>vibrant-vertical-slats</strong></span>
+</div>
+
+<section class="grid" id="grid"></section>
+
+<footer>
+  <p>Generated with Magnific · <a href="../">denisyudin.com</a></p>
+</footer>
+
+<script>
+  const files = [
+    "magnific_vibrant-vertical-slats-in_IaR4BHBtvE.jpg",
+    "magnific_vibrant-vertical-slats-in_l7mXxsBgv9.jpg",
+    "magnific_vibrant-vertical-slats-in_625ug2kiJO.jpg",
+    "magnific_vibrant-vertical-slats-in_wPfIKaa7EI.jpg",
+    "magnific_vibrant-vertical-slats-in_EqW2fqJuuO.jpg",
+    "magnific_vibrant-vertical-slats-in_l7mXrjXgv9.jpg",
+    "magnific_vibrant-vertical-slats-in_rlBMKcpxtc.jpg",
+    "magnific_vibrant-vertical-slats-in_NZbElzH6D9.jpg",
+    "magnific_vibrant-vertical-slats-in_e84wGxFdqL.jpg",
+    "magnific_vibrant-vertical-slats-in_IaR40PUtvE.jpg",
+    "magnific_vibrant-vertical-slats-in_gJhBlRpSXO.jpg",
+    "magnific_vibrant-vertical-slats-in_xgoDrSijfW.jpg",
+    "magnific_vibrant-vertical-slats-in_e84wDnUdqL.jpg",
+    "magnific_vibrant-vertical-slats-in_XtNJeR1Bfo.jpg",
+    "magnific_vibrant-vertical-slats-in_PiFay8c42C.jpg",
+    "magnific_vibrant-vertical-slats-in_NZbEPjZ6D9.jpg"
+  ];
+  const grid = document.getElementById("grid");
+  files.forEach((f, i) => {
+    const id = f.split("_").pop().replace(".jpg","");
+    const card = document.createElement("figure");
+    card.className = "card";
+    card.innerHTML = `
+      <a class="card-img-wrap" href="img/${f}" target="_blank" rel="noopener">
+        <img class="card-img" src="img/${f}" alt="Magnific output ${i+1}" loading="lazy" decoding="async"/>
+      </a>
+      <figcaption class="card-cap">
+        <span class="name">Magnific</span>
+        <span class="idx">#${String(i+1).padStart(2,"0")} · ${id}</span>
+      </figcaption>
+    `;
+    grid.appendChild(card);
+  });
+</script>
+
+</body>
+</html>
