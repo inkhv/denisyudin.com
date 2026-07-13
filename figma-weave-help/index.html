@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <title>Figma Weave — обучающий гайд по Knowledge Center | Denis Yudin</title>
+  <meta content="Конспект всех 88 статей официального Knowledge Center Figma Weave на русском языке — редактор, дашборд, тарифы, ноды и сравнение моделей." name="description"/>
+  <meta content="Figma Weave — обучающий гайд по Knowledge Center" property="og:title"/>
+  <meta content="Конспект всех 88 статей официального Knowledge Center Figma Weave на русском языке." property="og:description"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <link href="../assets/694eb3c01c94deb52f44b88a_p10 0062_24.png" rel="shortcut icon" type="image/x-icon"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-2: #1c2129;
+      --border: #30363d;
+      --border-light: #21262d;
+      --text: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted: #656d76;
+      --accent: #58a6ff;
+      --accent-hover: #79c0ff;
+      --green: #3fb950;
+      --orange: #d29922;
+      --red: #f85149;
+      --purple: #bc8cff;
+      --code-bg: #0d1117;
+      --inline-code-bg: rgba(110,118,129,0.2);
+      --blockquote-border: #3fb950;
+      --link: #58a6ff;
+      --radius: 8px;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* Back nav */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13, 17, 23, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-light);
+      padding: 12px 0;
+    }
+    .top-bar-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .top-bar a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .top-bar a:hover { color: var(--text); }
+    .top-bar .site-name { color: var(--text-muted); font-size: 13px; }
+
+    /* Article container */
+    .article {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 24px 120px;
+    }
+
+    /* Headings */
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-top: 56px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-top: 32px;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-top: 28px;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+
+    /* Paragraphs */
+    p {
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    /* Source line under article title */
+    .src {
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 10px;
+    }
+    .src a {
+      color: var(--text-muted);
+    }
+    .src a:hover { color: var(--accent-hover); }
+
+    /* Links */
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; color: var(--accent-hover); }
+
+    /* Strong / emphasis */
+    strong { font-weight: 600; color: #fff; }
+    em { font-style: italic; color: var(--text-secondary); }
+
+    /* Lists */
+    ul, ol {
+      margin-bottom: 16px;
+      padding-left: 28px;
+    }
+    li {
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    li::marker { color: var(--text-muted); }
+
+    /* Blockquote (used for section summaries) */
+    blockquote {
+      margin: 20px 0 28px;
+      padding: 14px 20px;
+      border-left: 4px solid var(--blockquote-border);
+      background: var(--surface);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    blockquote p {
+      margin-bottom: 0;
+      color: var(--text-secondary);
+    }
+    blockquote strong { color: var(--text); }
+
+    /* Horizontal rule */
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 40px 0;
+    }
+
+    /* Inline code */
+    code {
+      font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.875em;
+      background: var(--inline-code-bg);
+      padding: 2px 7px;
+      border-radius: 4px;
+      color: var(--accent-hover);
+      font-weight: 400;
+    }
+
+    /* TOC */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin: 24px 0 8px;
+    }
+    .toc ol {
+      padding-left: 22px;
+      margin-bottom: 0;
+    }
+    .toc li {
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+    .toc a {
+      color: var(--accent);
+    }
+    .toc .toc-note {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* Lead paragraph */
+    .lead {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin-bottom: 8px;
+    }
+
+    .section-intro {
+      color: var(--text-secondary);
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      h1 { font-size: 1.7rem; }
+      h2 { font-size: 1.25rem; }
+      .article { padding: 32px 16px 80px; }
+      table { font-size: 0.82rem; }
+      th, td { padding: 8px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <a href="../index.html">&larr; Назад на сайт</a>
+    <span class="site-name">denisyudin.com</span>
+  </div>
+</div>
+
+<article class="article">
+
+  <h1>Figma Weave — обучающий гайд по Knowledge Center</h1>
+
+  <p class="lead">Конспект всех 88 статей официального Knowledge Center Figma Weave (<a href="https://help.weavy.ai/en" target="_blank" rel="noopener">help.weavy.ai/en</a>, собрано 13 июля 2026). Weave — бывший продукт Weavy, приобретённый Figma: визуальный node-based редактор для сборки workflow из генеративных AI-моделей (изображения, видео, 3D, вектор, аудио-липсинк) с холстом, узлами, итераторами и композитингом. По каждой статье — краткое содержание и практический вывод; в конце каждого раздела — обобщение, в самом конце страницы — сквозные выводы по всему гайду.</p>
+
+  <hr>
+
+  <div class="toc">
+    <ol>
+      <li><a href="#c1">Weave's Editor</a> <span class="toc-note">— Media, Text and Prompts, Navigating Weave, Import Models, Preferences (22 статьи)</span></li>
+      <li><a href="#c2">My Dashboard</a> <span class="toc-note">(7 статей)</span></li>
+      <li><a href="#c3">Account management</a> <span class="toc-note">— основной раздел, Team Plan, Enterprise Plan (25 статей)</span></li>
+      <li><a href="#c4">Nodes and Models Documentations</a> <span class="toc-note">— Tools, Helpers, Iterators, Models Comparison (21 статья)</span></li>
+      <li><a href="#c5">Frequently Asked Questions</a> <span class="toc-note">(13 статей)</span></li>
+      <li><a href="#c6">Сквозные выводы</a></li>
+    </ol>
+  </div>
+
+  <hr>
+
+  <!-- 1 -->
+  <h2 id="c1">1. Weave's Editor</h2>
+
+  <p class="section-intro">Полное руководство по редактору Weave и его функциям: работа с медиа, текстом и промптами, навигация по канвасу, импорт моделей и персональные настройки.</p>
+
+  <h3>1.1 Media</h3>
+
+  <h4>Работа с медиа <span style="color:var(--text-secondary); font-weight:400;">(Working with Media)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14653652-working-with-media" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> статья описывает базовые способы импорта медиафайлов в Weave — перетаскиванием на канвас (каждый файл становится отдельным элементом) или через Import Node (все файлы группируются в одном узле). Также рассказывается о сортировке медиа по имени или дате добавления через иконку сортировки. Отдельно описан режим отображения медиа-узлов: когда в одном узле (Import Node или GenAI-узле) находится несколько файлов, можно листать их по одному стрелками или переключиться в режим галереи, чтобы видеть все элементы сразу.</p>
+  <p><strong>Вывод:</strong> используйте Import Node, когда нужно держать связанные файлы в одном узле, а drag-and-drop — когда файлы должны остаться независимыми; переключение single/gallery view упрощает навигацию по большим наборам генераций.</p>
+
+  <h4>Галерея медиа <span style="color:var(--text-secondary); font-weight:400;">(Media Gallery)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12292408-media-gallery" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> статья объясняет, как открыть сгенерированный результат в полноэкранном режиме галереи — кликом по иконке галереи в правом нижнем углу узла, либо наведением на узел и нажатием клавиши Space. Далее описывается, как посмотреть историю генерации файла: открыть галерею и нажать «Show info», после чего становятся видны использованный промпт, параметры и настройки генерации, а также номер seed и другие технические детали.</p>
+  <p><strong>Вывод:</strong> режим галереи с «Show info» — основной способ проверить и воспроизвести параметры удачной генерации (промпт, seed, настройки) без необходимости пересоздавать узел.</p>
+
+  <h4>Скачивание медиа <span style="color:var(--text-secondary); font-weight:400;">(Downloading Media)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14654565-downloading-media" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> статья описывает несколько сценариев скачивания файлов из Weave. Через меню из трёх точек в правом верхнем углу узла можно скачать текущий файл или все файлы внутри узла. Если узлы объединены в группу, можно кликнуть правой кнопкой по области группы и выбрать «Download All», чтобы скачать все файлы группы сразу. Также можно выделить сразу несколько узлов рамкой выделения (click and drag) и через контекстное меню правой кнопкой мыши скачать файлы из всех выбранных узлов одновременно.</p>
+  <p><strong>Вывод:</strong> для разовой выгрузки достаточно меню на узле, а для массовой выгрузки удобнее группировать узлы или выделять их рамкой и использовать «Download All» — это экономит время при работе с большими проектами.</p>
+
+  <h4>Удаление файла из узла <span style="color:var(--text-secondary); font-weight:400;">(Removing a file from a Node)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12968045-removing-a-file-from-a-node" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> статья описывает два способа очистки узла от лишних генераций через меню из трёх точек в правом верхнем углу узла. Первый — «Remove Current Generation», который удаляет только выбранный (текущий отображаемый) файл. Второй — «Remove All Other Generations», который удаляет все файлы в узле, кроме выбранного, оставляя только один нужный результат.</p>
+  <p><strong>Вывод:</strong> эти команды полезны для очистки узла после серии генераций — можно убрать один неудачный результат либо сразу оставить только лучший вариант, не удаляя узел целиком.</p>
+
+  <blockquote><p><strong>Итог по разделу «Media»:</strong> раздел описывает полный цикл работы с медиафайлами в редакторе Weave — импорт и сортировка, просмотр результатов и истории генерации в полноэкранной галерее, выгрузку файлов по одному, группами или через множественное выделение, а также точечную или массовую очистку узла от лишних генераций. Вместе четыре статьи покрывают весь путь медиафайла в проекте — от появления на канвасе до финального отбора и выгрузки нужного результата.</p></blockquote>
+
+  <h3>1.2 Text and Prompts</h3>
+
+  <h4>Изменение размера текстового узла <span style="color:var(--text-secondary); font-weight:400;">(Resizing a Text Node)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14654816-resizing-a-text-node" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> короткая статья объясняет, как изменить размер текстового узла в редакторе Weave, чтобы увеличить область отображения текста. Единственный описанный шаг — взять за край узла и перетащить его до нужного размера.</p>
+  <p><strong>Вывод:</strong> это базовая, но необходимая операция при работе с текстовыми узлами — используйте её, когда содержимое не помещается в текущих границах узла и нужно расширить область отображения.</p>
+
+  <h4>Переменные промпта <span style="color:var(--text-secondary); font-weight:400;">(Prompt Variables)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14047674-prompt-variables" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> статья описывает механизм переменных, который позволяет объединять несколько текстовых вводов в один главный промпт-узел. Чтобы создать переменную, нужно добавить Prompt Node и нажать «Add Variables» в его нижнем левом углу — появится новый входной хендл, к которому можно подключить любой Text Node, и он станет переменной. Также описаны режимы отображения переменных (через кнопку «Display»): Variable Source, Variable Value и Variable Source and Value. Переменные внутри узла можно перетаскивать мышью на нужную позицию.</p>
+  <p><strong>Вывод:</strong> переменные стоит использовать, когда нужно собрать сложный промпт из нескольких управляемых текстовых блоков (например, переиспользуемых фрагментов) вместо того, чтобы переписывать один длинный промпт вручную — это упрощает организацию и модификацию промптов.</p>
+
+  <blockquote><p><strong>Итог по разделу «Text and Prompts»:</strong> раздел посвящён базовым операциям с текстовыми узлами и промптами — от простого изменения размера узла до продвинутого механизма переменных, позволяющего собирать составные промпты из отдельных текстовых блоков.</p></blockquote>
+
+  <h3>1.3 Navigating Weave</h3>
+
+  <h4>Навигация по канвасу <span style="color:var(--text-secondary); font-weight:400;">(Navigating the Canvas)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12292356-navigating-the-canvas" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> базовые приёмы перемещения по рабочему полотну. Для панорамирования — инструмент «рука» (клавиша H) и перетаскивание мышью/трекпадом (двумя пальцами для скролла). Для масштабирования — зажатая Cmd (Mac) / Ctrl (Windows) при прокрутке колеса мыши, либо жест «щипок» на трекпаде.</p>
+  <p><strong>Вывод:</strong> это базовая механика работы с канвасом — освоить её нужно в первую очередь, без неё неудобно работать даже с небольшим workflow.</p>
+
+  <h4>Группировка и разгруппировка узлов <span style="color:var(--text-secondary); font-weight:400;">(Group and Ungroup Nodes)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/13560959-group-and-ungroup-nodes" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> как объединять узлы в группы: выделить узлы и нажать Ctrl/Cmd+G или правый клик → Group Selection. Группу можно двигать целиком, перемещать отдельные узлы внутри неё (группа расширяется автоматически), сжимать под размер содержимого через «Resize to Fit». Описано редактирование заголовка, изменение его размера и цвета группы, разгруппировка и удаление отдельного узла из группы через контекстное меню.</p>
+  <p><strong>Вывод:</strong> группировка полезна для организации сложных workflow с большим количеством узлов — позволяет визуально структурировать канвас и управлять частями схемы как единым целым.</p>
+
+  <h4>Соединение рёбер / проводов <span style="color:var(--text-secondary); font-weight:400;">(Connecting Edges (Wires))</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14688276-connecting-edges-wires" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> механика создания связей: перетащить «провод» от входа или выхода узла. Если отпустить провод, вытянутый из выхода, на пустом месте канваса — появится меню выбора нового узла. При перетаскивании в существующий узел провод автоматически подключается к совместимому входу (текст к тексту, изображение к изображению) по порядку доступности входов. Для узлов с несколькими входами дополнительные слоты появляются автоматически.</p>
+  <p><strong>Вывод:</strong> понимание автоматической логики соединений (по типу контента и по порядку входов) экономит время при сборке workflow и помогает избежать путаницы, когда провод «не подключается».</p>
+
+  <h4>Удаление рёбер / проводов <span style="color:var(--text-secondary); font-weight:400;">(Deleting Edges (Wires))</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14655207-deleting-edges-wires" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> удаление связи между узлами: выделить провод правым кликом и нажать Delete, либо двойной клик по нему. Можно выделить сразу несколько проводов рамкой выделения и удалить их все одним нажатием Delete.</p>
+  <p><strong>Вывод:</strong> удобно для быстрой пересборки workflow — массовое удаление связей рамкой ускоряет чистку сложных схем перед реорганизацией.</p>
+
+  <h4>Разбираемся с узлами <span style="color:var(--text-secondary); font-weight:400;">(Understanding Nodes)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12292386-understanding-nodes" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> узел — функция с входами (слева) и выходами (справа), обрабатывающая контент. Два типа: генеративные ИИ-узлы (кнопка Run, требуют кредиты, создают новый контент) и негенеративные узлы (ручные инструменты — painter, blur, объединение промптов — без кредитов). Добавление узлов — через боковое меню, клавишу Tab или правый клик; настройка параметров — через правую панель. Цветовая кодировка: зелёный — изображение, фиолетовый — текст/LoRA, красный — видео, синий — массив/3D, белый — множественные входы, лаймовый — маска.</p>
+  <p><strong>Вывод:</strong> ключевая концептуальная статья для новичков — понимание типов узлов, их входов/выходов и цветовой кодировки нужно освоить до начала сборки любого workflow.</p>
+
+  <h4>Инструменты <span style="color:var(--text-secondary); font-weight:400;">(Tools)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12267755-tools" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> функция Tools (ранее Design Apps) превращает workflow в переиспользуемый «дизайн-конструктор» с настраиваемыми атрибутами, которым можно делиться. Чтобы создать инструмент, нужно добавить Output-узел — откроется вкладка Tool. Видимые атрибуты берутся из узлов без входов (например, Prompt), их можно скрыть через контекстное меню. Публикация — кнопкой Publish; при шаринге только автор видит редактируемый режим, получатели — опубликованную версию с возможностью переключиться в режим экспериментов. Каждая публикация создаёт версию с меткой времени.</p>
+  <p><strong>Вывод:</strong> Tools полезны, когда нужно превратить готовый workflow в шаблон/конструктор для многократного использования командой или клиентами — без пересборки схемы каждый раз.</p>
+
+  <h4>Горячие клавиши <span style="color:var(--text-secondary); font-weight:400;">(Keyboard Shortcuts)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14688389-keyboard-shortcuts" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> <code>Tab</code> — меню узлов; <code>Cmd/Ctrl+C/V</code> — копировать/вставить; <code>Cmd/Ctrl+D</code> — дублировать узел(ы); <code>Cmd/Ctrl+Z</code> / <code>Shift+Z</code> — отменить/повторить; <code>Cmd/Ctrl+P</code> — новый Prompt-узел; перетаскивание провода с зажатым Option/Alt — подсказки узлов с автоподключением; <code>V</code>/<code>H</code> — переключение «Выделение»/«Рука»; <code>Cmd+I</code> — импорт файлов.</p>
+  <p><strong>Вывод:</strong> стоит держать под рукой как шпаргалку — знание сочетаний заметно ускоряет сборку и правку workflow по сравнению с мышью и меню.</p>
+
+  <h4>Редактор таймлайна <span style="color:var(--text-secondary); font-weight:400;">(Timeline Editor)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14689260-timeline-editor" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> таймлайн встроен в Compositor. Включается через Edit → Timeline — слои появляются как дорожки. Можно менять длительность видео и FPS, порядок слоёв перетаскиванием, обрезать начало/конец, включать/выключать видимость слоя (глаз), блокировать (замок) и отключать звук. Свойства слоя (прозрачность, blending, позиция, масштаб) — на правой панели.</p>
+  <p><strong>Вывод:</strong> нужен при монтаже видео-результатов внутри Weave — это встроенный мини-видеоредактор для компоновки нескольких слоёв/видео в единый ролик.</p>
+
+  <h4>New Figma Weave Delights #2</h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14878372-new-figma-weave-delights-2" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> три улучшения: «Unpack a Node» — распаковка нескольких результатов одного узла в отдельные узлы (меню из трёх точек); «Creating Iterators from Existing Node» — создание итератора прямо из узла с несколькими результатами («Create Iterator»); «Delete Node and Maintain Flow» — удаление узла с сохранением связей workflow через Shift+Delete.</p>
+  <p><strong>Вывод:</strong> эти функции экономят время при работе с батчами результатов — не нужно вручную пересобирать связи после удаления промежуточного узла или разбирать несколько результатов по отдельности.</p>
+
+  <h4>New Figma Weave Delights #3</h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/15068263-new-figma-weave-delights-3" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> «Duplicate with Connections» — дублирование узлов с сохранением связей (Cmd/Ctrl+Shift+D или Alt+перетаскивание); «Handpick Node Selection» — точечный выбор узлов без рамки через Shift+клик; «CSV to Text Iterator» — загрузка CSV на канвас для автоматического создания текстового итератора из выбранной колонки.</p>
+  <p><strong>Вывод:</strong> особенно полезна функция импорта CSV в итератор — заменяет ручное копирование множества текстовых вариаций и удобна при массовой генерации с разными промптами.</p>
+
+  <h4>New Figma Weave Delights #4</h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/15263628-new-figma-weave-delights-4" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> «Multi-Connect Selection» — подключение сразу нескольких выделенных узлов к цели одним перетаскиванием провода; «Smart Edge Dragging» — подключение к нескольким узлам наведением при зажатом Shift; «Prompt Node from Handle» — двойной клик по текстовому «хендлу» узла мгновенно создаёт и подключает новый Prompt-узел рядом.</p>
+  <p><strong>Вывод:</strong> эти функции ускоряют массовую коммутацию узлов в сложных workflow — особенно полезны, когда нужно быстро подключить один источник к множеству целей.</p>
+
+  <h4>Использование раздела «Сохранённое» <span style="color:var(--text-secondary); font-weight:400;">(Using the Saved section)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/15495911-using-the-saved-section" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> раздел «Saved» в левой панели позволяет сохранять модели, узлы и группы узлов для повторного использования — доступны всем участникам рабочего пространства. Можно сохранить модель с кастомными настройками как именованный пресет (заменяет прежний раздел My Models), сохранить настроенный узел-инструмент, а также группу из двух и более узлов с названием, описанием и превью. Переименование/удаление — через режим редактирования (карандаш); доступ есть и из контекстного меню канваса (правый клик → Saved).</p>
+  <p><strong>Вывод:</strong> раздел Saved стоит использовать для стандартизации часто повторяющихся настроек моделей и связок узлов в команде — экономит время и обеспечивает единообразие workflow между участниками.</p>
+
+  <blockquote><p><strong>Итог по разделу «Navigating Weave»:</strong> раздел охватывает полный набор базовых и продвинутых навыков работы с канвасом — от панорамирования и зума до понимания узлов, соединения/удаления, группировки, горячих клавиш, таймлайн-редактора видео и системы сохранённых пресетов. Блок статей «Delights» фиксирует итеративные UX-улучшения (массовое подключение узлов, распаковка результатов, импорт CSV в итераторы) — интерфейс Weave активно развивается в сторону ускорения сборки сложных workflow.</p></blockquote>
+
+  <h3>1.4 Import Models</h3>
+
+  <h4>Импорт моделей <span style="color:var(--text-secondary); font-weight:400;">(Importing Models)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12265334-importing-models" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> как импортировать сторонние генеративные модели в Weave из трёх источников — Fal, Replicate и CivitAi (доступно на тарифах Starter, Pro, Team и Enterprise). Процесс одинаков: перетащить узел Import Model на канвас (или через TAB и поиск), открыть страницу нужной модели на внешнем сервисе, скопировать URL и вставить его на канвас Weave или в сам узел — модель импортируется автоматически, параметры появляются на панели справа. Кнопка Save model сохраняет модель для использования во всех воркфлоу (раздел Saved).</p>
+  <p><strong>Вывод:</strong> используйте эту функцию, когда нужной модели нет в стандартном наборе Weave, а она доступна на Fal, Replicate или CivitAi — импорт занимает пару кликов через вставку URL, а сохранение модели один раз делает её доступной во всех последующих проектах.</p>
+
+  <h4>Импорт LoRA в Figma Weave <span style="color:var(--text-secondary); font-weight:400;">(Importing LoRAs in Figma Weave)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/11046940-importing-loras-in-figma-weave" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> как загружать собственные LoRA-модели для кастомизации стиля, персонажей или концептов. Узел Import LoRA (через toolbox или поиск «LoRA»), загрузка файла кнопкой Upload, подключение к совместимой модели (например FluxDev LoRA): текстовый промпт → вход «prompt», LoRA → вход «LoRA1». Сила влияния регулируется через Number node (1 = полный эффект, дробное значение 0–1 — мягче), подключается ко входу «LoRA1 scale». Поддерживается одновременное использование двух LoRA (второй — «LoRA2» / «LoRA2 scale»).</p>
+  <p><strong>Вывод:</strong> LoRA стоит использовать, когда нужен специфичный, узнаваемый стиль или персонаж, недоступный в базовых моделях; ключевой инсайт — сила эффекта тонко настраивается через float-параметр scale, а комбинирование двух LoRA расширяет возможности, но требует экспериментов.</p>
+
+  <blockquote><p><strong>Итог по разделу «Import Models»:</strong> раздел показывает два способа расширить набор моделей за пределы встроенных — подключение готовых моделей из внешних платформ (Fal, Replicate, CivitAi) через вставку URL и загрузку собственных кастомизирующих LoRA-файлов с гибкой настройкой силы эффекта. Оба механизма построены вокруг узлов канваса и позволяют сохранять результат для повторного использования.</p></blockquote>
+
+  <h3>1.5 Preferences</h3>
+
+  <h4>Настройки предпочтений <span style="color:var(--text-secondary); font-weight:400;">(Preferences Settings)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/13560649-preferences-settings" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> путь к панели предпочтений: иконка Weave в левом верхнем углу → прокрутить меню вниз → Preferences. В панели — набор опций, каждую можно включить/выключить отдельно.</p>
+  <p><strong>Вывод:</strong> это входная точка для любой кастомизации поведения редактора Weave — с неё стоит начинать при изменении общих настроек рабочего пространства.</p>
+
+  <h4>Изменение стиля wire-соединений <span style="color:var(--text-secondary); font-weight:400;">(Changing Wire Styles)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14047607-changing-wire-styles" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> изменение визуального стиля линий, связывающих узлы. Применяется глобально ко всем воркфлоу. Путь: логотип Weave → Preferences → Wire Style. Доступны три варианта: Elbow Style (ломаная под углом), Line Style (прямая), Bezier Style (плавная кривая).</p>
+  <p><strong>Вывод:</strong> полезно для улучшения читаемости сложных воркфлоу — Bezier Style мягче для органичных схем, Elbow Style удобнее для строгих «схемотехнических» структур; настройка глобальная и повлияет на все воркфлоу.</p>
+
+  <blockquote><p><strong>Итог по разделу «Preferences»:</strong> единая точка входа ко всем персональным настройкам интерфейса — общий переключатель опций и выбор стиля отрисовки wire-соединений. Обе настройки применяются на уровне всего аккаунта/рабочего пространства.</p></blockquote>
+
+  <hr>
+
+  <!-- 2 -->
+  <h2 id="c2">2. My Dashboard</h2>
+
+  <p class="section-intro">Полное руководство по личному дашборду: файлы, папки, обложки, шаринг, коллаборация, корзина и публикация в Figma Community.</p>
+
+  <h4>Создание файлов <span style="color:var(--text-secondary); font-weight:400;">(Creating Files)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12292303-creating-files" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> два способа начать работу с файлом: создание нового файла кнопкой «Create new file» в левом верхнем углу, либо дублирование существующего кнопкой «Duplicate» (правый верхний угол) при открытии чужого файла.</p>
+  <p><strong>Вывод:</strong> дублирование — базовый механизм получения редактируемой копии чужого workflow без прав на редактирование оригинала.</p>
+
+  <h4>Создание и упорядочивание папок <span style="color:var(--text-secondary); font-weight:400;">(Creating and Arranging Folders)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12943563-creating-and-arranging-folders" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> новая папка создаётся правым кликом по свободному пространству и выбором «New Folder». Файлы перетаскиваются в папки вручную либо перемещаются через контекстное меню (правый клик → «Move»).</p>
+  <p><strong>Вывод:</strong> стоит структурировать проекты по папкам с самого начала — по мере роста числа файлов это заметно упрощает навигацию.</p>
+
+  <h4>Создание или изменение обложки <span style="color:var(--text-secondary); font-weight:400;">(Creating or Changing a Cover Image (thumbnail))</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12943508-creating-or-changing-a-cover-image-thumbnail" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> клик правой кнопкой по изображению на канвасе → «Set as cover image». Для compositor-нод обложку из результата задают через промежуточную Preview-ноду.</p>
+  <p><strong>Вывод:</strong> обложка используется для визуальной идентификации файла в дашборде — полезно ставить её на итоговый/лучший результат workflow.</p>
+
+  <h4>Совместный доступ к файлам <span style="color:var(--text-secondary); font-weight:400;">(Sharing Files)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12944804-sharing-files" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> кнопка «Share» в правом верхнем углу. Три уровня доступа: только у людей с явным доступом, у всех в рабочем пространстве, или у любого по ссылке — плюс приглашение по email. Прямое редактирование чужого файла недоступно: получатель открывает файл и жмёт «Duplicate», чтобы получить свою копию.</p>
+  <p><strong>Вывод:</strong> для совместной работы над файлом получателю нужно продублировать его себе; уровень доступа стоит выбирать в зависимости от того, нужен ли просмотр или полноценная работа с копией.</p>
+
+  <h4>Совместная работа с файлами <span style="color:var(--text-secondary); font-weight:400;">(File Collaboration)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12292543-file-collaboration" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> три способа коллаборации: Share (email/ссылка, read-only с дублированием либо передача роли владельца — файл переходит в workspace получателя), вкладка Workspace Files (Team-план, все файлы команды read-only), смена владельца через правый клик → «Change Owner».</p>
+  <p><strong>Вывод:</strong> выбирайте механизм под задачу: быстрый шаринг для просмотра/копирования, общий обзор через Workspace Files на Team-плане, или полная передача владения файлом.</p>
+
+  <h4>Корзина рабочих процессов <span style="color:var(--text-secondary); font-weight:400;">(Workflow Trash)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14688405-workflow-trash" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> удаление — правый клик по файлу → «Delete», файл перемещается в Archive. Хранится 30 дней, затем удаляется автоматически и безвозвратно. Восстановление — выбрать файл в архиве и нажать «Restore».</p>
+  <p><strong>Вывод:</strong> удаление не окончательное — есть 30-дневное окно для восстановления, поэтому случайное удаление не критично, но после истечения месяца файл теряется навсегда.</p>
+
+  <h4>Публикация Weave-воркфлоу в Figma Community <span style="color:var(--text-secondary); font-weight:400;">(Publish Weave workflows to the Figma Community)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/15624624-publish-weave-workflows-to-the-figma-community" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> публикация workflow в публичном каталоге figma.com/community/ai-workflows: открыть workflow → «Share» → «Publish to Community» → заполнить название, описание, подкатегорию, теги, картинку → «Publish».</p>
+  <p><strong>Вывод:</strong> способ поделиться готовым воркфлоу с широкой аудиторией за пределами команды; перед публикацией стоит подготовить понятное описание, теги и репрезентативную картинку — это определяет обнаруживаемость в поиске.</p>
+
+  <blockquote><p><strong>Итог по разделу «My Dashboard»:</strong> полный рабочий цикл файлов в Weave — от создания и дублирования, организации через папки и обложки, до совместной работы (шаринг, смена владельца, общий обзор команды), управления удалением через корзину/архив и публичной публикации готовых воркфлоу в Figma Community.</p></blockquote>
+
+  <hr>
+
+  <!-- 3 -->
+  <h2 id="c3">3. Account management</h2>
+
+  <p class="section-intro">Полное руководство по аккаунту и тарифам Weave: подписки, кредиты, биллинг, командный и Enterprise-планы.</p>
+
+  <h3>3.1 Основной раздел</h3>
+
+  <h4>Тарифные планы Figma Weave <span style="color:var(--text-secondary); font-weight:400;">(Figma Weave's Subscription Plans)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12267070-figma-weave-s-subscription-plans" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> пять тарифов: Free (150 кредитов/мес, до 5 воркфлоу), Starter (1500 кредитов/мес, безлимит воркфлоу, докупка $10 за 1000 кредитов), Professional (4000 кредитов/мес, перенос остатка до 3 месяцев, импорт кастомных шрифтов, докупка $10 за 1200 кредитов), Team (4500 кредитов/мес на пользователя, общие кредиты и воркфлоу в команде), Enterprise (кастомное распределение кредитов, свои API-ключи, обучение команды, расширенная indemnity, премиум-поддержка). Видео-модели и импортированные модели — только со Starter.</p>
+  <p><strong>Вывод:</strong> Free — для знакомства, Starter/Professional — для соло-работы с большим объёмом генераций, Team/Enterprise — для командной работы с общими кредитами и повышенными требованиями к контролю данных.</p>
+
+  <h4>Кредитная система Figma Weave <span style="color:var(--text-secondary); font-weight:400;">(Figma Weave's Credit System)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12267166-figma-weave-s-credit-system" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> единая кредитная система стандартизирует оплату всех generative AI моделей; стоимость зависит от параметров модели, видна при клике/наведении на ноду. Кредиты выдаются ежемесячно: у Starter сгорают в начале месяца, у Pro и Team переносятся до 3 месяцев. Докупка — правый клик на имени → «Get More» → ввод суммы ($10 = 1000 кредитов на Starter, $10 = 1200 на Pro/Team). Докупленные кредиты действуют один год независимо от смены тарифа.</p>
+  <p><strong>Вывод:</strong> перед тяжёлой генерацией проверяйте стоимость модели через ховер/клик на ноде; если базовых кредитов не хватает, выгоднее один раз докупить пакет — он не пропадёт при смене месяца или плана в течение года.</p>
+
+  <h4>Upgrade / Change my Plan</h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12267650-upgrade-change-my-plan" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> Settings (клик по имени) → прокрутить вниз → «Change Plan» → выбрать план и длительность (месяц/год) — биллинг обновится автоматически.</p>
+  <p><strong>Вывод:</strong> смена тарифа делается полностью самостоятельно из интерфейса, без обращения в поддержку.</p>
+
+  <h4>Переключение между воркспейсами <span style="color:var(--text-secondary); font-weight:400;">(Switching Workspaces)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12292496-switching-workspaces" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> для пользователей с личным и командным планом одновременно: клик по имени → стрелка → выбор воркспейса из списка.</p>
+  <p><strong>Вывод:</strong> позволяет быстро переключить контекст (и соответствующий пул кредитов/проектов) без повторного логина.</p>
+
+  <h4>Верифицированные и неверифицированные модели <span style="color:var(--text-secondary); font-weight:400;">(Verified and Unverified Models)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14034721-verified-and-unverified-models" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> «Verified by Figma» означает контракт с провайдером: контент используется только для оказания услуги, не для обучения модели, есть контрактная indemnity. Неверифицированные модели регулируются условиями провайдера (ссылки на ToS/Privacy Policy у ноды); на self-serve тарифах при запуске такой модели нужно подтвердить осведомлённость. Все модели остаются доступны — разница только в прозрачности условий обработки данных.</p>
+  <p><strong>Вывод:</strong> перед использованием модели для чувствительного/коммерческого контента проверяйте бейдж «Verified by Figma» — это влияет на юридические гарантии по данным, а не на качество или доступность модели.</p>
+
+  <h4>Управление счетами и историей платежей <span style="color:var(--text-secondary); font-weight:400;">(Invoice Management and Billing History)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12792443-invoice-management-and-billing-history" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> клик по имени → Settings → Manage Payments → список прошлых счетов → клик на инвойс открывает страницу для скачивания.</p>
+  <p><strong>Вывод:</strong> используйте для получения документов для бухгалтерии/отчётности по прошлым платежам.</p>
+
+  <h4>Управление платёжными реквизитами <span style="color:var(--text-secondary); font-weight:400;">(Manage Billing Details)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/13632918-manage-billing-details" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> клик по имени → Settings → Manage Payments → текущие платёжные данные и кнопка «Update Information» для редактирования.</p>
+  <p><strong>Вывод:</strong> применяйте при смене карты/реквизитов или для проверки актуальности данных перед продлением подписки.</p>
+
+  <h4>Журнал использования кредитов <span style="color:var(--text-secondary); font-weight:400;">(Credit Usage Log)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/13751776-credit-usage-log" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> имя пользователя → Settings → Workspace Settings → раздел Credits → «Download Credits Usage History» → выбрать период → Download.</p>
+  <p><strong>Вывод:</strong> полезно для аналитики расходов — понять, какие модели/проекты «съедают» больше всего кредитов, особенно на командных тарифах с общим пулом.</p>
+
+  <h4>Что происходит с кредитами при апгрейде тарифа? <span style="color:var(--text-secondary); font-weight:400;">(What happens to my credits when I upgrade my plan?)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12670218-what-happens-to-my-credits-when-i-upgrade-my-plan" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> при апгрейде остаток кредитов текущего плана заменяется на полный объём нового плана, независимо от того, сколько времени оставалось до конца цикла. Оплата — пропорционально (proration), новый цикл стартует с даты апгрейда.</p>
+  <p><strong>Вывод:</strong> апгрейдить план выгоднее сразу после того, как использованы почти все текущие кредиты — иначе неиспользованный остаток просто пропадёт.</p>
+
+  <h4>Sign Out of Weave</h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/13751750-sign-out-of-weave" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> нажать на своё имя → «Sign Out».</p>
+  <p><strong>Вывод:</strong> базовое действие для завершения сессии — на общем/публичном компьютере или при переключении аккаунтов.</p>
+
+  <h4>Отмена подписки <span style="color:var(--text-secondary); font-weight:400;">(Cancel My Subscription)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12594515-cancel-my-subscription" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> доступ сохраняется до конца оплаченного периода. После отмены пропадают все кредиты, включая перенесённые (rollover) — они доступны только при активной подписке. Шаги: имя → Settings → Cancel Plan → подтвердить «Cancel Anyway».</p>
+  <p><strong>Вывод:</strong> перед отменой стоит израсходовать накопленные (в т.ч. перенесённые) кредиты — после отмены они сгорают безвозвратно.</p>
+
+  <h4>Интеграция через API <span style="color:var(--text-secondary); font-weight:400;">(API Integration)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12301695-api-integration" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> на момент публикации Figma Weave не предоставляет API-интеграцию ни на одном из тарифов. Функция в разработке.</p>
+  <p><strong>Вывод:</strong> программная интеграция с Weave пока невозможна; стоит периодически проверять эту статью на обновления.</p>
+
+  <h4>50% off your first month — Limited time offer</h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/15757160-50-off-your-first-month-limited-time-offer" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Внимание:</strong> акция действовала с 1 по 10 июля 2026 года (23:59 PT) — на дату сбора материала (13 июля 2026) уже истекла.</p>
+  <p><strong>Содержание:</strong> скидка 50% на первый месяц/год для новых подписчиков Starter/Professional/Team и части апгрейдов, автоматически при оформлении на weave.figma.com/pricing, без промокода, не суммировалась с другими предложениями.</p>
+  <p><strong>Вывод:</strong> материал полезен как пример механики промо-акций Weave, но сама скидка недействительна — для актуальных предложений проверяйте страницу pricing.</p>
+
+  <blockquote><p><strong>Итог по разделу «Account management» (основной):</strong> раздел покрывает полный жизненный цикл управления аккаунтом — выбор и смена тарифа, устройство кредитной системы и её пополнение, переключение воркспейсов, биллинг (счета, реквизиты, отмена подписки, выход), прозрачность данных через верификацию моделей. Большинство функций управляются через единый узел настроек (клик по имени → Settings). API-интеграции пока нет.</p></blockquote>
+
+  <h3>3.2 The Team Plan</h3>
+
+  <h4>Что такое командный аккаунт <span style="color:var(--text-secondary); font-weight:400;">(What is the Team Account)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12267136-what-is-the-team-account" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> Team Plan — общий аккаунт для команды с единым рабочим пространством и общим пулом кредитов. Админ задаёт индивидуальные лимиты кредитов для каждого пользователя либо оставляет общий пул поровну. Оплата по подписке (помесячно/ежегодно) за каждое рабочее место (seat).</p>
+  <p><strong>Вывод:</strong> Team Plan стоит выбирать для централизованной командной работы с общим бюджетом кредитов и гибким контролем расходов через админ-права.</p>
+
+  <h4>Добавление и удаление пользователей <span style="color:var(--text-secondary); font-weight:400;">(Adding / Removing Users)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12540832-adding-removing-users" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> Team Management (имя → Members): приглашение (Invite New Team Member), удаление (три точки → Remove), смена роли Member/Admin, повторная отправка приглашения или копирование ссылки, колонка Last active.</p>
+  <p><strong>Вывод:</strong> единый центр управления составом команды — приглашения, роли и статус активности участников настраиваются в одном месте.</p>
+
+  <h4>Управление кредитами <span style="color:var(--text-secondary); font-weight:400;">(Managing Credits)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12541054-managing-credits" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> кредиты начисляются на всю команду ежемесячно и накапливаются (rollover) до трёх месяцев. Админ задаёт индивидуальный лимит через Members Settings либо дефолтный лимит для новых пользователей (Edit default). Кредиты не «привязываются» к аккаунту — лимит лишь ограничивает трату из общего пула. Докупка — Get More → Pay Now; CSV-отчёт по расходу — Download members usage.</p>
+  <p><strong>Вывод:</strong> ключевая статья для финансового контроля команды — используйте лимиты и отчёт по расходам, чтобы не допустить перерасхода общего пула одним участником.</p>
+
+  <h4>Совместная работа с файлами <span style="color:var(--text-secondary); font-weight:400;">(File Collaboration)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12541127-file-collaboration" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> Share (email/ссылка, Read-Only или передача владения), Change Owner, вкладка Workspace Files (все файлы команды read-only).</p>
+  <p><strong>Вывод:</strong> для быстрого обмена — Share с Read-Only, для полной передачи ответственности за файл — Change Owner; Workspace Files даёт обзор без риска случайного редактирования чужой работы.</p>
+
+  <h4>Как приглашать пользователей, если нет свободных мест <span style="color:var(--text-secondary); font-weight:400;">(How to Invite Users When No Seats Are Available)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12670021-how-to-invite-users-when-no-seats-are-available" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> сообщение об отсутствии мест (seats) — потому что Weave тарифицирует по количеству занятых мест. Решение: продолжить приглашение — количество мест и биллинг обновятся автоматически.</p>
+  <p><strong>Вывод:</strong> не нужно вручную докупать место заранее — система сама увеличит число seats и скорректирует оплату.</p>
+
+  <blockquote><p><strong>Итог по разделу «The Team Plan»:</strong> полный цикл администрирования командного аккаунта — что это и как за него платят, управление участниками и ролями, распределение и лимитирование общего пула кредитов, совместная работа с файлами, обработка нехватки мест при приглашении.</p></blockquote>
+
+  <h3>3.3 Enterprise Plan</h3>
+
+  <h4>Что такое Enterprise-план <span style="color:var(--text-secondary); font-weight:400;">(What is the Enterprise Plan)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/13387069-what-is-the-enterprise-plan" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> для крупных организаций: договор об уровне обслуживания (MSA), онбординг и Q&amp;A с экспертом Weavy, выделенный Slack-канал приоритетной поддержки, общий годовой пул кредитов. Для менее крупных команд может подойти Team Plan (общий пул, перенос остатков, совместный доступ, но без минимума по местам).</p>
+  <p><strong>Вывод:</strong> если нужны договорные гарантии, приоритетная поддержка и общий бюджет кредитов на всю организацию — стоит переходить на Enterprise, а не оставаться на Team Plan.</p>
+
+  <h4>Добавление и удаление пользователей <span style="color:var(--text-secondary); font-weight:400;">(Adding / Removing Users)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/13386871-adding-removing-users" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> идентично Team Plan: Team Management (имя → Members), приглашение, удаление, смена ролей, Last active, работа с неподтверждёнными приглашениями.</p>
+  <p><strong>Вывод:</strong> базовая инструкция админа по управлению составом команды при онбординге/оффбординге сотрудников.</p>
+
+  <h4>Управление кредитами <span style="color:var(--text-secondary); font-weight:400;">(Managing Credits)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/13386919-managing-credits" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> на Enterprise компания получает весь оплаченный объём кредитов сразу из общего пула. Лимиты на пользователя через Members Settings, дефолтный лимит (Edit default), CSV-отчёт (Download members usage).</p>
+  <p><strong>Вывод:</strong> позволяет распределять общий кредитный бюджет по сотрудникам и отслеживать расход через отчётность, не выдавая каждому личный неограниченный лимит.</p>
+
+  <h4>Совместная работа с файлами <span style="color:var(--text-secondary); font-weight:400;">(File Collaboration)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/13387857-file-collaboration" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> Share, Change Owner, вкладка Workspace Files — эксклюзивная для Enterprise возможность видеть все файлы команды в одном месте (read-only).</p>
+  <p><strong>Вывод:</strong> используется для прозрачной совместной работы над воркфлоу — точечный шаринг конкретного файла либо общий обзор всех файлов команды.</p>
+
+  <h4>Управление моделями для Enterprise <span style="color:var(--text-secondary); font-weight:400;">(Enterprise Model Management)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12792774-enterprise-model-management" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> отдельная панель (Settings → Model Management) для одобрения/ограничения конкретных моделей для команды. Видны все доступные модели, статус верификации, дата обновления. Доступ включается/выключается колонкой «Approved», список фильтруется по статусу.</p>
+  <p><strong>Вывод:</strong> ключевой инструмент для админов, которым нужно ограничить сотрудников определённым набором моделей (безопасность данных, комплаенс), вместо доступа ко всем моделям по умолчанию.</p>
+
+  <h4>Верифицированные и неверифицированные модели <span style="color:var(--text-secondary); font-weight:400;">(Enterprise)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14035518-verified-and-unverified-models" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> та же система маркировки, что и в основном разделе Account management. На Enterprise-плане запуск неверифицированной модели требует одобрения админа через Model Management Dashboard; без одобрения модель не появится в поиске.</p>
+  <p><strong>Вывод:</strong> перед использованием моделей в конфиденциальных проектах проверяйте бейдж «Verified by Figma» и, при необходимости, согласовывайте с админом использование неверифицированных моделей.</p>
+
+  <h4>Контроль импорта моделей для Enterprise <span style="color:var(--text-secondary); font-weight:400;">(Enterprise Model Import Controls)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/15179921-enterprise-model-import-controls" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> по умолчанию Enterprise-воркспейсы не могут импортировать модели из Fal/Replicate — для полного контроля организации. Админ включает импорт в Model Management (Enable Imported Models); каждый импорт проходит через workflow одобрения с email/in-app уведомлением, до одобрения модель недоступна. Одобренные/отклонённые модели помечаются тегом «User Requested».</p>
+  <p><strong>Вывод:</strong> функция для организаций, которым нужна гибкость доступа к сторонним провайдерам, но с обязательным контролем админа над каждой добавляемой моделью.</p>
+
+  <blockquote><p><strong>Итог по разделу «Enterprise Plan»:</strong> от базового описания преимуществ плана (договор, поддержка, общий пул кредитов) до операционного управления — пользователи, кредиты, файлы. Отдельный блок посвящён контролю за AI-моделями: единая панель управления доступом, система верификации по надёжности обработки данных, контролируемый процесс импорта сторонних моделей с обязательным одобрением администратора. Enterprise-план — решение для организаций, которым важны централизованное управление доступом, прозрачность расходов и контроль за используемыми AI-моделями.</p></blockquote>
+
+  <hr>
+
+  <!-- 4 -->
+  <h2 id="c4">4. Nodes and Models Documentations</h2>
+
+  <p class="section-intro">Полное руководство по узлам и моделям, которые предлагает Weave: инструменты, помощники, итераторы и сравнение всех моделей по категориям.</p>
+
+  <h3>4.1 Tools</h3>
+
+  <h4>Текстовые инструменты <span style="color:var(--text-secondary); font-weight:400;">(Text Tools)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12268282-text-tools" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> Prompt Node (свободный текстовый промпт), Prompt Concatenator (объединение нескольких текстовых узлов кнопкой «+»), Prompt Enhancer (улучшение промпта выбранной LLM с настраиваемыми инструкциями), Run Any LLM (текст и изображения в любую LLM, текстовый ответ), Image Describer и Video Describer (анализ изображения/видео и генерация описания-промпта).</p>
+  <p><strong>Вывод:</strong> используется на этапе подготовки и доработки промптов — особенно Prompt Enhancer и Describer-узлы, когда нужно превратить референс в текстовое описание для генерации.</p>
+
+  <h4>Инструменты для матовых масок <span style="color:var(--text-secondary); font-weight:400;">(Matte Tools)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12414117-matte-tools" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> Mask Extractor (автовыделение объектов, Shift — добавить, Alt+Shift — вычесть), Mask By Text (маска по текстовому описанию), Matte Grow/Shrink (расширение/сужение маски слайдером), Merge Alpha (альфа-канал по маске), Video Matte (матовая маска из видео), Video Mask by Text (маскирование объектов в видео по тексту).</p>
+  <p><strong>Вывод:</strong> нужны для точного выделения объектов и работы с прозрачностью/композитингом — от ручного и текстового маскирования до тонкой доводки границ маски.</p>
+
+  <h4>Инструменты редактирования <span style="color:var(--text-secondary); font-weight:400;">(Editing Tools)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12268186-editing-tools" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> Levels (яркость/контраст/тоновый диапазон), Compositor (композитинг слоёв), Painter (рисование масок/скетчей от руки), Crop (кадрирование), Resize (изменение соотношения сторон растяжением), Blur (Fast Box/Gaussian), Invert (инверсия), Channels (доступ к R/G/B/Alpha), Extract Video Frame (кадр из видео по таймкоду).</p>
+  <p><strong>Вывод:</strong> набор универсальных инструментов для подготовки и постобработки визуального материала — от коррекции цвета до покадровой работы с видео.</p>
+
+  <h4>Типы данных <span style="color:var(--text-secondary); font-weight:400;">(Datatypes)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12268346-datatypes" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> Number (числовой атрибут с мин/макс и знаками после запятой), Text (текстовый атрибут-промпт), Toggle (булев True/False), List Selector (выпадающий список, вручную или через Array Node), Seed (случайный или заданный seed), Array (несколько текстовых значений группами или по разделителю — для List и Text Iterator).</p>
+  <p><strong>Вывод:</strong> служат «интерфейсными» элементами для вывода и управления параметрами моделей на канвасе — используются, когда атрибут узла нужно вынести в отдельный контролируемый элемент (например, для итераций или пресетов).</p>
+
+  <h4>Узел Compositor <span style="color:var(--text-secondary); font-weight:400;">(The Compositor node)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/15887786-the-compositor-node" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> основной инструмент сборки сложных композиций из изображений, видео и других медиа. Слоевой принцип: каждый вход — независимый слой (выделение, перестановка, трансформация: позиция/масштаб/поворот, режимы блендинга). Фоновый цвет (Fill, можно убрать для прозрачности), слои-фигуры (прямоугольник, эллипс, треугольник, звезда), текстовые слои. Для видео-слоёв — встроенный таймлайн.</p>
+  <p><strong>Вывод:</strong> ключевой узел для финальной сборки многослойных композиций (коллажи, наложение элементов, текст/фигуры поверх генераций) и монтажа видео-слоёв по таймлайну.</p>
+
+  <blockquote><p><strong>Итог по разделу «Tools»:</strong> «сборочный цех» вокруг генеративных моделей — работа с текстом и промптами, масками и альфа-каналами, базовая пост-обработка изображений и видео, интерфейсные типы данных для параметров и продвинутая сборка композиций (Compositor).</p></blockquote>
+
+  <h3>4.2 Helpers</h3>
+
+  <h4>Обзор помощников <span style="color:var(--text-secondary); font-weight:400;">(Helpers Overview)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12268300-helpers-overview" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> Import Node (импорт изображений/видео/аудио/GLB), Export Node (экспорт результата), Preview Node (просмотр результата в отдельной ноде), Import Model Node и Import LoRA Node (импорт моделей с Fal/Replicate/CivitAI и LoRA), Router Node (разводка одного входа на несколько выходов), Output Node (превращает workflow в Tool). Отдельно упомянута Compare Node.</p>
+  <p><strong>Вывод:</strong> справочная карта всех вспомогательных нод — полезна как отправная точка, чтобы понять, какая нода нужна для конкретной задачи (импорт, экспорт, объединение моделей через Router, упаковка workflow в инструмент через Output Node).</p>
+
+  <h4>Стикеры <span style="color:var(--text-secondary); font-weight:400;">(Sticky Notes)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14046539-sticky-notes" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> заметки на канвасе через Actions bar внизу канваса. Редактирование — выделение и контекстное меню правым кликом (смена цвета, размер текста).</p>
+  <p><strong>Вывод:</strong> простой инструмент документирования workflow прямо в канвасе — для пояснений себе или коллегам без влияния на логику нод.</p>
+
+  <h4>Нода сравнения <span style="color:var(--text-secondary); font-weight:400;">(Compare Node)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14046860-compare-node" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> сравнение двух изображений, подключённых как два входа. Режимы Slider (перетаскивание ползунка) и Toggle (переключение по клику на иконку глаза), смена режима через кнопку Method. Одно из изображений можно выбрать как выход и протянуть дальше по workflow.</p>
+  <p><strong>Вывод:</strong> используйте, когда нужно визуально оценить разницу между двумя вариантами генерации (например, до/после обработки) и выбрать лучший результат для дальнейшей цепочки.</p>
+
+  <blockquote><p><strong>Итог по разделу «Helpers»:</strong> вспомогательные ноды, которые не генерируют контент сами, а обслуживают процесс — импорт/экспорт файлов и моделей, организацию связей (Router), превращение workflow в инструмент (Output), документирование (Sticky Notes) и визуальное сравнение результатов (Compare Node).</p></blockquote>
+
+  <h3>4.3 Iterators</h3>
+
+  <h4>Итераторы <span style="color:var(--text-secondary); font-weight:400;">(Iterators)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12343281-iterators" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> три типа: Text Iterator Node (объединяет несколько текстовых входов, отправляет одной модели, каждый промпт отдельно; входы вручную, через Array Node, Prompt Node или CSV-импорт), Image Iterator Node и Video Iterator Node (несколько входов импортируются, выбирается модель, генерирует результат для каждого входа отдельным прогоном).</p>
+  <p><strong>Вывод:</strong> итераторы нужны для батч-генерации — когда требуется прогнать много текстовых, графических или видео-входов через одну модель за один раз.</p>
+
+  <h4>Распаковка узла <span style="color:var(--text-secondary); font-weight:400;">(Unpack a Node)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14688070-unpack-a-node" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> результаты батч-генерации хранятся внутри одного узла с переключением режимов отображения. Чтобы разделить их на отдельные узлы — три точки справа от узла → «Unpack».</p>
+  <p><strong>Вывод:</strong> полезно, когда нужно продолжить работу с каждым результатом батч-генерации по отдельности — после распаковки все результаты становятся отдельными узлами, сгруппированными вместе.</p>
+
+  <h4>Создание итератора из существующего узла <span style="color:var(--text-secondary); font-weight:400;">(Creating Iterators from Existing Node)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/14688156-creating-iterators-from-existing-node" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> итератор можно создать напрямую из узла, уже содержащего несколько результатов — три точки в правом верхнем углу → «Create Iterator».</p>
+  <p><strong>Вывод:</strong> удобно, когда уже есть узел с набором сгенерированных результатов и их нужно использовать как входные данные для следующего этапа батч-обработки, не собирая итератор с нуля.</p>
+
+  <blockquote><p><strong>Итог по разделу «Iterators»:</strong> полный цикл батч-обработки — запуск батч-генерации текста/изображений/видео через одну модель, работа с результатами (распаковка в отдельные узлы) и повторное использование результатов как входа для следующей итерации.</p></blockquote>
+
+  <h3>4.4 Models Comparison</h3>
+
+  <p class="section-intro">Десять сравнительных таблиц по всем категориям моделей Weave — справочник для выбора конкретной модели под задачу, бюджет и требуемый уровень контроля.</p>
+
+  <h4>Сравнение моделей для изображений <span style="color:var(--text-secondary); font-weight:400;">(Image Models Comparison)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12284752-image-models-comparison" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> 25 моделей: ChatGPT Images 2.0, Reve, Higgsfield Image, GPT Image 1, Imagen (4/3/3 Fast), Flux (2 Pro/Flex/Dev LoRA, 1.1 Ultra, Pro 1.1, Fast, Dev LoRA), Recraft V3, Mystic, Ideogram V3 (+Character), Stable Diffusion 3.5, Minimax Image 01, Bria, Dalle 3, Luma Photon, Nvidia Sana, Nvidia Consistory. Сравнение по входам (промпт, референс, негативный промпт, LoRA), цене (0.2–37 кредитов), форматам вывода, соотношениям сторон, поддержке мультиреференсов.</p>
+  <p><strong>Вывод:</strong> для быстрой дешёвой генерации без референсов — Imagen 3 Fast, Nvidia Sana, Flux Fast; для работы со стилем/референсами и мультиреференсами — Flux 2 Pro/Flex/Dev LoRA, Reve, Ideogram V3 Character.</p>
+
+  <h4>Сравнение моделей для видео <span style="color:var(--text-secondary); font-weight:400;">(Video Models Comparison)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12344226-video-models-comparison" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> свыше 30 моделей: Seedance 2.0 (+Reference), Kling 3, Seedance V1.5 Pro, Wan 2.5/2.2, Grok Imagine Video, Sora 2, LTX 2 Video, Moonvalley, Veo 3.1/3/2, Pixverse V4.5, Runway (Gen-4.5/4 Turbo/4/3), Kling (1.6, O1/2.5/2.1 First&amp;Last Frame), Luma Ray 2 (+Flash), Minimax Video Director/01, Hunyuan, Skyreels, Wan Video, Higgsfield Video. Критерии — входы (First/Last Frame, Reference), цена по длительности/качеству, длительность, соотношения сторон, разрешение (до 4K), допфункции (звук, Camera Concepts, мульти-шоты).</p>
+  <p><strong>Вывод:</strong> для контроля первого/последнего кадра — Kling или Veo; для дешёвых быстрых прогонов — Luma Ray 2 Flash или Kling 2.1; для максимального качества и звука — Seedance 2.0/Kling 3 Pro.</p>
+
+  <h4>Сравнение моделей для редактирования изображений <span style="color:var(--text-secondary); font-weight:400;">(Edit Image Models Comparison)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12343904-edit-image-models-comparison" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> 35 моделей: ChatGPT Images 2.0 Edit, Gemini 3.1 Flash (Nano Banana 2), Gemini 3 Pro, Seedream V5/V4.5/V4 Edit, Reve Edit, Qwen Image Edit 2511/Plus, Flux 2 Inpaint Klein 9B, Runway Gen-4 Image, Klux/Flux Kontext, GPT Image 1.5/1 Edit, SeedEdit 3.0, Gemini 2.0 Flash, Flux 2 Max, Flux Fill Pro, Flux Dev LoRA Inpaint, Ideogram V3/V2 Inpaint, SD3 (Inpaint/Outpaint/Content-Aware Fill/Remove BG), Bria-семейство, Kolors Virtual Try On, Relight 2.0 и др. Категории — inpaint, outpaint, remove/replace background, content-aware fill, virtual try-on, relight.</p>
+  <p><strong>Вывод:</strong> для точечного редактирования с маской — Flux Fill Pro или Ideogram V3 Inpaint; для стилевых правок без маски и мультиреференсов — Gemini 3.1 Flash (Nano Banana 2) или Seedream Edit; для примерки одежды — Kolors Virtual Try On.</p>
+
+  <h4>Сравнение моделей генерации из видео <span style="color:var(--text-secondary); font-weight:400;">(Generate From Video Models Comparison)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12344285-generate-from-video-models-comparison" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> 16 моделей: Kling O1/O3 Edit Video, Kling O1 Reference Video-to-Video, Kling Motion Control, LTX 2 Video-to-Video, Runway Aleph, Runway Act-Two, Luma Reframe/Modify, Wan 2.2 Animate (Replace/Move), Wan Vace (Depth/Pose/Reframe/Outpainting), Hunyuan Video-to-Video. Критерии — обязательные входы, цена, длительность/разрешение, спецфункции (Keep Audio, Multiple Image inputs, Generate Audio, Expand Ratio).</p>
+  <p><strong>Вывод:</strong> для переноса движения персонажа — Kling Motion Control или Wan 2.2 Animate; для смены содержимого кадра при сохранении движения — Runway Aleph или Kling Edit Video; для смены соотношения сторон готового видео — Luma Reframe или Wan Vace Reframe.</p>
+
+  <h4>Сравнение моделей генерации из изображения <span style="color:var(--text-secondary); font-weight:400;">(Generate from Image Models Comparison)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12344174-generate-from-image-models-comparison" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> 8 моделей: Flux Dev Redux, Flux ControlNet &amp; LoRA, Flux Canny Pro, Flux Depth Pro, Qwen Edit Multiangle, Image to Image, Stable Diffusion controlnets, Sketch To Image. Критерии — тип управляющего изображения, обязательность промпта, цена (0.1–10 кредитов), поддержка LoRA.</p>
+  <p><strong>Вывод:</strong> для сохранения композиции/контуров при смене стиля — Flux Canny Pro или Depth Pro; для генерации из наброска — Sketch To Image; для смены ракурса объекта — Qwen Edit Multiangle.</p>
+
+  <h4>Сравнение моделей улучшения видео <span style="color:var(--text-secondary); font-weight:400;">(Enhance Video Models Comparison)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12344342-enhance-video-models-comparison" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> 4 модели: Bria Video Upscale, Topaz Video Upscaler, Real-ESRGAN Video Upscaler, Video Smoother. Цена 5–154 кредита, сохранение соотношения сторон, разрешение вывода (Real-ESRGAN — 2K/4K); Video Smoother умеет менять FPS. Real-ESRGAN не принимает MOV с альфа-каналом.</p>
+  <p><strong>Вывод:</strong> для апскейла в высокое разрешение — Real-ESRGAN (2K/4K), самый доступный по цене; для сглаживания движения/интерполяции кадров — Video Smoother.</p>
+
+  <h4>Сравнение моделей улучшения изображений <span style="color:var(--text-secondary); font-weight:400;">(Enhance Images Models Comparison)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12344205-enhance-images-models-comparison" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> 9 моделей: Topaz Upscale, Topaz Sharpen, Recraft Crisp Upscale, Magnific Skin Enhancer, Magnific Upscale, Magnific Precision Upscale (+V2), Enhancor Image Upscale, Enhancor Realistic Skin. Цена 5–36 кредитов, масштаб апскейла (2x/4x/8x у Magnific Upscale), поддержка промпта, детализация кожи, резкость/зерно.</p>
+  <p><strong>Вывод:</strong> для портретной ретуши кожи — Magnific Skin Enhancer или Enhancor Realistic Skin; для повышения разрешения с контролем деталей — Magnific Precision Upscale V2; для быстрой недорогой резкости — Topaz Sharpen.</p>
+
+  <h4>Сравнение моделей липсинка <span style="color:var(--text-secondary); font-weight:400;">(Lip Sync Models Comparison)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12441548-lip-sync-models-comparison" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> 4 модели: Omnihuman V1.5, Sync 2 Pro, Pixverse Lipsync, Kling AI Avatar Pro. Входы (аудио+изображение, аудио+видео, видео-URL), цена 66–352 кредита, вывод MP4; Pixverse Lipsync поддерживает Voice ID и текст вместо аудио.</p>
+  <p><strong>Вывод:</strong> для анимации статичного изображения по аудио — Omnihuman V1.5 или Kling AI Avatar Pro; для синхронизации губ на видео — Sync 2 Pro; Pixverse Lipsync — самый дешёвый вариант с генерацией голоса из текста.</p>
+
+  <h4>Сравнение 3D-моделей <span style="color:var(--text-secondary); font-weight:400;">(3D Models Comparison)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12344357-3d-models-comparison" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> 9 моделей: Sam 3D Objects, Rodin/Rodin V2, Trellis 3D V2/Trellis, Meshy V6, Hunyuan 3D V3/V2.1/базовая. Входы (Image, Prompt, Front/Back/Left/Right Image), цена 2–96 кредитов, допопции (материалы, T-pose, топология/ремеш, число полигонов, текстурированный меш).</p>
+  <p><strong>Вывод:</strong> для быстрого дешёвого 3D-объекта из одного фото — Trellis (2 кредита); для качественной текстурированной модели с контролем топологии — Rodin V2 или Meshy V6; при снимках с нескольких ракурсов — Hunyuan 3D.</p>
+
+  <h4>Сравнение векторных моделей <span style="color:var(--text-secondary); font-weight:400;">(Vector Models Comparison)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12343888-vector-models-comparison" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> 3 модели: Vectorizer (растр → вектор), Recraft V3 SVG (текст → SVG в PNG), Text To Vector (текст → вектор с негативным промптом). Цена 6–24 кредита, форматы вывода (у Vectorizer — SVG, EPS, PDF, DXF, PNG).</p>
+  <p><strong>Вывод:</strong> для превращения готового растра в редактируемый вектор — Vectorizer (единственный с полноценным SVG/EPS/PDF/DXF); для генерации векторной графики с нуля — Recraft V3 SVG или Text To Vector.</p>
+
+  <blockquote><p><strong>Итог по разделу «Models Comparison»:</strong> десять таблиц покрывают весь пайплайн Weave — генерацию (изображения, видео, 3D, вектор), редактирование (edit, generate-from-image, generate-from-video) и постобработку (enhance images/video, lip sync). Единая схема сравнения — входы, цена в кредитах, форматы вывода, референсы, уникальные опции — позволяет быстро сопоставлять десятки моделей по задаче, бюджету и требуемому уровню контроля. Раздел стоит использовать как справочник при выборе модели под конкретный узел, а не как обучающий материал по интерфейсу.</p></blockquote>
+
+  <blockquote><p><strong>Итог по разделу «Nodes and Models Documentations»:</strong> раздел даёт полную карту «строительных блоков» Weave за пределами базового canvas-интерфейса — инструментов подготовки/пост-обработки контента (Tools), служебных нод (Helpers), механизма батч-генерации (Iterators) и справочника по выбору конкретной AI-модели под задачу (Models Comparison).</p></blockquote>
+
+  <hr>
+
+  <!-- 5 -->
+  <h2 id="c5">5. Frequently Asked Questions</h2>
+
+  <h4>Часто задаваемые вопросы по Figma Weave <span style="color:var(--text-secondary); font-weight:400;">(Figma Weave FAQ)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12692387-figma-weave-faq" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> Weavy приобретена Figma и стала Figma Weave. Для существующих пользователей ничего не меняется: аккаунты, проекты, кредиты, подписки, вход через app.weavy.ai остаются прежними. Figma и Figma Weave — разные продукты с независимыми системами кредитов и отдельными подписками. На Config 2026 запущены первые шаги интеграции: инструменты Weave внутри Figma и публикация Weave-воркфлоу в Figma Community. Персональные данные и контент не передаются между платформами.</p>
+  <p><strong>Вывод:</strong> если вы уже пользуетесь Weavy/Weave — можно продолжать работать как раньше; но доступ к Figma Weave пока требует отдельной оплаты от основного тарифа Figma.</p>
+
+  <h4>Как добавить кастомные шрифты? <span style="color:var(--text-secondary); font-weight:400;">(How can I add custom fonts?)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12343717-how-can-i-add-custom-fonts" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> кастомные шрифты доступны только на тарифах Pro и Team. Добавление — через запрос в Support@weavy.ai, команда загружает шрифты вручную.</p>
+  <p><strong>Вывод:</strong> самостоятельной загрузки шрифтов в интерфейсе нет — только через поддержку и только на платных тарифах Pro/Team.</p>
+
+  <h4>Почему я не вижу свой инструмент после публикации? <span style="color:var(--text-secondary); font-weight:400;">(Why can't I see my tool after publishing it?)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12343721-why-can-t-i-see-my-tool-after-publishing-it" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> опубликованный инструмент появляется в разделе Tool только у тех, с кем он расшарен. У автора инструмент остаётся в My Files, а не в Tools.</p>
+  <p><strong>Вывод:</strong> если после публикации инструмент «пропал» — ищите его в My Files (вы автор) либо проверьте, выдан ли доступ нужным пользователям.</p>
+
+  <h4>Предлагает ли Figma Weave образовательную скидку? <span style="color:var(--text-secondary); font-weight:400;">(Does Figma Weave offer an Educational discount?)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12343726-does-figma-weave-offer-an-educational-discount" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> полностью бесплатного доступа нет, но для учебных заведений — льготная модель: оплата только за кредиты по минимальной цене (1$ = 100 кредитов) без оплаты подписки за места. Настраивается командное пространство с приглашением/удалением студентов и лимитами. Подключение — через support@weavy.ai с деталями программы.</p>
+  <p><strong>Вывод:</strong> учебным заведениям стоит обращаться напрямую в поддержку для настройки командного окружения — выгоднее обычных тарифов.</p>
+
+  <h4>Как понять, какие входы обязательны для запуска модели? <span style="color:var(--text-secondary); font-weight:400;">(How can I know which inputs are mandatory for a model to run?)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12343730-how-can-i-know-which-inputs-are-mandatory-for-a-model-to-run" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> у каждого узла есть входы/выходы; звёздочка рядом со входом означает обязательное подключение для запуска модели.</p>
+  <p><strong>Вывод:</strong> перед запуском модели проверяйте узлы на наличие звёздочки у входов — без этих подключений генерация не сработает.</p>
+
+  <h4>Какие 3D-модели поддерживает Figma Weave? <span style="color:var(--text-secondary); font-weight:400;">(What Kinds of 3D Models does Figma Weave Support?)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12343740-what-kinds-of-3d-models-does-figma-weave-support" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> поддерживается импорт только 3D-моделей в формате GLB.</p>
+  <p><strong>Вывод:</strong> конвертируйте 3D-файлы в GLB перед импортом — другие форматы (FBX, OBJ и т.д.) не поддерживаются.</p>
+
+  <h4>Где найти ваши обучающие материалы? <span style="color:var(--text-secondary); font-weight:400;">(Where can I find your tutorials?)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12344482-where-can-i-find-your-tutorials" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> все обучающие видео собраны в плейлисте на YouTube.</p>
+  <p><strong>Вывод:</strong> для самостоятельного обучения начните с YouTube-плейлиста компании.</p>
+
+  <h4>Как создать персонажа с постоянным внешним видом? <span style="color:var(--text-secondary); font-weight:400;">(How can I create a consistent character on Figma Weave?)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12344493-how-can-i-create-a-consistent-character-on-figma-weave" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> ключевое условие — чёткий сильный промпт и качественное референсное изображение. Есть готовый пример workflow на app.weavy.ai.</p>
+  <p><strong>Вывод:</strong> для устойчивого сходства персонажа между генерациями инвестируйте в качественный референс-инпут и точный промпт; используйте готовый шаблон workflow как отправную точку.</p>
+
+  <h4>Каков лимит размера для импортируемых файлов? <span style="color:var(--text-secondary); font-weight:400;">(What is the size limit for imported files?)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12414427-what-is-the-size-limit-for-imported-files" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> до 1 ГБ для изображений и до 20 ГБ для видео; разные модели предъявляют разные требования к входным данным.</p>
+  <p><strong>Вывод:</strong> если модель отказывается обрабатывать вход — сначала попробуйте уменьшить размер/разрешение файла.</p>
+
+  <h4>Как настроить браузер для работы с Figma Weave? <span style="color:var(--text-secondary); font-weight:400;">(How do I configure my browser for Figma Weave?)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12449982-how-do-i-configure-my-browser-for-figma-weave" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> обновить браузер, включить аппаратное (графическое) ускорение, проверить WebGL на get.webgl.org. Рекомендуется Google Chrome.</p>
+  <p><strong>Вывод:</strong> при тормозах/сбоях canvas сначала проверьте WebGL и включите аппаратное ускорение, по возможности используйте Chrome.</p>
+
+  <h4>Переносятся ли неиспользованные кредиты на следующий месяц? <span style="color:var(--text-secondary); font-weight:400;">(Do unused credits roll over to the next month?)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12669991-do-unused-credits-roll-over-to-the-next-month" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> Pro и Team — перенос до трёх месяцев; Free и Starter — кредиты обнуляются в начале месяца. Top-up-кредиты переносятся всегда и активны год независимо от тарифа.</p>
+  <p><strong>Вывод:</strong> чтобы не терять кредиты, выгоднее быть на Pro/Team или докупать top-up — они не сгорают в конце месяца.</p>
+
+  <h4>Могу ли я получить возврат средств при отмене подписки? <span style="color:var(--text-secondary); font-weight:400;">(Can I Get a Refund When I Cancel My Subscription?)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/12975360-can-i-get-a-refund-when-i-cancel-my-subscription" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> отмена вступает в силу по окончании текущего оплаченного периода. Уже уплаченные средства не возвращаются, купленное количество нельзя уменьшить в течение текущего срока.</p>
+  <p><strong>Вывод:</strong> планируйте отмену заранее — деньги за текущий период не возвращаются, доступ сохраняется до конца оплаченного срока.</p>
+
+  <h4>Что нового после Config 2026 <span style="color:var(--text-secondary); font-weight:400;">(What's new from Config 2026)</span></h4>
+  <span class="src"><a href="https://help.weavy.ai/en/articles/15623550-what-s-new-from-config-2026" target="_blank" rel="noopener">Источник →</a></span>
+  <p><strong>Содержание:</strong> инструменты Weave доступны внутри Figma Design (выбор изображения на канвасе, настройка входов, генерация без выхода из Figma). Появилась публикация Weave-воркфлоу в Figma Community. Обещано дальнейшее сближение продуктов.</p>
+  <p><strong>Вывод:</strong> с Config 2026 часть работы с Weave-инструментами можно перенести прямо в Figma Design, а удачные воркфлоу — публиковать и делиться через Figma Community.</p>
+
+  <blockquote><p><strong>Итог по разделу «Frequently Asked Questions»:</strong> раздел в основном посвящён двум темам — организационным аспектам после поглощения Weavy компанией Figma (аккаунты, кредиты, тарифы, интеграция с Config 2026) и практическим техническим вопросам работы с инструментом (обязательные входы, лимиты файлов, поддерживаемые 3D-форматы, настройка браузера, кастомные шрифты, консистентные персонажи). Отдельный блок — биллинг (перенос кредитов, правила возврата). Раздел даёт быстрые ответы без обращения в поддержку, хотя часть сложных запросов (шрифты, образовательные скидки) всё равно замыкается на support@weavy.ai.</p></blockquote>
+
+  <hr>
+
+  <!-- Cross-cutting -->
+  <h2 id="c6">Сквозные выводы</h2>
+
+  <ul>
+    <li><strong>Figma Weave — это node-based оркестратор десятков сторонних генеративных моделей</strong>, а не собственная AI-модель: главная ценность продукта — единый интерфейс, кредитная система и удобные узлы (итераторы, композитинг, маски) поверх Fal/Replicate/CivitAi/OpenAI/Google/Runway/Kling и др. Перед началом работы стоит один раз изучить раздел Models Comparison — это экономит кредиты и время на пробы.</li>
+    <li><strong>Кредиты — сквозная валюта продукта.</strong> На Free/Starter они сгорают ежемесячно, на Pro/Team переносятся до 3 месяцев, top-up-кредиты не сгорают вовсе и живут год. Планировать апгрейд тарифа стоит после того, как израсходован текущий остаток — иначе он просто пропадёт при смене плана.</li>
+    <li><strong>Верификация моделей («Verified by Figma») — это про юридические гарантии обработки данных</strong>, а не про качество или доступность; для коммерческого/конфиденциального контента стоит сверяться с этим статусом, особенно на Enterprise-плане, где неверифицированные модели требуют явного одобрения админа.</li>
+    <li><strong>Итераторы + Compositor + Router</strong> — три узла, которые превращают Weave из инструмента «один промпт → один результат» в производственный конвейер: батч-генерация по CSV/массиву входов, многослойная сборка финальной композиции, разводка одного источника на несколько направлений.</li>
+    <li><strong>Командная работа построена на трёх механиках</strong>, повторяющихся и в Team, и в Enterprise: Share (быстрый доступ), Change Owner (передача ответственности) и Workspace Files (общий обзор, доступен с Team-плана). Права редактирования чужого файла напрямую не выдаются — только дублирование.</li>
+    <li><strong>API-интеграции у Weave пока нет</strong> (на момент сбора материала, июль 2026) — это стоит учитывать при планировании автоматизации вокруг продукта.</li>
+    <li><strong>Продукт активно меняется после интеграции с Figma</strong> (Config 2026): инструменты Weave уже частично доступны прямо в Figma Design, а воркфлоу можно публиковать в Figma Community — это первые шаги к более глубокому слиянию двух продуктов, стоит следить за дальнейшими анонсами.</li>
+  </ul>
+
+  <hr>
+
+  <p style="color: var(--text-muted); font-size: 0.85rem;">Источник: <a href="https://help.weavy.ai/en/" target="_blank" rel="noopener">help.weavy.ai/en</a> · Собрано и переведено 13 июля 2026 · 88 статей, 5 коллекций.</p>
+
+</article>
+
+</body>
+</html>
