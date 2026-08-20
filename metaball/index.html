@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Конструктор · точки + метабол</title>
+<meta name="description" content="Интерактивный конструктор графического приёма «точки + метабол»: выделяй точки на сетке 16:9, получай векторные метабол-фигуры и копируй SVG прямо в Figma.">
+<meta property="og:title" content="Конструктор · точки + метабол">
+<meta property="og:description" content="Сетка точек → векторные метабол-фигуры → SVG в Figma. Инструмент Дениса Юдина.">
+<meta property="og:type" content="website">
+<style>
+  :root{
+    --red:#E1495F; --blue:#130A66; --gray:#D8D8D8;
+    --ui-bg:#F4F4F4; --ui-panel:#FFFFFF; --ui-line:#E4E4E4; --ui-text:#141414; --ui-dim:#8A8A8A;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:"Manrope","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--ui-bg); color:var(--ui-text); height:100vh; display:flex; overflow:hidden;
+  }
+  #stage{flex:1; display:flex; align-items:center; justify-content:center; padding:32px; min-width:0;}
+  #frameWrap{width:100%; max-width:calc((100vh - 64px) * 16 / 9);}
+  #canvas{
+    width:100%; aspect-ratio:16/9; background:#fff; display:block;
+    box-shadow:0 2px 24px rgba(0,0,0,.10); border-radius:2px;
+  }
+  #canvas .dot{cursor:pointer;}
+  #canvas .dot-hit{fill:transparent; cursor:pointer;}
+  #canvas .dot-hit:hover + .dot-ring{opacity:.35;}
+  #panel{
+    width:292px; background:var(--ui-panel); border-left:1px solid var(--ui-line);
+    padding:20px 18px; overflow-y:auto; display:flex; flex-direction:column; gap:18px; flex-shrink:0;
+  }
+  h1{font-size:14px; font-weight:700; letter-spacing:.01em;}
+  h1 span{color:var(--ui-dim); font-weight:500;}
+  .sec{display:flex; flex-direction:column; gap:8px;}
+  .sec > label{font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--ui-dim);}
+  .hint{font-size:11.5px; line-height:1.45; color:var(--ui-dim);}
+  button{
+    font:inherit; font-size:12.5px; font-weight:600; border:1px solid var(--ui-line);
+    background:#fff; color:var(--ui-text); border-radius:8px; padding:8px 10px; cursor:pointer;
+  }
+  button:hover{border-color:#bdbdbd;}
+  button.primary{background:var(--ui-text); color:#fff; border-color:var(--ui-text);}
+  button.primary:hover{background:#000;}
+  .shape-row{
+    display:flex; align-items:center; gap:8px; padding:7px 8px; border:1px solid var(--ui-line);
+    border-radius:8px; cursor:pointer; font-size:12.5px;
+  }
+  .shape-row.active{border-color:var(--ui-text); box-shadow:0 0 0 1px var(--ui-text);}
+  .shape-row .sw{width:16px; height:16px; border-radius:50%; flex-shrink:0; border:1px solid rgba(0,0,0,.12);}
+  .shape-row .nm{flex:1;}
+  .shape-row .cnt{color:var(--ui-dim); font-size:11.5px;}
+  .shape-row .del{border:none; background:none; color:var(--ui-dim); font-size:14px; padding:0 2px; cursor:pointer;}
+  .shape-row .del:hover{color:#c00;}
+  .swatches{display:flex; gap:8px; align-items:center;}
+  .swatches .sw{width:26px; height:26px; border-radius:50%; cursor:pointer; border:1px solid rgba(0,0,0,.12);}
+  .swatches .sw.sel{box-shadow:0 0 0 2px #fff, 0 0 0 3.5px var(--ui-text);}
+  .swatches input[type=color]{width:26px; height:26px; border:none; background:none; cursor:pointer; padding:0;}
+  .slider-row{display:flex; align-items:center; gap:10px; font-size:12px;}
+  .slider-row label{width:72px; color:var(--ui-text); flex-shrink:0;}
+  .slider-row input[type=range]{flex:1; accent-color:var(--ui-text);}
+  .slider-row output{width:30px; text-align:right; color:var(--ui-dim); font-size:11.5px;}
+  .grid-row{display:flex; gap:10px; align-items:center; font-size:12px;}
+  .grid-row input{width:52px; font:inherit; font-size:12.5px; padding:5px 7px; border:1px solid var(--ui-line); border-radius:7px;}
+  .btns{display:flex; flex-direction:column; gap:7px;}
+  #toast{
+    position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(80px);
+    background:var(--ui-text); color:#fff; font-size:12.5px; font-weight:600;
+    padding:9px 16px; border-radius:10px; transition:transform .25s ease; pointer-events:none;
+  }
+  #toast.show{transform:translateX(-50%) translateY(0);}
+  .footer-link{font-size:11.5px; color:var(--ui-dim); text-decoration:none; margin-top:auto; padding-top:10px;}
+  .footer-link:hover{color:var(--ui-text);}
+  @media (max-width: 900px){
+    body{flex-direction:column; height:auto; overflow:auto;}
+    #stage{padding:14px; flex:none;}
+    #panel{width:100%; border-left:none; border-top:1px solid var(--ui-line);}
+  }
+</style>
+</head>
+<body>
+
+<div id="stage"><div id="frameWrap">
+  <svg id="canvas" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg"></svg>
+</div></div>
+
+<div id="panel">
+  <h1>Точки + метабол <span>· конструктор</span></h1>
+
+  <div class="sec">
+    <label>Фигуры</label>
+    <div id="shapeList" style="display:flex; flex-direction:column; gap:6px;"></div>
+    <button id="addShape">+ фигура</button>
+    <div class="hint">Клик по точке — добавить/убрать из активной фигуры. Можно вести с зажатой кнопкой.</div>
+  </div>
+
+  <div class="sec">
+    <label>Цвет активной фигуры</label>
+    <div class="swatches">
+      <div class="sw" data-c="#E1495F" style="background:#E1495F"></div>
+      <div class="sw" data-c="#130A66" style="background:#130A66"></div>
+      <div class="sw" data-c="#D8D8D8" style="background:#D8D8D8"></div>
+      <input type="color" id="customColor" value="#E1495F" title="свой цвет">
+    </div>
+  </div>
+
+  <div class="sec">
+    <label>Пластика</label>
+    <div class="slider-row"><label>Жирность</label><input type="range" id="rR" min="60" max="170" value="108"><output id="oR">108</output></div>
+    <div class="slider-row"><label>Слипание</label><input type="range" id="rG" min="0" max="100" value="50"><output id="oG">50</output></div>
+    <div class="slider-row"><label>Органика</label><input type="range" id="rJ" min="0" max="100" value="35"><output id="oJ">35</output></div>
+  </div>
+
+  <div class="sec">
+    <label>Сетка</label>
+    <div class="grid-row">
+      <input type="number" id="gCols" min="3" max="19" value="9"> ×
+      <input type="number" id="gRows" min="2" max="11" value="5">
+      <span class="hint" style="margin-left:2px">колонки × ряды</span>
+    </div>
+  </div>
+
+  <div class="sec">
+    <label>Экспорт · 1920×1080</label>
+    <div class="btns">
+      <button class="primary" id="btnCopy">Копировать SVG (для Figma)</button>
+      <button id="btnSvg">Скачать SVG</button>
+      <button id="btnPng">Скачать PNG 2×</button>
+      <button id="btnClear">Очистить всё</button>
+    </div>
+  </div>
+
+  <a class="footer-link" href="https://denisyudin.com">denisyudin.com</a>
+</div>
+
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* ===== state ===== */
+const W = 1920, H = 1080, DOT_R = 27;
+let cols = 9, rows = 5;
+let shapes = [];            // {dots:Set<int>, color:string}
+let activeIdx = 0;
+let params = { R: 108, goo: 0.50, jit: 0.35 };
+const PRESETS = ["#E1495F", "#130A66", "#D8D8D8"];
+
+function defaultShape(i){ return { dots: new Set(), color: PRESETS[i % PRESETS.length] }; }
+
+/* ===== grid geometry ===== */
+function gridGeom(){
+  const mx = 160, my = 140;
+  const sx = (W - 2*mx) / (cols - 1);
+  const sy = (H - 2*my) / (rows - 1);
+  return { mx, my, sx, sy };
+}
+function dotPos(i){
+  const g = gridGeom();
+  const c = i % cols, r = Math.floor(i / cols);
+  return [ g.mx + c * g.sx, g.my + r * g.sy ];
+}
+
+/* ===== metaball field -> marching squares -> smooth path ===== */
+function hash01(i){ const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+
+function shapePathD(shape){
+  const idxs = [...shape.dots];
+  if (!idxs.length) return "";
+  const R = params.R;
+  const t = 0.28 + 0.50 * params.goo;              // выше слипание -> жирнее перемычки
+  const sigma = R / Math.sqrt(-2 * Math.log(t));
+  const inv2s2 = 1 / (2 * sigma * sigma);
+  const jitAmp = 0.10 * params.jit;                 // ±10% веса на точку максимум
+
+  const pts = idxs.map(i => {
+    const [x, y] = dotPos(i);
+    return { x, y, w: 1 + jitAmp * (hash01(i) * 2 - 1) };
+  });
+
+  const cut = sigma * 3.4;
+  let minX =  Infinity, minY =  Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (const p of pts){
+    minX = Math.min(minX, p.x - cut); maxX = Math.max(maxX, p.x + cut);
+    minY = Math.min(minY, p.y - cut); maxY = Math.max(maxY, p.y + cut);
+  }
+  const step = 5;
+  minX = Math.floor(minX / step) * step; minY = Math.floor(minY / step) * step;
+  const nx = Math.ceil((maxX - minX) / step) + 2;
+  const ny = Math.ceil((maxY - minY) / step) + 2;
+
+  const f = new Float32Array(nx * ny);
+  for (const p of pts){
+    const i0 = Math.max(0, Math.floor((p.x - cut - minX) / step));
+    const i1 = Math.min(nx - 1, Math.ceil((p.x + cut - minX) / step));
+    const j0 = Math.max(0, Math.floor((p.y - cut - minY) / step));
+    const j1 = Math.min(ny - 1, Math.ceil((p.y + cut - minY) / step));
+    for (let j = j0; j <= j1; j++){
+      const dy = minY + j * step - p.y;
+      for (let i = i0; i <= i1; i++){
+        const dx = minX + i * step - p.x;
+        f[j * nx + i] += p.w * Math.exp(-(dx*dx + dy*dy) * inv2s2);
+      }
+    }
+  }
+
+  /* marching squares */
+  const segs = [];
+  const P = (i, j) => [minX + i * step, minY + j * step];
+  const interp = (pa, fa, pb, fb) => {
+    const k = (t - fa) / (fb - fa);
+    return [ pa[0] + k * (pb[0] - pa[0]), pa[1] + k * (pb[1] - pa[1]) ];
+  };
+  for (let j = 0; j < ny - 1; j++){
+    for (let i = 0; i < nx - 1; i++){
+      const fTL = f[j*nx+i],     fTR = f[j*nx+i+1];
+      const fBL = f[(j+1)*nx+i], fBR = f[(j+1)*nx+i+1];
+      const idx = (fTL>t?8:0) | (fTR>t?4:0) | (fBR>t?2:0) | (fBL>t?1:0);
+      if (idx === 0 || idx === 15) continue;
+      const TL = P(i,j), TR = P(i+1,j), BL = P(i,j+1), BR = P(i+1,j+1);
+      const top    = () => interp(TL,fTL,TR,fTR);
+      const right  = () => interp(TR,fTR,BR,fBR);
+      const bottom = () => interp(BL,fBL,BR,fBR);
+      const left   = () => interp(TL,fTL,BL,fBL);
+      const add = (a,b) => segs.push([a,b]);
+      switch(idx){
+        case 1:  add(left(),bottom()); break;
+        case 2:  add(bottom(),right()); break;
+        case 3:  add(left(),right()); break;
+        case 4:  add(top(),right()); break;
+        case 6:  add(top(),bottom()); break;
+        case 7:  add(left(),top()); break;
+        case 8:  add(top(),left()); break;
+        case 9:  add(top(),bottom()); break;
+        case 11: add(top(),right()); break;
+        case 12: add(left(),right()); break;
+        case 13: add(bottom(),right()); break;
+        case 14: add(left(),bottom()); break;
+        case 5: case 10: {
+          const c = (fTL+fTR+fBL+fBR)/4 > t;
+          if ((idx===5) === c){ add(top(),right()); add(left(),bottom()); }
+          else { add(top(),left()); add(bottom(),right()); }
+          break;
+        }
+      }
+    }
+  }
+
+  /* chain segments into loops */
+  const key = p => Math.round(p[0]*8) + "_" + Math.round(p[1]*8);
+  const ends = new Map();
+  segs.forEach((s, si) => {
+    for (const e of [0,1]){
+      const k = key(s[e]);
+      if (!ends.has(k)) ends.set(k, []);
+      ends.get(k).push([si, e]);
+    }
+  });
+  const used = new Uint8Array(segs.length);
+  const loops = [];
+  for (let si = 0; si < segs.length; si++){
+    if (used[si]) continue;
+    used[si] = 1;
+    const loop = [segs[si][0], segs[si][1]];
+    let guard = segs.length * 2;
+    while (guard-- > 0){
+      const tail = loop[loop.length - 1];
+      const cands = ends.get(key(tail)) || [];
+      let found = false;
+      for (const [sj, e] of cands){
+        if (used[sj]) continue;
+        used[sj] = 1;
+        loop.push(segs[sj][1 - e]);
+        found = true;
+        break;
+      }
+      if (!found) break;
+      if (key(loop[loop.length-1]) === key(loop[0])){ loop.pop(); break; }
+    }
+    if (loop.length >= 3) loops.push(loop);
+  }
+
+  /* simplify (RDP) + Catmull-Rom -> cubic bezier */
+  const d = [];
+  for (let loop of loops){
+    loop = rdpClosed(loop, 1.3);
+    const n = loop.length;
+    if (n < 3) continue;
+    const fx = v => (Math.round(v * 10) / 10);
+    d.push(`M ${fx(loop[0][0])} ${fx(loop[0][1])}`);
+    for (let i = 0; i < n; i++){
+      const p0 = loop[(i-1+n)%n], p1 = loop[i], p2 = loop[(i+1)%n], p3 = loop[(i+2)%n];
+      const c1 = [ p1[0] + (p2[0]-p0[0])/6, p1[1] + (p2[1]-p0[1])/6 ];
+      const c2 = [ p2[0] - (p3[0]-p1[0])/6, p2[1] - (p3[1]-p1[1])/6 ];
+      d.push(`C ${fx(c1[0])} ${fx(c1[1])} ${fx(c2[0])} ${fx(c2[1])} ${fx(p2[0])} ${fx(p2[1])}`);
+    }
+    d.push("Z");
+  }
+  return d.join(" ");
+}
+
+function rdpClosed(pts, eps){
+  // разрезаем замкнутый контур в двух дальних точках и упрощаем половины
+  if (pts.length < 8) return pts;
+  let far = 0, best = -1;
+  for (let i = 1; i < pts.length; i++){
+    const dd = (pts[i][0]-pts[0][0])**2 + (pts[i][1]-pts[0][1])**2;
+    if (dd > best){ best = dd; far = i; }
+  }
+  const a = rdp(pts.slice(0, far + 1), eps);
+  const b = rdp(pts.slice(far).concat([pts[0]]), eps);
+  return a.slice(0, -1).concat(b.slice(0, -1));
+}
+function rdp(pts, eps){
+  if (pts.length < 3) return pts;
+  const [x1,y1] = pts[0], [x2,y2] = pts[pts.length-1];
+  const dx = x2-x1, dy = y2-y1;
+  const len = Math.hypot(dx,dy) || 1e-9;
+  let iMax = 0, dMax = 0;
+  for (let i = 1; i < pts.length-1; i++){
+    const dist = Math.abs(dy*pts[i][0] - dx*pts[i][1] + x2*y1 - y2*x1) / len;
+    if (dist > dMax){ dMax = dist; iMax = i; }
+  }
+  if (dMax > eps){
+    const l = rdp(pts.slice(0, iMax+1), eps);
+    const r = rdp(pts.slice(iMax), eps);
+    return l.slice(0,-1).concat(r);
+  }
+  return [pts[0], pts[pts.length-1]];
+}
+
+/* ===== render ===== */
+const svg = document.getElementById("canvas");
+const NS = "http://www.w3.org/2000/svg";
+
+function render(){
+  svg.innerHTML = "";
+  const bg = document.createElementNS(NS, "rect");
+  bg.setAttribute("width", W); bg.setAttribute("height", H); bg.setAttribute("fill", "#FFFFFF");
+  svg.appendChild(bg);
+
+  for (const s of shapes){
+    const dStr = shapePathD(s);
+    if (!dStr) continue;
+    const p = document.createElementNS(NS, "path");
+    p.setAttribute("d", dStr);
+    p.setAttribute("fill", s.color);
+    p.setAttribute("fill-rule", "evenodd");
+    svg.appendChild(p);
+  }
+
+  const act = shapes[activeIdx];
+  for (let i = 0; i < cols * rows; i++){
+    const [x, y] = dotPos(i);
+    if (act && act.dots.has(i)){
+      const ring = document.createElementNS(NS, "circle");
+      ring.setAttribute("cx", x); ring.setAttribute("cy", y); ring.setAttribute("r", DOT_R + 13);
+      ring.setAttribute("fill", "none");
+      ring.setAttribute("stroke", "rgba(20,20,20,.28)");
+      ring.setAttribute("stroke-width", 3);
+      ring.setAttribute("stroke-dasharray", "1 7");
+      ring.setAttribute("stroke-linecap", "round");
+      svg.appendChild(ring);
+    }
+    const dot = document.createElementNS(NS, "circle");
+    dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", DOT_R);
+    dot.setAttribute("fill", "#0A0A0A");
+    dot.setAttribute("class", "dot");
+    svg.appendChild(dot);
+    const hit = document.createElementNS(NS, "circle");
+    hit.setAttribute("cx", x); hit.setAttribute("cy", y); hit.setAttribute("r", Math.min(gridGeom().sx, gridGeom().sy) * 0.42);
+    hit.setAttribute("fill", "transparent");
+    hit.setAttribute("class", "dot-hit");
+    hit.dataset.i = i;
+    svg.appendChild(hit);
+  }
+  renderPanel();
+  save();
+}
+
+function renderPanel(){
+  const list = document.getElementById("shapeList");
+  list.innerHTML = "";
+  shapes.forEach((s, i) => {
+    const row = document.createElement("div");
+    row.className = "shape-row" + (i === activeIdx ? " active" : "");
+    row.innerHTML = `<div class="sw" style="background:${s.color}"></div>
+      <span class="nm">Фигура ${i+1}</span><span class="cnt">${s.dots.size} тчк</span>
+      <button class="del" title="удалить">✕</button>`;
+    row.addEventListener("click", e => {
+      if (e.target.classList.contains("del")){
+        shapes.splice(i, 1);
+        if (!shapes.length) shapes.push(defaultShape(0));
+        activeIdx = Math.min(activeIdx, shapes.length - 1);
+      } else activeIdx = i;
+      render();
+    });
+    list.appendChild(row);
+  });
+  document.querySelectorAll(".swatches .sw").forEach(sw => {
+    sw.classList.toggle("sel", shapes[activeIdx] && sw.dataset.c === shapes[activeIdx].color);
+  });
+}
+
+/* ===== interactions ===== */
+let dragMode = null; // "add" | "remove"
+svg.addEventListener("pointerdown", e => {
+  const i = e.target.dataset?.i;
+  if (i === undefined) return;
+  const s = shapes[activeIdx];
+  const idx = +i;
+  dragMode = s.dots.has(idx) ? "remove" : "add";
+  applyDot(idx);
+});
+svg.addEventListener("pointerover", e => {
+  if (dragMode === null || !(e.buttons & 1)) return;
+  const i = e.target.dataset?.i;
+  if (i !== undefined) applyDot(+i);
+});
+window.addEventListener("pointerup", () => { dragMode = null; });
+function applyDot(idx){
+  const s = shapes[activeIdx];
+  if (dragMode === "add") s.dots.add(idx); else s.dots.delete(idx);
+  render();
+}
+
+document.getElementById("addShape").addEventListener("click", () => {
+  shapes.push(defaultShape(shapes.length));
+  activeIdx = shapes.length - 1;
+  render();
+});
+document.querySelectorAll(".swatches .sw").forEach(sw => {
+  sw.addEventListener("click", () => { shapes[activeIdx].color = sw.dataset.c; render(); });
+});
+document.getElementById("customColor").addEventListener("input", e => {
+  shapes[activeIdx].color = e.target.value; render();
+});
+
+function bindSlider(id, out, fn){
+  const el = document.getElementById(id);
+  el.addEventListener("input", () => { document.getElementById(out).textContent = el.value; fn(+el.value); render(); });
+}
+bindSlider("rR", "oR", v => params.R = v);
+bindSlider("rG", "oG", v => params.goo = v / 100);
+bindSlider("rJ", "oJ", v => params.jit = v / 100);
+
+document.getElementById("gCols").addEventListener("change", e => {
+  cols = Math.max(3, Math.min(19, +e.target.value || 9));
+  e.target.value = cols;
+  shapes.forEach(s => s.dots.clear());
+  render();
+});
+document.getElementById("gRows").addEventListener("change", e => {
+  rows = Math.max(2, Math.min(11, +e.target.value || 5));
+  e.target.value = rows;
+  shapes.forEach(s => s.dots.clear());
+  render();
+});
+
+document.getElementById("btnClear").addEventListener("click", () => {
+  shapes = [defaultShape(0)]; activeIdx = 0; render();
+});
+
+/* ===== export ===== */
+function buildExportSVG(){
+  const parts = [
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`,
+    `<rect width="${W}" height="${H}" fill="#FFFFFF"/>`
+  ];
+  for (const s of shapes){
+    const dStr = shapePathD(s);
+    if (dStr) parts.push(`<path d="${dStr}" fill="${s.color}" fill-rule="evenodd"/>`);
+  }
+  for (let i = 0; i < cols * rows; i++){
+    const [x, y] = dotPos(i);
+    parts.push(`<circle cx="${x}" cy="${y}" r="${DOT_R}" fill="#0A0A0A"/>`);
+  }
+  parts.push("</svg>");
+  return parts.join("\n");
+}
+
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._h);
+  toast._h = setTimeout(() => t.classList.remove("show"), 1800);
+}
+
+document.getElementById("btnCopy").addEventListener("click", async () => {
+  const s = buildExportSVG();
+  try {
+    await navigator.clipboard.writeText(s);
+    toast("SVG в буфере — вставь в Figma (Cmd+V)");
+  } catch {
+    const ta = document.createElement("textarea");
+    ta.value = s; document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); ta.remove();
+    toast("SVG в буфере — вставь в Figma (Cmd+V)");
+  }
+});
+
+function download(name, blob){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+document.getElementById("btnSvg").addEventListener("click", () => {
+  download("metaball.svg", new Blob([buildExportSVG()], { type: "image/svg+xml" }));
+});
+document.getElementById("btnPng").addEventListener("click", () => {
+  const img = new Image();
+  const url = URL.createObjectURL(new Blob([buildExportSVG()], { type: "image/svg+xml" }));
+  img.onload = () => {
+    const c = document.createElement("canvas");
+    c.width = W * 2; c.height = H * 2;
+    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    c.toBlob(b => download("metaball.png", b), "image/png");
+    URL.revokeObjectURL(url);
+  };
+  img.src = url;
+});
+
+/* ===== persistence ===== */
+function save(){
+  try {
+    localStorage.setItem("metaball-konstruktor", JSON.stringify({
+      cols, rows, params, activeIdx,
+      shapes: shapes.map(s => ({ dots: [...s.dots], color: s.color }))
+    }));
+  } catch {}
+}
+function load(){
+  try {
+    const st = JSON.parse(localStorage.getItem("metaball-konstruktor"));
+    if (!st) return;
+    cols = st.cols || 9; rows = st.rows || 5;
+    params = st.params || params;
+    shapes = (st.shapes || []).map(s => ({ dots: new Set(s.dots), color: s.color }));
+    activeIdx = Math.min(st.activeIdx || 0, shapes.length - 1);
+    document.getElementById("gCols").value = cols;
+    document.getElementById("gRows").value = rows;
+    document.getElementById("rR").value = params.R;   document.getElementById("oR").textContent = params.R;
+    document.getElementById("rG").value = params.goo * 100; document.getElementById("oG").textContent = Math.round(params.goo * 100);
+    document.getElementById("rJ").value = params.jit * 100; document.getElementById("oJ").textContent = Math.round(params.jit * 100);
+  } catch {}
+}
+
+load();
+if (!shapes.length) shapes = [defaultShape(0)];
+render();
+</script>
+</body>
+</html>
