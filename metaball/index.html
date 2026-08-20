@@ -26,7 +26,6 @@
   }
   #canvas .dot{cursor:pointer;}
   #canvas .dot-hit{fill:transparent; cursor:pointer;}
-  #canvas .dot-hit:hover + .dot-ring{opacity:.35;}
   #panel{
     width:292px; background:var(--ui-panel); border-left:1px solid var(--ui-line);
     padding:20px 18px; overflow-y:auto; display:flex; flex-direction:column; gap:18px; flex-shrink:0;
@@ -111,7 +110,7 @@
 
   <div class="sec">
     <label>Пластика активной фигуры</label>
-    <div class="slider-row"><label>Жирность</label><input type="range" id="rR" min="60" max="170" value="108"><output id="oR">108</output></div>
+    <div class="slider-row"><label>Жирность</label><input type="range" id="rR" min="20" max="300" value="108"><output id="oR">108</output></div>
     <div class="slider-row"><label>Слипание</label><input type="range" id="rG" min="0" max="100" value="50"><output id="oG">50</output></div>
     <div class="slider-row"><label>Органика</label><input type="range" id="rJ" min="0" max="100" value="35"><output id="oJ">35</output></div>
   </div>
@@ -135,11 +134,10 @@
 
   <div class="sec">
     <label>Сетка</label>
-    <div class="grid-row">
-      <input type="number" id="gCols" min="3" max="19" value="9"> ×
-      <input type="number" id="gRows" min="2" max="11" value="5">
-      <span class="hint" style="margin-left:2px">колонки × ряды</span>
-    </div>
+    <div class="slider-row"><label>Шаг</label><input type="range" id="rStep" min="60" max="400" value="200"><output id="oStep">200</output></div>
+    <div class="slider-row"><label>Точка</label><input type="range" id="rDot" min="4" max="60" value="27"><output id="oDot">27</output></div>
+    <div class="slider-row"><label>Отступ</label><input type="range" id="rMar" min="0" max="400" value="140"><output id="oMar">140</output></div>
+    <div class="hint" id="gridInfo">9 × 5</div>
     <label class="check-row"><input type="checkbox" id="chkDots" checked> показывать чёрные точки</label>
   </div>
 
@@ -162,11 +160,11 @@
 "use strict";
 /* ===== state ===== */
 let W = 1920, H = 1080;
-const DOT_R = 27;                                   // радиус точки при базе 1080
-let cols = 9, rows = 5;
+let gridS = 200;    // шаг сетки
+let dotR = 27;      // радиус чёрной точки
+let gridM = 140;    // отступ сетки от края формата
 let showDots = true;
-function unit(){ return Math.min(W, H) / 1080; }    // масштаб метрик относительно базового формата
-let shapes = [];            // {dots:Set<int>, color:string, R, goo, jit}
+let shapes = [];    // {dots:Set<"c,r">, color:string, R, goo, jit}
 let activeIdx = 0;
 const DEFAULT_PLASTICS = { R: 108, goo: 0.50, jit: 0.35 };
 const PRESETS = ["#E1495F", "#130A66", "#00BFD9", "#D8D8D8"];
@@ -177,186 +175,130 @@ function defaultShape(i){
   return { dots: new Set(), color: PRESETS[i % PRESETS.length], R: src.R, goo: src.goo, jit: src.jit };
 }
 
-/* ===== grid geometry ===== */
+/* ===== grid geometry =====
+   Кол-во точек считается от формата: сколько шагов помещается внутри отступов.
+   Остаток распределяется поровну — сетка всегда центрирована. */
 function gridGeom(){
-  const mx = Math.round(W / 12);                 // 160 при 1920
-  const my = Math.round(H * 140 / 1080);         // 140 при 1080
-  const sx = (W - 2*mx) / (cols - 1);
-  const sy = (H - 2*my) / (rows - 1);
-  return { mx, my, sx, sy };
+  const cols = Math.max(1, Math.floor((W - 2 * gridM) / gridS) + 1);
+  const rows = Math.max(1, Math.floor((H - 2 * gridM) / gridS) + 1);
+  const ox = gridM + (W - 2 * gridM - (cols - 1) * gridS) / 2;
+  const oy = gridM + (H - 2 * gridM - (rows - 1) * gridS) / 2;
+  return { cols, rows, ox, oy };
 }
-function dotPos(i){
+function nodeXY(c, r){
   const g = gridGeom();
-  const c = i % cols, r = Math.floor(i / cols);
-  return [ g.mx + c * g.sx, g.my + r * g.sy ];
+  return [ g.ox + c * gridS, g.oy + r * gridS ];
 }
 
-/* ===== metaball field -> marching squares -> smooth path ===== */
+/* ===== metaball: безье-архитектура =====
+   Узел = круг радиуса R (жирность). Связь между соседними узлами (орто и диагональ) =
+   мост из двух кубических кривых Безье, касательных к окружностям; натяжение моста = слипание.
+   Полный кластер 2×2 заливается ядром. Никаких трассировок — чистые опорные точки. */
 function hash01(i){ const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+const fx = v => +v.toFixed(1);
+
+function circlePath(x, y, r){
+  return `M ${fx(x + r)} ${fx(y)} A ${fx(r)} ${fx(r)} 0 1 1 ${fx(x - r)} ${fx(y)} A ${fx(r)} ${fx(r)} 0 1 1 ${fx(x + r)} ${fx(y)} Z`;
+}
+
+function bridgePath(p1, p2, v){
+  // классическая metaball-связка (paper.js/варун): касательные точки + перпендикулярные ручки
+  const HALF_PI = Math.PI / 2, HANDLE = 2.4;
+  const r1 = p1.rad, r2 = p2.rad;
+  const dx = p2.x - p1.x, dy = p2.y - p1.y;
+  const d = Math.hypot(dx, dy);
+  if (r1 <= 0 || r2 <= 0 || d <= Math.abs(r1 - r2)) return "";
+  if (d > (r1 + r2) * 1.8) return "";            // слишком далеко — моста нет
+  let u1 = 0, u2 = 0;
+  if (d < r1 + r2){
+    u1 = Math.acos((r1*r1 + d*d - r2*r2) / (2 * r1 * d));
+    u2 = Math.acos((r2*r2 + d*d - r1*r1) / (2 * r2 * d));
+  }
+  const ang = Math.atan2(dy, dx);
+  const maxSpread = Math.acos((r1 - r2) / d);
+  const a1 = ang + u1 + (maxSpread - u1) * v;
+  const a2 = ang - u1 - (maxSpread - u1) * v;
+  const a3 = ang + Math.PI - u2 - (Math.PI - u2 - maxSpread) * v;
+  const a4 = ang - Math.PI + u2 + (Math.PI - u2 - maxSpread) * v;
+  const vec = (x, y, a, r) => [ x + Math.cos(a) * r, y + Math.sin(a) * r ];
+  const P1 = vec(p1.x, p1.y, a1, r1), P2 = vec(p1.x, p1.y, a2, r1);
+  const P3 = vec(p2.x, p2.y, a3, r2), P4 = vec(p2.x, p2.y, a4, r2);
+  const total = r1 + r2;
+  let d2 = Math.min(v * HANDLE, Math.hypot(P3[0]-P1[0], P3[1]-P1[1]) / total);
+  d2 *= Math.min(1, d * 2 / total);
+  // анти-бабочка: вогнутые фланки длинного моста не должны пересекаться.
+  // Середина безье B(0.5) линейна по d2 — клэмпим d2 так, чтобы зазор между фланками был >= 2px.
+  {
+    const n = [ -Math.sin(ang), Math.cos(ang) ];
+    const dir = (a, r) => [ Math.cos(a) * r, Math.sin(a) * r ];
+    const vA = dir(a1 - HALF_PI, r1), vA3 = dir(a3 + HALF_PI, r2);
+    const vB = dir(a4 - HALF_PI, r2), vB2 = dir(a2 + HALF_PI, r1);
+    const S0 = [ (P4[0]+P2[0]-P1[0]-P3[0])/2, (P4[1]+P2[1]-P1[1]-P3[1])/2 ];
+    const S1 = [ 0.375*(vB[0]+vB2[0]-vA[0]-vA3[0]), 0.375*(vB[1]+vB2[1]-vA[1]-vA3[1]) ];
+    const s0 = S0[0]*n[0] + S0[1]*n[1];
+    const s1 = S1[0]*n[0] + S1[1]*n[1];
+    const SMIN = 2;
+    if (s0 * s1 < 0 && Math.abs(d2 * s1) > Math.abs(s0) - SMIN)
+      d2 = Math.max(0, (Math.abs(s0) - SMIN) / Math.abs(s1));
+  }
+  const h1 = vec(P1[0], P1[1], a1 - HALF_PI, r1 * d2);
+  const h2 = vec(P2[0], P2[1], a2 + HALF_PI, r1 * d2);
+  const h3 = vec(P3[0], P3[1], a3 + HALF_PI, r2 * d2);
+  const h4 = vec(P4[0], P4[1], a4 - HALF_PI, r2 * d2);
+  const pt = p => `${fx(p[0])} ${fx(p[1])}`;
+  // закрутка моста должна совпадать с закруткой кругов (CW), иначе nonzero вычтет перекрытия
+  const quad = [P1, P3, P4, P2];
+  let s2 = 0;
+  for (let q = 0; q < 4; q++){ const a = quad[q], b = quad[(q + 1) % 4]; s2 += a[0]*b[1] - b[0]*a[1]; }
+  return s2 >= 0
+    ? `M ${pt(P1)} C ${pt(h1)} ${pt(h3)} ${pt(P3)} L ${pt(P4)} C ${pt(h4)} ${pt(h2)} ${pt(P2)} Z`
+    : `M ${pt(P2)} C ${pt(h2)} ${pt(h4)} ${pt(P4)} L ${pt(P3)} C ${pt(h3)} ${pt(h1)} ${pt(P1)} Z`;
+}
 
 function shapePathD(shape){
-  const idxs = [...shape.dots];
-  if (!idxs.length) return "";
-  const R = (shape.R ?? DEFAULT_PLASTICS.R) * unit();
-  const t = 0.28 + 0.50 * (shape.goo ?? DEFAULT_PLASTICS.goo);   // выше слипание -> жирнее перемычки
-  const sigma = R / Math.sqrt(-2 * Math.log(t));
-  const inv2s2 = 1 / (2 * sigma * sigma);
-  const jitAmp = 0.10 * (shape.jit ?? DEFAULT_PLASTICS.jit);     // ±10% веса на точку максимум
-
-  const pts = idxs.map(i => {
-    const [x, y] = dotPos(i);
-    return { x, y, w: 1 + jitAmp * (hash01(i) * 2 - 1) };
-  });
-
-  const cut = sigma * 3.4;
-  let minX =  Infinity, minY =  Infinity, maxX = -Infinity, maxY = -Infinity;
-  for (const p of pts){
-    minX = Math.min(minX, p.x - cut); maxX = Math.max(maxX, p.x + cut);
-    minY = Math.min(minY, p.y - cut); maxY = Math.max(maxY, p.y + cut);
+  const g = gridGeom();
+  const R = shape.R ?? DEFAULT_PLASTICS.R;
+  const goo = shape.goo ?? DEFAULT_PLASTICS.goo;
+  const jit = shape.jit ?? DEFAULT_PLASTICS.jit;
+  const pts = [];
+  const key = new Map();
+  for (const k of shape.dots){
+    const [c, r] = k.split(",").map(Number);
+    if (c < 0 || r < 0 || c >= g.cols || r >= g.rows) continue;   // вне текущей сетки — не рисуем, но помним
+    const [x, y] = nodeXY(c, r);
+    const p = { c, r, x, y, rad: R * (1 + 0.12 * jit * (hash01(c * 31 + r * 7) * 2 - 1)) };
+    pts.push(p);
+    key.set(c + "," + r, p);
   }
-  const step = 5;
-  minX = Math.floor(minX / step) * step; minY = Math.floor(minY / step) * step;
-  const nx = Math.ceil((maxX - minX) / step) + 2;
-  const ny = Math.ceil((maxY - minY) / step) + 2;
-
-  const f = new Float32Array(nx * ny);
-  for (const p of pts){
-    const i0 = Math.max(0, Math.floor((p.x - cut - minX) / step));
-    const i1 = Math.min(nx - 1, Math.ceil((p.x + cut - minX) / step));
-    const j0 = Math.max(0, Math.floor((p.y - cut - minY) / step));
-    const j1 = Math.min(ny - 1, Math.ceil((p.y + cut - minY) / step));
-    for (let j = j0; j <= j1; j++){
-      const dy = minY + j * step - p.y;
-      for (let i = i0; i <= i1; i++){
-        const dx = minX + i * step - p.x;
-        f[j * nx + i] += p.w * Math.exp(-(dx*dx + dy*dy) * inv2s2);
+  if (!pts.length) return "";
+  const d = [];
+  for (const p of pts) d.push(circlePath(p.x, p.y, p.rad));
+  if (goo > 0){
+    const v = 0.08 + 0.72 * goo;
+    for (let i = 0; i < pts.length; i++){
+      for (let j = i + 1; j < pts.length; j++){
+        const a = pts[i], b = pts[j];
+        if (Math.abs(a.c - b.c) > 1 || Math.abs(a.r - b.r) > 1) continue;   // мосты только между соседями
+        const bp = bridgePath(a, b, v);
+        if (bp) d.push(bp);
       }
     }
-  }
-
-  /* marching squares */
-  const segs = [];
-  const P = (i, j) => [minX + i * step, minY + j * step];
-  const interp = (pa, fa, pb, fb) => {
-    const k = (t - fa) / (fb - fa);
-    return [ pa[0] + k * (pb[0] - pa[0]), pa[1] + k * (pb[1] - pa[1]) ];
-  };
-  for (let j = 0; j < ny - 1; j++){
-    for (let i = 0; i < nx - 1; i++){
-      const fTL = f[j*nx+i],     fTR = f[j*nx+i+1];
-      const fBL = f[(j+1)*nx+i], fBR = f[(j+1)*nx+i+1];
-      const idx = (fTL>t?8:0) | (fTR>t?4:0) | (fBR>t?2:0) | (fBL>t?1:0);
-      if (idx === 0 || idx === 15) continue;
-      const TL = P(i,j), TR = P(i+1,j), BL = P(i,j+1), BR = P(i+1,j+1);
-      const top    = () => interp(TL,fTL,TR,fTR);
-      const right  = () => interp(TR,fTR,BR,fBR);
-      const bottom = () => interp(BL,fBL,BR,fBR);
-      const left   = () => interp(TL,fTL,BL,fBL);
-      const add = (a,b) => segs.push([a,b]);
-      switch(idx){
-        case 1:  add(left(),bottom()); break;
-        case 2:  add(bottom(),right()); break;
-        case 3:  add(left(),right()); break;
-        case 4:  add(top(),right()); break;
-        case 6:  add(top(),bottom()); break;
-        case 7:  add(left(),top()); break;
-        case 8:  add(top(),left()); break;
-        case 9:  add(top(),bottom()); break;
-        case 11: add(top(),right()); break;
-        case 12: add(left(),right()); break;
-        case 13: add(bottom(),right()); break;
-        case 14: add(left(),bottom()); break;
-        case 5: case 10: {
-          const c = (fTL+fTR+fBL+fBR)/4 > t;
-          if ((idx===5) === c){ add(top(),right()); add(left(),bottom()); }
-          else { add(top(),left()); add(bottom(),right()); }
-          break;
+    // ядро кластера: каждая тройка попарно-соседних узлов заливается треугольником центров —
+    // закрывает карманы тройных стыков (полный 2×2 покрывается четырьмя треугольниками)
+    const near = (a, b) => Math.abs(a.c - b.c) <= 1 && Math.abs(a.r - b.r) <= 1;
+    for (let i = 0; i < pts.length; i++)
+      for (let j = i + 1; j < pts.length; j++){
+        if (!near(pts[i], pts[j])) continue;
+        for (let k2 = j + 1; k2 < pts.length; k2++){
+          if (!near(pts[i], pts[k2]) || !near(pts[j], pts[k2])) continue;
+          const a = pts[i], b = pts[j], c = pts[k2];
+          const s2 = (b.x - a.x)*(c.y - a.y) - (c.x - a.x)*(b.y - a.y);
+          const t = s2 >= 0 ? [a, b, c] : [a, c, b];
+          d.push(`M ${fx(t[0].x)} ${fx(t[0].y)} L ${fx(t[1].x)} ${fx(t[1].y)} L ${fx(t[2].x)} ${fx(t[2].y)} Z`);
         }
       }
-    }
   }
-
-  /* chain segments into loops */
-  const key = p => Math.round(p[0]*8) + "_" + Math.round(p[1]*8);
-  const ends = new Map();
-  segs.forEach((s, si) => {
-    for (const e of [0,1]){
-      const k = key(s[e]);
-      if (!ends.has(k)) ends.set(k, []);
-      ends.get(k).push([si, e]);
-    }
-  });
-  const used = new Uint8Array(segs.length);
-  const loops = [];
-  for (let si = 0; si < segs.length; si++){
-    if (used[si]) continue;
-    used[si] = 1;
-    const loop = [segs[si][0], segs[si][1]];
-    let guard = segs.length * 2;
-    while (guard-- > 0){
-      const tail = loop[loop.length - 1];
-      const cands = ends.get(key(tail)) || [];
-      let found = false;
-      for (const [sj, e] of cands){
-        if (used[sj]) continue;
-        used[sj] = 1;
-        loop.push(segs[sj][1 - e]);
-        found = true;
-        break;
-      }
-      if (!found) break;
-      if (key(loop[loop.length-1]) === key(loop[0])){ loop.pop(); break; }
-    }
-    if (loop.length >= 3) loops.push(loop);
-  }
-
-  /* simplify (RDP) + Catmull-Rom -> cubic bezier */
-  const d = [];
-  for (let loop of loops){
-    loop = rdpClosed(loop, 1.3);
-    const n = loop.length;
-    if (n < 3) continue;
-    const fx = v => (Math.round(v * 10) / 10);
-    d.push(`M ${fx(loop[0][0])} ${fx(loop[0][1])}`);
-    for (let i = 0; i < n; i++){
-      const p0 = loop[(i-1+n)%n], p1 = loop[i], p2 = loop[(i+1)%n], p3 = loop[(i+2)%n];
-      const c1 = [ p1[0] + (p2[0]-p0[0])/6, p1[1] + (p2[1]-p0[1])/6 ];
-      const c2 = [ p2[0] - (p3[0]-p1[0])/6, p2[1] - (p3[1]-p1[1])/6 ];
-      d.push(`C ${fx(c1[0])} ${fx(c1[1])} ${fx(c2[0])} ${fx(c2[1])} ${fx(p2[0])} ${fx(p2[1])}`);
-    }
-    d.push("Z");
-  }
-  return d.join(" ");
-}
-
-function rdpClosed(pts, eps){
-  // разрезаем замкнутый контур в двух дальних точках и упрощаем половины
-  if (pts.length < 8) return pts;
-  let far = 0, best = -1;
-  for (let i = 1; i < pts.length; i++){
-    const dd = (pts[i][0]-pts[0][0])**2 + (pts[i][1]-pts[0][1])**2;
-    if (dd > best){ best = dd; far = i; }
-  }
-  const a = rdp(pts.slice(0, far + 1), eps);
-  const b = rdp(pts.slice(far).concat([pts[0]]), eps);
-  return a.slice(0, -1).concat(b.slice(0, -1));
-}
-function rdp(pts, eps){
-  if (pts.length < 3) return pts;
-  const [x1,y1] = pts[0], [x2,y2] = pts[pts.length-1];
-  const dx = x2-x1, dy = y2-y1;
-  const len = Math.hypot(dx,dy) || 1e-9;
-  let iMax = 0, dMax = 0;
-  for (let i = 1; i < pts.length-1; i++){
-    const dist = Math.abs(dy*pts[i][0] - dx*pts[i][1] + x2*y1 - y2*x1) / len;
-    if (dist > dMax){ dMax = dist; iMax = i; }
-  }
-  if (dMax > eps){
-    const l = rdp(pts.slice(0, iMax+1), eps);
-    const r = rdp(pts.slice(iMax), eps);
-    return l.slice(0,-1).concat(r);
-  }
-  return [pts[0], pts[pts.length-1]];
+  return d;   // массив субпутей: круги, мосты, ядра — каждый отдельным <path>, чтобы закрутки не взаимодействовали
 }
 
 /* ===== render ===== */
@@ -368,47 +310,56 @@ function render(){
   svg.style.aspectRatio = W + " / " + H;
   document.getElementById("frameWrap").style.maxWidth = `calc((100vh - 64px) * ${(W / H).toFixed(4)})`;
   document.getElementById("expSize").textContent = W + "×" + H;
+  const g = gridGeom();
+  document.getElementById("gridInfo").textContent = `сетка ${g.cols} × ${g.rows}`;
   svg.innerHTML = "";
   const bg = document.createElementNS(NS, "rect");
   bg.setAttribute("width", W); bg.setAttribute("height", H); bg.setAttribute("fill", "#FFFFFF");
   svg.appendChild(bg);
 
   for (const s of shapes){
-    const dStr = shapePathD(s);
-    if (!dStr) continue;
-    const p = document.createElementNS(NS, "path");
-    p.setAttribute("d", dStr);
-    p.setAttribute("fill", s.color);
-    p.setAttribute("fill-rule", "evenodd");
-    svg.appendChild(p);
+    const parts = shapePathD(s);
+    if (!parts || !parts.length) continue;
+    const grp = document.createElementNS(NS, "g");
+    grp.setAttribute("fill", s.color);
+    for (const dStr of parts){
+      const p = document.createElementNS(NS, "path");
+      p.setAttribute("d", dStr);
+      p.setAttribute("fill-rule", "nonzero");
+      grp.appendChild(p);
+    }
+    svg.appendChild(grp);
   }
 
   const act = shapes[activeIdx];
-  for (let i = 0; i < cols * rows; i++){
-    const [x, y] = dotPos(i);
-    if (act && act.dots.has(i)){
-      const ring = document.createElementNS(NS, "circle");
-      ring.setAttribute("cx", x); ring.setAttribute("cy", y); ring.setAttribute("r", (DOT_R + 13) * unit());
-      ring.setAttribute("fill", "none");
-      ring.setAttribute("stroke", "rgba(20,20,20,.28)");
-      ring.setAttribute("stroke-width", 3);
-      ring.setAttribute("stroke-dasharray", "1 7");
-      ring.setAttribute("stroke-linecap", "round");
-      svg.appendChild(ring);
+  for (let r = 0; r < g.rows; r++){
+    for (let c = 0; c < g.cols; c++){
+      const [x, y] = nodeXY(c, r);
+      const k = c + "," + r;
+      if (act && act.dots.has(k)){
+        const ring = document.createElementNS(NS, "circle");
+        ring.setAttribute("cx", x); ring.setAttribute("cy", y); ring.setAttribute("r", dotR + 13);
+        ring.setAttribute("fill", "none");
+        ring.setAttribute("stroke", "rgba(20,20,20,.28)");
+        ring.setAttribute("stroke-width", 3);
+        ring.setAttribute("stroke-dasharray", "1 7");
+        ring.setAttribute("stroke-linecap", "round");
+        svg.appendChild(ring);
+      }
+      if (showDots){
+        const dot = document.createElementNS(NS, "circle");
+        dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", dotR);
+        dot.setAttribute("fill", "#0A0A0A");
+        dot.setAttribute("class", "dot");
+        svg.appendChild(dot);
+      }
+      const hit = document.createElementNS(NS, "circle");
+      hit.setAttribute("cx", x); hit.setAttribute("cy", y); hit.setAttribute("r", gridS * 0.42);
+      hit.setAttribute("fill", "transparent");
+      hit.setAttribute("class", "dot-hit");
+      hit.dataset.k = k;
+      svg.appendChild(hit);
     }
-    if (showDots){
-      const dot = document.createElementNS(NS, "circle");
-      dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", DOT_R * unit());
-      dot.setAttribute("fill", "#0A0A0A");
-      dot.setAttribute("class", "dot");
-      svg.appendChild(dot);
-    }
-    const hit = document.createElementNS(NS, "circle");
-    hit.setAttribute("cx", x); hit.setAttribute("cy", y); hit.setAttribute("r", Math.min(gridGeom().sx, gridGeom().sy) * 0.42);
-    hit.setAttribute("fill", "transparent");
-    hit.setAttribute("class", "dot-hit");
-    hit.dataset.i = i;
-    svg.appendChild(hit);
   }
   renderPanel();
   save();
@@ -442,22 +393,21 @@ function renderPanel(){
 /* ===== interactions ===== */
 let dragMode = null; // "add" | "remove"
 svg.addEventListener("pointerdown", e => {
-  const i = e.target.dataset?.i;
-  if (i === undefined) return;
+  const k = e.target.dataset?.k;
+  if (k === undefined) return;
   const s = shapes[activeIdx];
-  const idx = +i;
-  dragMode = s.dots.has(idx) ? "remove" : "add";
-  applyDot(idx);
+  dragMode = s.dots.has(k) ? "remove" : "add";
+  applyDot(k);
 });
 svg.addEventListener("pointerover", e => {
   if (dragMode === null || !(e.buttons & 1)) return;
-  const i = e.target.dataset?.i;
-  if (i !== undefined) applyDot(+i);
+  const k = e.target.dataset?.k;
+  if (k !== undefined) applyDot(k);
 });
 window.addEventListener("pointerup", () => { dragMode = null; });
-function applyDot(idx){
+function applyDot(k){
   const s = shapes[activeIdx];
-  if (dragMode === "add") s.dots.add(idx); else s.dots.delete(idx);
+  if (dragMode === "add") s.dots.add(k); else s.dots.delete(k);
   render();
 }
 
@@ -480,6 +430,9 @@ function bindSlider(id, out, fn){
 bindSlider("rR", "oR", v => { if (shapes[activeIdx]) shapes[activeIdx].R = v; });
 bindSlider("rG", "oG", v => { if (shapes[activeIdx]) shapes[activeIdx].goo = v / 100; });
 bindSlider("rJ", "oJ", v => { if (shapes[activeIdx]) shapes[activeIdx].jit = v / 100; });
+bindSlider("rStep", "oStep", v => gridS = v);
+bindSlider("rDot", "oDot", v => dotR = v);
+bindSlider("rMar", "oMar", v => gridM = v);
 
 function syncPlasticsUI(){
   const s = shapes[activeIdx];
@@ -491,19 +444,11 @@ function syncPlasticsUI(){
   document.getElementById("rJ").value = Math.round(s.jit * 100);
   document.getElementById("oJ").textContent = Math.round(s.jit * 100);
 }
-
-document.getElementById("gCols").addEventListener("change", e => {
-  cols = Math.max(3, Math.min(19, +e.target.value || 9));
-  e.target.value = cols;
-  shapes.forEach(s => s.dots.clear());
-  render();
-});
-document.getElementById("gRows").addEventListener("change", e => {
-  rows = Math.max(2, Math.min(11, +e.target.value || 5));
-  e.target.value = rows;
-  shapes.forEach(s => s.dots.clear());
-  render();
-});
+function syncGridUI(){
+  document.getElementById("rStep").value = gridS; document.getElementById("oStep").textContent = gridS;
+  document.getElementById("rDot").value = dotR;   document.getElementById("oDot").textContent = dotR;
+  document.getElementById("rMar").value = gridM;  document.getElementById("oMar").textContent = gridM;
+}
 
 function applyFormat(w, h){
   W = Math.max(200, Math.min(4096, Math.round(w) || 1920));
@@ -541,12 +486,18 @@ function buildExportSVG(){
     `<rect width="${W}" height="${H}" fill="#FFFFFF"/>`
   ];
   for (const s of shapes){
-    const dStr = shapePathD(s);
-    if (dStr) parts.push(`<path d="${dStr}" fill="${s.color}" fill-rule="evenodd"/>`);
+    const sub = shapePathD(s);
+    if (!sub || !sub.length) continue;
+    parts.push(`<g fill="${s.color}">`);
+    for (const dStr of sub) parts.push(`  <path d="${dStr}" fill-rule="nonzero"/>`);
+    parts.push(`</g>`);
   }
-  if (showDots) for (let i = 0; i < cols * rows; i++){
-    const [x, y] = dotPos(i);
-    parts.push(`<circle cx="${+x.toFixed(1)}" cy="${+y.toFixed(1)}" r="${+(DOT_R * unit()).toFixed(1)}" fill="#0A0A0A"/>`);
+  if (showDots){
+    const g = gridGeom();
+    for (let r = 0; r < g.rows; r++) for (let c = 0; c < g.cols; c++){
+      const [x, y] = nodeXY(c, r);
+      parts.push(`<circle cx="${fx(x)}" cy="${fx(y)}" r="${dotR}" fill="#0A0A0A"/>`);
+    }
   }
   parts.push("</svg>");
   return parts.join("\n");
@@ -600,7 +551,7 @@ document.getElementById("btnPng").addEventListener("click", () => {
 function save(){
   try {
     localStorage.setItem("metaball-konstruktor", JSON.stringify({
-      cols, rows, activeIdx, showDots, W, H,
+      activeIdx, showDots, W, H, gridS, dotR, gridM,
       shapes: shapes.map(s => ({ dots: [...s.dots], color: s.color, R: s.R, goo: s.goo, jit: s.jit }))
     }));
   } catch {}
@@ -609,25 +560,27 @@ function load(){
   try {
     const st = JSON.parse(localStorage.getItem("metaball-konstruktor"));
     if (!st) return;
-    cols = st.cols || 9; rows = st.rows || 5;
-    showDots = st.showDots !== false;
-    document.getElementById("chkDots").checked = showDots;
     W = Math.max(200, Math.min(4096, st.W || 1920));
     H = Math.max(200, Math.min(4096, st.H || 1080));
-    syncFormatUI();
-    const legacy = st.params || DEFAULT_PLASTICS;   // миграция старых сохранений с общей пластикой
+    gridS = st.gridS || 200; dotR = st.dotR || 27; gridM = st.gridM ?? 140;
+    showDots = st.showDots !== false;
+    document.getElementById("chkDots").checked = showDots;
+    const legacy = st.params || DEFAULT_PLASTICS;
+    const oldCols = st.cols || 9;                 // миграция старых сохранений: плоский индекс -> "c,r"
     shapes = (st.shapes || []).map(s => ({
-      dots: new Set(s.dots), color: s.color,
+      dots: new Set((s.dots || []).map(d => typeof d === "number" ? (d % oldCols) + "," + Math.floor(d / oldCols) : d)),
+      color: s.color,
       R: s.R ?? legacy.R, goo: s.goo ?? legacy.goo, jit: s.jit ?? legacy.jit
     }));
     activeIdx = Math.min(st.activeIdx || 0, shapes.length - 1);
-    document.getElementById("gCols").value = cols;
-    document.getElementById("gRows").value = rows;
+    syncFormatUI();
+    syncGridUI();
   } catch {}
 }
 
 load();
 if (!shapes.length) shapes = [defaultShape(0)];
+syncGridUI();
 render();
 </script>
 </body>
