@@ -63,6 +63,8 @@
   .slider-row output{width:30px; text-align:right; color:var(--ui-dim); font-size:11.5px;}
   .grid-row{display:flex; gap:10px; align-items:center; font-size:12px;}
   .grid-row input{width:52px; font:inherit; font-size:12.5px; padding:5px 7px; border:1px solid var(--ui-line); border-radius:7px;}
+  .check-row{display:flex; align-items:center; gap:7px; font-size:12px; cursor:pointer; user-select:none;}
+  .check-row input{accent-color:var(--ui-text);}
   .btns{display:flex; flex-direction:column; gap:7px;}
   #toast{
     position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(80px);
@@ -106,7 +108,7 @@
   </div>
 
   <div class="sec">
-    <label>Пластика</label>
+    <label>Пластика активной фигуры</label>
     <div class="slider-row"><label>Жирность</label><input type="range" id="rR" min="60" max="170" value="108"><output id="oR">108</output></div>
     <div class="slider-row"><label>Слипание</label><input type="range" id="rG" min="0" max="100" value="50"><output id="oG">50</output></div>
     <div class="slider-row"><label>Органика</label><input type="range" id="rJ" min="0" max="100" value="35"><output id="oJ">35</output></div>
@@ -119,6 +121,7 @@
       <input type="number" id="gRows" min="2" max="11" value="5">
       <span class="hint" style="margin-left:2px">колонки × ряды</span>
     </div>
+    <label class="check-row"><input type="checkbox" id="chkDots" checked> показывать чёрные точки</label>
   </div>
 
   <div class="sec">
@@ -141,12 +144,17 @@
 /* ===== state ===== */
 const W = 1920, H = 1080, DOT_R = 27;
 let cols = 9, rows = 5;
-let shapes = [];            // {dots:Set<int>, color:string}
+let showDots = true;
+let shapes = [];            // {dots:Set<int>, color:string, R, goo, jit}
 let activeIdx = 0;
-let params = { R: 108, goo: 0.50, jit: 0.35 };
+const DEFAULT_PLASTICS = { R: 108, goo: 0.50, jit: 0.35 };
 const PRESETS = ["#E1495F", "#130A66", "#D8D8D8"];
 
-function defaultShape(i){ return { dots: new Set(), color: PRESETS[i % PRESETS.length] }; }
+function defaultShape(i){
+  // новая фигура наследует пластику активной
+  const src = (shapes && shapes[activeIdx]) ? shapes[activeIdx] : DEFAULT_PLASTICS;
+  return { dots: new Set(), color: PRESETS[i % PRESETS.length], R: src.R, goo: src.goo, jit: src.jit };
+}
 
 /* ===== grid geometry ===== */
 function gridGeom(){
@@ -167,11 +175,11 @@ function hash01(i){ const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x
 function shapePathD(shape){
   const idxs = [...shape.dots];
   if (!idxs.length) return "";
-  const R = params.R;
-  const t = 0.28 + 0.50 * params.goo;              // выше слипание -> жирнее перемычки
+  const R = shape.R ?? DEFAULT_PLASTICS.R;
+  const t = 0.28 + 0.50 * (shape.goo ?? DEFAULT_PLASTICS.goo);   // выше слипание -> жирнее перемычки
   const sigma = R / Math.sqrt(-2 * Math.log(t));
   const inv2s2 = 1 / (2 * sigma * sigma);
-  const jitAmp = 0.10 * params.jit;                 // ±10% веса на точку максимум
+  const jitAmp = 0.10 * (shape.jit ?? DEFAULT_PLASTICS.jit);     // ±10% веса на точку максимум
 
   const pts = idxs.map(i => {
     const [x, y] = dotPos(i);
@@ -362,11 +370,13 @@ function render(){
       ring.setAttribute("stroke-linecap", "round");
       svg.appendChild(ring);
     }
-    const dot = document.createElementNS(NS, "circle");
-    dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", DOT_R);
-    dot.setAttribute("fill", "#0A0A0A");
-    dot.setAttribute("class", "dot");
-    svg.appendChild(dot);
+    if (showDots){
+      const dot = document.createElementNS(NS, "circle");
+      dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", DOT_R);
+      dot.setAttribute("fill", "#0A0A0A");
+      dot.setAttribute("class", "dot");
+      svg.appendChild(dot);
+    }
     const hit = document.createElementNS(NS, "circle");
     hit.setAttribute("cx", x); hit.setAttribute("cy", y); hit.setAttribute("r", Math.min(gridGeom().sx, gridGeom().sy) * 0.42);
     hit.setAttribute("fill", "transparent");
@@ -400,6 +410,7 @@ function renderPanel(){
   document.querySelectorAll(".swatches .sw").forEach(sw => {
     sw.classList.toggle("sel", shapes[activeIdx] && sw.dataset.c === shapes[activeIdx].color);
   });
+  syncPlasticsUI();
 }
 
 /* ===== interactions ===== */
@@ -440,9 +451,20 @@ function bindSlider(id, out, fn){
   const el = document.getElementById(id);
   el.addEventListener("input", () => { document.getElementById(out).textContent = el.value; fn(+el.value); render(); });
 }
-bindSlider("rR", "oR", v => params.R = v);
-bindSlider("rG", "oG", v => params.goo = v / 100);
-bindSlider("rJ", "oJ", v => params.jit = v / 100);
+bindSlider("rR", "oR", v => { if (shapes[activeIdx]) shapes[activeIdx].R = v; });
+bindSlider("rG", "oG", v => { if (shapes[activeIdx]) shapes[activeIdx].goo = v / 100; });
+bindSlider("rJ", "oJ", v => { if (shapes[activeIdx]) shapes[activeIdx].jit = v / 100; });
+
+function syncPlasticsUI(){
+  const s = shapes[activeIdx];
+  if (!s) return;
+  document.getElementById("rR").value = s.R;
+  document.getElementById("oR").textContent = Math.round(s.R);
+  document.getElementById("rG").value = Math.round(s.goo * 100);
+  document.getElementById("oG").textContent = Math.round(s.goo * 100);
+  document.getElementById("rJ").value = Math.round(s.jit * 100);
+  document.getElementById("oJ").textContent = Math.round(s.jit * 100);
+}
 
 document.getElementById("gCols").addEventListener("change", e => {
   cols = Math.max(3, Math.min(19, +e.target.value || 9));
@@ -455,6 +477,10 @@ document.getElementById("gRows").addEventListener("change", e => {
   e.target.value = rows;
   shapes.forEach(s => s.dots.clear());
   render();
+});
+
+document.getElementById("chkDots").addEventListener("change", e => {
+  showDots = e.target.checked; render();
 });
 
 document.getElementById("btnClear").addEventListener("click", () => {
@@ -471,7 +497,7 @@ function buildExportSVG(){
     const dStr = shapePathD(s);
     if (dStr) parts.push(`<path d="${dStr}" fill="${s.color}" fill-rule="evenodd"/>`);
   }
-  for (let i = 0; i < cols * rows; i++){
+  if (showDots) for (let i = 0; i < cols * rows; i++){
     const [x, y] = dotPos(i);
     parts.push(`<circle cx="${x}" cy="${y}" r="${DOT_R}" fill="#0A0A0A"/>`);
   }
@@ -527,8 +553,8 @@ document.getElementById("btnPng").addEventListener("click", () => {
 function save(){
   try {
     localStorage.setItem("metaball-konstruktor", JSON.stringify({
-      cols, rows, params, activeIdx,
-      shapes: shapes.map(s => ({ dots: [...s.dots], color: s.color }))
+      cols, rows, activeIdx, showDots,
+      shapes: shapes.map(s => ({ dots: [...s.dots], color: s.color, R: s.R, goo: s.goo, jit: s.jit }))
     }));
   } catch {}
 }
@@ -537,14 +563,16 @@ function load(){
     const st = JSON.parse(localStorage.getItem("metaball-konstruktor"));
     if (!st) return;
     cols = st.cols || 9; rows = st.rows || 5;
-    params = st.params || params;
-    shapes = (st.shapes || []).map(s => ({ dots: new Set(s.dots), color: s.color }));
+    showDots = st.showDots !== false;
+    document.getElementById("chkDots").checked = showDots;
+    const legacy = st.params || DEFAULT_PLASTICS;   // миграция старых сохранений с общей пластикой
+    shapes = (st.shapes || []).map(s => ({
+      dots: new Set(s.dots), color: s.color,
+      R: s.R ?? legacy.R, goo: s.goo ?? legacy.goo, jit: s.jit ?? legacy.jit
+    }));
     activeIdx = Math.min(st.activeIdx || 0, shapes.length - 1);
     document.getElementById("gCols").value = cols;
     document.getElementById("gRows").value = rows;
-    document.getElementById("rR").value = params.R;   document.getElementById("oR").textContent = params.R;
-    document.getElementById("rG").value = params.goo * 100; document.getElementById("oG").textContent = Math.round(params.goo * 100);
-    document.getElementById("rJ").value = params.jit * 100; document.getElementById("oJ").textContent = Math.round(params.jit * 100);
   } catch {}
 }
 
