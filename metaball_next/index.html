@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metaball Next · шейдерный конструктор</title>
+<meta name="description" content="Шейдерная версия конструктора «точки + метабол»: живое поле, стили — градиент, хром, желе, ризо. Экспорт PNG.">
+<meta property="og:title" content="Metaball Next">
+<meta property="og:description" content="Точки + метабол в шейдерах: градиент, хром, желе, ризо.">
+<meta property="og:type" content="website">
+<style>
+  :root{
+    --ui-bg:#1A1A1C; --ui-panel:#111113; --ui-line:#2A2A2E; --ui-text:#F2F2F2; --ui-dim:#8A8A92;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:"Manrope","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--ui-bg); color:var(--ui-text); height:100vh; display:flex; overflow:hidden;
+  }
+  #stage{flex:1; display:flex; align-items:center; justify-content:center; padding:32px; min-width:0;}
+  #frameWrap{width:100%; max-width:calc((100vh - 64px) * 16 / 9); position:relative;}
+  #frame{position:relative; width:100%; aspect-ratio:16/9; border-radius:3px; overflow:hidden;
+    box-shadow:0 4px 40px rgba(0,0,0,.5);}
+  #gl{position:absolute; inset:0; width:100%; height:100%; display:block;}
+  #overlay{position:absolute; inset:0; width:100%; height:100%; display:block;}
+  #overlay .dot-hit{fill:transparent; cursor:pointer;}
+  #panel{
+    width:292px; background:var(--ui-panel); border-left:1px solid var(--ui-line);
+    padding:20px 18px; overflow-y:auto; display:flex; flex-direction:column; gap:18px; flex-shrink:0;
+  }
+  h1{font-size:14px; font-weight:700; letter-spacing:.01em;}
+  h1 span{color:var(--ui-dim); font-weight:500;}
+  .sec{display:flex; flex-direction:column; gap:8px;}
+  .sec > label{font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--ui-dim);}
+  .hint{font-size:11.5px; line-height:1.45; color:var(--ui-dim);}
+  button{
+    font:inherit; font-size:12.5px; font-weight:600; border:1px solid var(--ui-line);
+    background:#1B1B1E; color:var(--ui-text); border-radius:8px; padding:8px 10px; cursor:pointer;
+  }
+  button:hover{border-color:#4A4A52;}
+  button.primary{background:var(--ui-text); color:#111; border-color:var(--ui-text);}
+  button.primary:hover{background:#fff;}
+  .style-chips{display:flex; flex-wrap:wrap; gap:6px;}
+  .style-chips button{padding:6px 10px; font-size:12px; border-radius:99px;}
+  .style-chips button.on{background:var(--ui-text); color:#111; border-color:var(--ui-text);}
+  .shape-row{
+    display:flex; align-items:center; gap:8px; padding:7px 8px; border:1px solid var(--ui-line);
+    border-radius:8px; cursor:pointer; font-size:12.5px;
+  }
+  .shape-row.active{border-color:var(--ui-text); box-shadow:0 0 0 1px var(--ui-text);}
+  .shape-row .sw{width:16px; height:16px; border-radius:50%; flex-shrink:0; border:1px solid rgba(255,255,255,.18);}
+  .shape-row .nm{flex:1;}
+  .shape-row .cnt{color:var(--ui-dim); font-size:11.5px;}
+  .shape-row .del{border:none; background:none; color:var(--ui-dim); font-size:14px; padding:0 2px; cursor:pointer;}
+  .shape-row .del:hover{color:#f66;}
+  .swatches{display:flex; gap:8px; align-items:center;}
+  .swatches .sw{width:26px; height:26px; border-radius:50%; cursor:pointer; border:1px solid rgba(255,255,255,.18);}
+  .swatches .sw.sel{box-shadow:0 0 0 2px var(--ui-panel), 0 0 0 3.5px var(--ui-text);}
+  .swatches input[type=color]{width:26px; height:26px; border:none; background:none; cursor:pointer; padding:0;}
+  .slider-row{display:flex; align-items:center; gap:10px; font-size:12px;}
+  .slider-row label{width:72px; color:var(--ui-text); flex-shrink:0;}
+  .slider-row input[type=range]{flex:1; accent-color:var(--ui-text);}
+  .slider-row output{width:30px; text-align:right; color:var(--ui-dim); font-size:11.5px;}
+  .grid-row{display:flex; gap:10px; align-items:center; font-size:12px;}
+  .grid-row input{width:52px; font:inherit; font-size:12.5px; padding:5px 7px; border:1px solid var(--ui-line);
+    border-radius:7px; background:#1B1B1E; color:var(--ui-text);}
+  select{font:inherit; font-size:12.5px; padding:6px 8px; border:1px solid var(--ui-line); border-radius:7px;
+    background:#1B1B1E; color:var(--ui-text); width:100%; cursor:pointer;}
+  .check-row{display:flex; align-items:center; gap:7px; font-size:12px; cursor:pointer; user-select:none;}
+  .check-row input{accent-color:var(--ui-text);}
+  .btns{display:flex; flex-direction:column; gap:7px;}
+  #toast{
+    position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(80px);
+    background:var(--ui-text); color:#111; font-size:12.5px; font-weight:600;
+    padding:9px 16px; border-radius:10px; transition:transform .25s ease; pointer-events:none;
+  }
+  #toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<div id="stage"><div id="frameWrap">
+  <div id="frame">
+    <canvas id="gl"></canvas>
+    <svg id="overlay" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+</div></div>
+
+<div id="panel">
+  <h1>Metaball <span>· next / шейдеры</span></h1>
+
+  <div class="sec">
+    <label>Стиль</label>
+    <div class="style-chips" id="styleChips"></div>
+    <label class="check-row"><input type="checkbox" id="chkBreath" checked> дыхание (анимация поля)</label>
+  </div>
+
+  <div class="sec">
+    <label>Фигуры</label>
+    <div id="shapeList" style="display:flex; flex-direction:column; gap:6px;"></div>
+    <button id="addShape">+ фигура</button>
+    <div class="hint">Клик по точке — добавить/убрать из активной фигуры. Можно вести с зажатой кнопкой.</div>
+  </div>
+
+  <div class="sec">
+    <label>Цвет активной фигуры</label>
+    <div class="swatches">
+      <div class="sw" data-c="#E1495F" style="background:#E1495F"></div>
+      <div class="sw" data-c="#130A66" style="background:#130A66"></div>
+      <div class="sw" data-c="#00BFD9" style="background:#00BFD9"></div>
+      <div class="sw" data-c="#D8D8D8" style="background:#D8D8D8"></div>
+      <input type="color" id="customColor" value="#E1495F" title="свой цвет">
+    </div>
+  </div>
+
+  <div class="sec">
+    <label>Пластика активной фигуры</label>
+    <div class="slider-row"><label>Жирность</label><input type="range" id="rR" min="20" max="300" value="108"><output id="oR">108</output></div>
+    <div class="slider-row"><label>Слипание</label><input type="range" id="rG" min="0" max="100" value="50"><output id="oG">50</output></div>
+    <div class="slider-row"><label>Органика</label><input type="range" id="rJ" min="0" max="100" value="35"><output id="oJ">35</output></div>
+  </div>
+
+  <div class="sec">
+    <label>Формат</label>
+    <select id="fmtSel">
+      <option value="1920x1080">1920 × 1080 — 16:9</option>
+      <option value="1080x1080">1080 × 1080 — квадрат</option>
+      <option value="1080x1920">1080 × 1920 — сторис 9:16</option>
+      <option value="1080x1350">1080 × 1350 — пост 4:5</option>
+      <option value="1920x600">1920 × 600 — лента</option>
+      <option value="custom">свой размер</option>
+    </select>
+    <div class="grid-row">
+      <input type="number" id="fmtW" min="200" max="4096" value="1920"> ×
+      <input type="number" id="fmtH" min="200" max="4096" value="1080">
+      <span class="hint" style="margin-left:2px">px</span>
+    </div>
+  </div>
+
+  <div class="sec">
+    <label>Сетка</label>
+    <div class="slider-row"><label>Шаг</label><input type="range" id="rStep" min="60" max="400" value="200"><output id="oStep">200</output></div>
+    <div class="slider-row"><label>Точка</label><input type="range" id="rDot" min="4" max="60" value="27"><output id="oDot">27</output></div>
+    <div class="slider-row"><label>Отступ</label><input type="range" id="rMar" min="0" max="400" value="140"><output id="oMar">140</output></div>
+    <div class="hint" id="gridInfo">сетка 9 × 5</div>
+    <label class="check-row"><input type="checkbox" id="chkDots" checked> показывать чёрные точки</label>
+  </div>
+
+  <div class="sec">
+    <label>Экспорт · <span id="expSize">1920×1080</span></label>
+    <div class="btns">
+      <button class="primary" id="btnPng">Скачать PNG 2×</button>
+      <button id="btnClear">Очистить всё</button>
+    </div>
+    <div class="hint">Шейдерная графика — растровая. Векторная версия: <a href="/metaball/" style="color:inherit">/metaball/</a>.</div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* ===== state ===== */
+let W = 1920, H = 1080;
+let gridS = 200, dotR = 27, gridM = 140;
+let showDots = true;
+let styleId = 1;            // 0 флэт, 1 градиент, 2 хром, 3 желе, 4 ризо
+let breath = true;
+let shapes = [];            // {dots:Set<"c,r">, color, R, goo, jit}
+let activeIdx = 0;
+const DEFAULT_PLASTICS = { R: 108, goo: 0.50, jit: 0.35 };
+const PRESETS = ["#E1495F", "#130A66", "#00BFD9", "#D8D8D8"];
+const STYLES = [
+  { id: 0, name: "Флэт",     bg: [1.00, 1.00, 1.00] },
+  { id: 1, name: "Градиент", bg: [0.968, 0.961, 0.945] },
+  { id: 2, name: "Хром",     bg: [0.933, 0.933, 0.945] },
+  { id: 3, name: "Желе",     bg: [0.965, 0.953, 0.933] },
+  { id: 4, name: "Ризо",     bg: [0.961, 0.945, 0.910] },
+];
+
+function defaultShape(i){
+  const src = (shapes && shapes[activeIdx]) ? shapes[activeIdx] : DEFAULT_PLASTICS;
+  return { dots: new Set(), color: PRESETS[i % PRESETS.length], R: src.R, goo: src.goo, jit: src.jit };
+}
+function hash01(i){ const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+function hexRgb(h){ return [parseInt(h.slice(1,3),16)/255, parseInt(h.slice(3,5),16)/255, parseInt(h.slice(5,7),16)/255]; }
+function rgbHsl([r,g,b]){
+  const mx = Math.max(r,g,b), mn = Math.min(r,g,b), l = (mx+mn)/2;
+  if (mx === mn) return [0, 0, l];
+  const d = mx - mn, s = l > 0.5 ? d/(2-mx-mn) : d/(mx+mn);
+  let h;
+  if (mx === r) h = ((g-b)/d + (g<b?6:0))/6; else if (mx === g) h = ((b-r)/d + 2)/6; else h = ((r-g)/d + 4)/6;
+  return [h, s, l];
+}
+function hslRgb([h,s,l]){
+  if (s === 0) return [l,l,l];
+  const q = l < 0.5 ? l*(1+s) : l+s-l*s, p = 2*l-q;
+  const f = t => { t = (t%1+1)%1; if (t<1/6) return p+(q-p)*6*t; if (t<1/2) return q; if (t<2/3) return p+(q-p)*(2/3-t)*6; return p; };
+  return [f(h+1/3), f(h), f(h-1/3)];
+}
+function gradPair(hex){
+  const hsl = rgbHsl(hexRgb(hex));
+  return hslRgb([hsl[0] + 0.12, Math.min(1, hsl[1]*1.05 + 0.1), Math.min(0.85, hsl[2] + 0.22)]);
+}
+
+/* ===== grid ===== */
+function gridGeom(){
+  const cols = Math.max(1, Math.floor((W - 2*gridM) / gridS) + 1);
+  const rows = Math.max(1, Math.floor((H - 2*gridM) / gridS) + 1);
+  const ox = gridM + (W - 2*gridM - (cols-1)*gridS) / 2;
+  const oy = gridM + (H - 2*gridM - (rows-1)*gridS) / 2;
+  return { cols, rows, ox, oy };
+}
+function nodeXY(c, r){ const g = gridGeom(); return [ g.ox + c*gridS, g.oy + r*gridS ]; }
+
+/* ===== WebGL ===== */
+const glCanvas = document.getElementById("gl");
+const gl = glCanvas.getContext("webgl2", { preserveDrawingBuffer: true, antialias: true, alpha: false });
+
+const VS = `#version 300 es
+void main(){
+  vec2 v = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2));
+  gl_Position = vec4(v * 2.0 - 1.0, 0.0, 1.0);
+}`;
+
+const FS_BG = `#version 300 es
+precision highp float;
+uniform vec3 uBg;
+out vec4 o;
+float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
+void main(){
+  float g = (hash(gl_FragCoord.xy) - 0.5) * 0.03;
+  o = vec4(uBg + g, 1.0);
+}`;
+
+const FS_SHAPE = `#version 300 es
+precision highp float;
+uniform vec2 uRes;
+uniform vec2 uView;
+uniform int uCount;
+uniform vec4 uDots[64];
+uniform float uThresh;
+uniform vec3 uColA;
+uniform vec3 uColB;
+uniform vec4 uBbox;
+uniform int uStyle;
+uniform vec2 uOff;
+uniform float uAlphaMul;
+uniform int uFlat;      // 1 = игнорировать стиль, залить uColA (тень)
+out vec4 o;
+float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
+float field(vec2 p){
+  float f = 0.0;
+  for (int i = 0; i < 64; i++){
+    if (i >= uCount) break;
+    vec2 q = p - uDots[i].xy;
+    float s = uDots[i].z;
+    f += uDots[i].w * exp(-dot(q,q) / (2.0*s*s));
+  }
+  return f;
+}
+void main(){
+  vec2 p = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y) * uView / uRes - uOff;
+  float f = field(p);
+  float w = fwidth(f) * 1.2 + 1e-5;
+  float fj = f;
+  if (uStyle == 4 && uFlat == 0) fj += (hash(floor(p * 0.55)) - 0.5) * uThresh * 0.3;
+  float a = smoothstep(uThresh - w, uThresh + w, fj);
+  if (a <= 0.004) discard;
+  vec3 col = uColA;
+  if (uFlat == 0){
+    if (uStyle == 1){
+      float k = clamp((p.y - uBbox.y) / max(uBbox.w, 1.0), 0.0, 1.0);
+      float m = clamp(k + (f - uThresh) * 0.22, 0.0, 1.0);
+      col = mix(uColB, uColA, m);
+      col += (hash(p * 1.31) - 0.5) * 0.055;
+    } else if (uStyle == 2 || uStyle == 3){
+      float e = 2.0;
+      vec2 g = vec2(field(p + vec2(e, 0.0)) - field(p - vec2(e, 0.0)),
+                    field(p + vec2(0.0, e)) - field(p - vec2(0.0, e)));
+      float hgt = clamp((f - uThresh) * 2.2, 0.0, 1.0);
+      vec3 n = normalize(vec3(-g * 26.0, 1.0));
+      vec3 l = normalize(vec3(-0.35, -0.55, 0.75));
+      if (uStyle == 2){
+        float band = 0.5 + 0.5 * sin(n.y * 7.0 + n.x * 4.0);
+        float dl = 0.5 + 0.5 * dot(n, l);
+        vec3 chrome = mix(vec3(0.08, 0.08, 0.11), vec3(0.99), smoothstep(0.12, 0.92, dl + band * 0.20));
+        float spec = pow(max(dot(reflect(-l, n), vec3(0.0, 0.0, 1.0)), 0.0), 30.0);
+        col = mix(chrome, uColA, 0.28) + spec * 0.85;
+      } else {
+        float dif = 0.70 + 0.32 * max(dot(n, l), 0.0);
+        float spec = pow(max(dot(reflect(-l, n), vec3(0.0, 0.0, 1.0)), 0.0), 16.0);
+        float occ = 0.80 + 0.20 * smoothstep(0.0, 0.5, hgt);
+        col = uColA * dif * occ + vec3(1.0) * spec * 0.5;
+      }
+    } else if (uStyle == 4){
+      float gr = hash(p + uColA.xy * 7.0);
+      a *= 0.78 + 0.22 * smoothstep(0.1, 0.65, gr);
+      col = col * (0.96 + (hash(p * 2.7) - 0.5) * 0.14);
+    }
+  }
+  if (uStyle == 4 && uFlat == 0){
+    o = vec4(mix(vec3(1.0), col, a * uAlphaMul), 1.0);   // подготовка к multiply
+  } else {
+    o = vec4(col, a * uAlphaMul);
+  }
+}`;
+
+const FS_GRAIN = `#version 300 es
+precision highp float;
+uniform float uSeed;
+uniform float uAmt;
+out vec4 o;
+float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
+void main(){ o = vec4(vec3(hash(gl_FragCoord.xy + uSeed)) * uAmt, 1.0); }`;
+
+function mkProgram(fs){
+  const compile = (type, src) => {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+    return s;
+  };
+  const p = gl.createProgram();
+  gl.attachShader(p, compile(gl.VERTEX_SHADER, VS));
+  gl.attachShader(p, compile(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  return p;
+}
+const PRG_BG = mkProgram(FS_BG), PRG_SHAPE = mkProgram(FS_SHAPE), PRG_GRAIN = mkProgram(FS_GRAIN);
+const U = (prg, n) => gl.getUniformLocation(prg, n);
+
+function shapeUniforms(shape, time){
+  const g = gridGeom();
+  const t = 0.28 + 0.50 * (shape.goo ?? 0.5);
+  const sigma = (shape.R ?? 108) / Math.sqrt(-2 * Math.log(t));
+  const dots = [];
+  let minX = 1e9, minY = 1e9, maxX = -1e9, maxY = -1e9;
+  for (const k of shape.dots){
+    const [c, r] = k.split(",").map(Number);
+    if (c < 0 || r < 0 || c >= g.cols || r >= g.rows) continue;
+    if (dots.length >= 64) break;
+    const [x, y] = nodeXY(c, r);
+    const seed = hash01(c * 31 + r * 7);
+    let wgt = 1 + 0.12 * (shape.jit ?? 0.35) * (seed * 2 - 1);
+    if (breath) wgt *= 1 + 0.055 * Math.sin(time * 0.0012 + seed * 6.283);
+    dots.push(x, y, sigma, wgt);
+    minX = Math.min(minX, x - sigma*2.5); maxX = Math.max(maxX, x + sigma*2.5);
+    minY = Math.min(minY, y - sigma*2.5); maxY = Math.max(maxY, y + sigma*2.5);
+  }
+  return { dots, count: dots.length / 4, thresh: t, bbox: [minX, minY, maxX - minX, maxY - minY] };
+}
+
+function drawShapePass(shape, u, colA, colB, style, off, alphaMul, flat){
+  gl.useProgram(PRG_SHAPE);
+  gl.uniform2f(U(PRG_SHAPE, "uRes"), glCanvas.width, glCanvas.height);
+  gl.uniform2f(U(PRG_SHAPE, "uView"), W, H);
+  gl.uniform1i(U(PRG_SHAPE, "uCount"), u.count);
+  const arr = new Float32Array(64 * 4); arr.set(u.dots);
+  gl.uniform4fv(U(PRG_SHAPE, "uDots"), arr);
+  gl.uniform1f(U(PRG_SHAPE, "uThresh"), u.thresh);
+  gl.uniform3fv(U(PRG_SHAPE, "uColA"), colA);
+  gl.uniform3fv(U(PRG_SHAPE, "uColB"), colB);
+  gl.uniform4fv(U(PRG_SHAPE, "uBbox"), u.bbox);
+  gl.uniform1i(U(PRG_SHAPE, "uStyle"), style);
+  gl.uniform2fv(U(PRG_SHAPE, "uOff"), off);
+  gl.uniform1f(U(PRG_SHAPE, "uAlphaMul"), alphaMul);
+  gl.uniform1i(U(PRG_SHAPE, "uFlat"), flat ? 1 : 0);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+
+function renderGL(time){
+  gl.viewport(0, 0, glCanvas.width, glCanvas.height);
+  gl.disable(gl.BLEND);
+  gl.useProgram(PRG_BG);
+  gl.uniform3fv(U(PRG_BG, "uBg"), STYLES[styleId].bg);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+  gl.enable(gl.BLEND);
+  for (const s of shapes){
+    const u = shapeUniforms(s, time);
+    if (!u.count) continue;
+    const colA = hexRgb(s.color), colB = gradPair(s.color);
+    if (styleId === 3){          // желе: мягкая тень
+      gl.blendEquation(gl.FUNC_ADD);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      drawShapePass(s, u, [0.06, 0.05, 0.09], colB, styleId, [-9, -13], 0.16, true);
+    }
+    if (styleId === 4){          // ризо: multiply-оверпринт
+      gl.blendEquation(gl.FUNC_ADD);
+      gl.blendFunc(gl.ZERO, gl.SRC_COLOR);
+    } else {
+      gl.blendEquation(gl.FUNC_ADD);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    }
+    drawShapePass(s, u, colA, colB, styleId, [0, 0], 1.0, false);
+  }
+
+  // плёночное зерно: добавить и вычесть шум (альфу не трогаем)
+  gl.useProgram(PRG_GRAIN);
+  gl.blendFuncSeparate(gl.ONE, gl.ONE, gl.ZERO, gl.ONE);
+  gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
+  gl.uniform1f(U(PRG_GRAIN, "uSeed"), 17.0); gl.uniform1f(U(PRG_GRAIN, "uAmt"), 0.028);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  gl.blendEquationSeparate(gl.FUNC_REVERSE_SUBTRACT, gl.FUNC_ADD);
+  gl.uniform1f(U(PRG_GRAIN, "uSeed"), 91.0);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+}
+
+/* ===== overlay (точки + интерактив) ===== */
+const svg = document.getElementById("overlay");
+const NS = "http://www.w3.org/2000/svg";
+
+function renderOverlay(){
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const g = gridGeom();
+  document.getElementById("gridInfo").textContent = `сетка ${g.cols} × ${g.rows}`;
+  svg.innerHTML = "";
+  const act = shapes[activeIdx];
+  const inkDots = styleId === 4 ? "#1E1A5E" : "#0A0A0A";   // ризо: чернильный синий
+  for (let r = 0; r < g.rows; r++){
+    for (let c = 0; c < g.cols; c++){
+      const [x, y] = nodeXY(c, r);
+      const k = c + "," + r;
+      if (act && act.dots.has(k)){
+        const ring = document.createElementNS(NS, "circle");
+        ring.setAttribute("cx", x); ring.setAttribute("cy", y); ring.setAttribute("r", dotR + 13);
+        ring.setAttribute("fill", "none");
+        ring.setAttribute("stroke", "rgba(20,20,20,.3)");
+        ring.setAttribute("stroke-width", 3);
+        ring.setAttribute("stroke-dasharray", "1 7");
+        ring.setAttribute("stroke-linecap", "round");
+        svg.appendChild(ring);
+      }
+      if (showDots){
+        const dot = document.createElementNS(NS, "circle");
+        dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", dotR);
+        dot.setAttribute("fill", inkDots);
+        svg.appendChild(dot);
+      }
+      const hit = document.createElementNS(NS, "circle");
+      hit.setAttribute("cx", x); hit.setAttribute("cy", y); hit.setAttribute("r", gridS * 0.42);
+      hit.setAttribute("fill", "transparent");
+      hit.setAttribute("class", "dot-hit");
+      hit.dataset.k = k;
+      svg.appendChild(hit);
+    }
+  }
+}
+
+/* ===== layout / render loop ===== */
+function syncFrame(){
+  document.getElementById("frame").style.aspectRatio = W + " / " + H;
+  document.getElementById("frameWrap").style.maxWidth = `calc((100vh - 64px) * ${(W / H).toFixed(4)})`;
+  document.getElementById("expSize").textContent = W + "×" + H;
+  glCanvas.width = W; glCanvas.height = H;
+}
+
+let needsRender = true;
+function render(){ needsRender = true; renderOverlay(); renderPanel(); save(); }
+
+function tick(time){
+  if (breath || needsRender){
+    renderGL(time);
+    needsRender = false;
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ===== panel ===== */
+function renderPanel(){
+  const chips = document.getElementById("styleChips");
+  chips.innerHTML = "";
+  STYLES.forEach(st => {
+    const b = document.createElement("button");
+    b.textContent = st.name;
+    b.className = st.id === styleId ? "on" : "";
+    b.addEventListener("click", () => { styleId = st.id; render(); });
+    chips.appendChild(b);
+  });
+  const list = document.getElementById("shapeList");
+  list.innerHTML = "";
+  shapes.forEach((s, i) => {
+    const row = document.createElement("div");
+    row.className = "shape-row" + (i === activeIdx ? " active" : "");
+    row.innerHTML = `<div class="sw" style="background:${s.color}"></div>
+      <span class="nm">Фигура ${i+1}</span><span class="cnt">${s.dots.size} тчк</span>
+      <button class="del" title="удалить">✕</button>`;
+    row.addEventListener("click", e => {
+      if (e.target.classList.contains("del")){
+        shapes.splice(i, 1);
+        if (!shapes.length) shapes.push(defaultShape(0));
+        activeIdx = Math.min(activeIdx, shapes.length - 1);
+      } else activeIdx = i;
+      render();
+    });
+    list.appendChild(row);
+  });
+  document.querySelectorAll(".swatches .sw").forEach(sw => {
+    sw.classList.toggle("sel", shapes[activeIdx] && sw.dataset.c === shapes[activeIdx].color);
+  });
+  syncPlasticsUI();
+}
+
+/* ===== interactions ===== */
+let dragMode = null;
+svg.addEventListener("pointerdown", e => {
+  const k = e.target.dataset?.k;
+  if (k === undefined) return;
+  const s = shapes[activeIdx];
+  dragMode = s.dots.has(k) ? "remove" : "add";
+  applyDot(k);
+});
+svg.addEventListener("pointerover", e => {
+  if (dragMode === null || !(e.buttons & 1)) return;
+  const k = e.target.dataset?.k;
+  if (k !== undefined) applyDot(k);
+});
+window.addEventListener("pointerup", () => { dragMode = null; });
+function applyDot(k){
+  const s = shapes[activeIdx];
+  if (dragMode === "add") s.dots.add(k); else s.dots.delete(k);
+  render();
+}
+
+document.getElementById("addShape").addEventListener("click", () => {
+  shapes.push(defaultShape(shapes.length));
+  activeIdx = shapes.length - 1;
+  render();
+});
+document.querySelectorAll(".swatches .sw").forEach(sw => {
+  sw.addEventListener("click", () => { shapes[activeIdx].color = sw.dataset.c; render(); });
+});
+document.getElementById("customColor").addEventListener("input", e => {
+  shapes[activeIdx].color = e.target.value; render();
+});
+
+function bindSlider(id, out, fn){
+  const el = document.getElementById(id);
+  el.addEventListener("input", () => { document.getElementById(out).textContent = el.value; fn(+el.value); render(); });
+}
+bindSlider("rR", "oR", v => { if (shapes[activeIdx]) shapes[activeIdx].R = v; });
+bindSlider("rG", "oG", v => { if (shapes[activeIdx]) shapes[activeIdx].goo = v / 100; });
+bindSlider("rJ", "oJ", v => { if (shapes[activeIdx]) shapes[activeIdx].jit = v / 100; });
+bindSlider("rStep", "oStep", v => gridS = v);
+bindSlider("rDot", "oDot", v => dotR = v);
+bindSlider("rMar", "oMar", v => gridM = v);
+
+function syncPlasticsUI(){
+  const s = shapes[activeIdx];
+  if (!s) return;
+  document.getElementById("rR").value = s.R;   document.getElementById("oR").textContent = Math.round(s.R);
+  document.getElementById("rG").value = Math.round(s.goo * 100); document.getElementById("oG").textContent = Math.round(s.goo * 100);
+  document.getElementById("rJ").value = Math.round(s.jit * 100); document.getElementById("oJ").textContent = Math.round(s.jit * 100);
+}
+function syncGridUI(){
+  document.getElementById("rStep").value = gridS; document.getElementById("oStep").textContent = gridS;
+  document.getElementById("rDot").value = dotR;   document.getElementById("oDot").textContent = dotR;
+  document.getElementById("rMar").value = gridM;  document.getElementById("oMar").textContent = gridM;
+}
+function applyFormat(w, h){
+  W = Math.max(200, Math.min(4096, Math.round(w) || 1920));
+  H = Math.max(200, Math.min(4096, Math.round(h) || 1080));
+  syncFormatUI(); syncFrame(); render();
+}
+function syncFormatUI(){
+  document.getElementById("fmtW").value = W;
+  document.getElementById("fmtH").value = H;
+  const sel = document.getElementById("fmtSel");
+  const key = W + "x" + H;
+  sel.value = [...sel.options].some(o => o.value === key) ? key : "custom";
+}
+document.getElementById("fmtSel").addEventListener("change", e => {
+  if (e.target.value === "custom") return;
+  const [w, h] = e.target.value.split("x").map(Number);
+  applyFormat(w, h);
+});
+document.getElementById("fmtW").addEventListener("change", e => applyFormat(+e.target.value, H));
+document.getElementById("fmtH").addEventListener("change", e => applyFormat(W, +e.target.value));
+document.getElementById("chkDots").addEventListener("change", e => { showDots = e.target.checked; render(); });
+document.getElementById("chkBreath").addEventListener("change", e => { breath = e.target.checked; render(); });
+document.getElementById("btnClear").addEventListener("click", () => {
+  shapes = [defaultShape(0)]; activeIdx = 0; render();
+});
+
+/* ===== export PNG ===== */
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._h);
+  toast._h = setTimeout(() => t.classList.remove("show"), 1800);
+}
+document.getElementById("btnPng").addEventListener("click", () => {
+  const k = 2;
+  glCanvas.width = W * k; glCanvas.height = H * k;
+  gl.viewport(0, 0, glCanvas.width, glCanvas.height);
+  renderGL(performance.now());
+  const c = document.createElement("canvas");
+  c.width = W * k; c.height = H * k;
+  const ctx = c.getContext("2d");
+  ctx.drawImage(glCanvas, 0, 0);
+  if (showDots){
+    const g = gridGeom();
+    ctx.fillStyle = styleId === 4 ? "#1E1A5E" : "#0A0A0A";
+    for (let r = 0; r < g.rows; r++) for (let cc = 0; cc < g.cols; cc++){
+      const [x, y] = nodeXY(cc, r);
+      ctx.beginPath(); ctx.arc(x * k, y * k, dotR * k, 0, 7); ctx.fill();
+    }
+  }
+  c.toBlob(b => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(b);
+    a.download = "metaball-next.png";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  }, "image/png");
+  glCanvas.width = W; glCanvas.height = H;
+  needsRender = true;
+  toast("PNG 2× скачан");
+});
+
+/* ===== persistence ===== */
+function save(){
+  try {
+    localStorage.setItem("metaball-next", JSON.stringify({
+      activeIdx, showDots, W, H, gridS, dotR, gridM, styleId, breath,
+      shapes: shapes.map(s => ({ dots: [...s.dots], color: s.color, R: s.R, goo: s.goo, jit: s.jit }))
+    }));
+  } catch {}
+}
+function load(){
+  try {
+    const st = JSON.parse(localStorage.getItem("metaball-next"));
+    if (!st) return;
+    W = Math.max(200, Math.min(4096, st.W || 1920));
+    H = Math.max(200, Math.min(4096, st.H || 1080));
+    gridS = st.gridS || 200; dotR = st.dotR || 27; gridM = st.gridM ?? 140;
+    showDots = st.showDots !== false;
+    styleId = st.styleId ?? 1;
+    breath = st.breath !== false;
+    shapes = (st.shapes || []).map(s => ({
+      dots: new Set(s.dots || []), color: s.color,
+      R: s.R ?? 108, goo: s.goo ?? 0.5, jit: s.jit ?? 0.35
+    }));
+    activeIdx = Math.min(st.activeIdx || 0, shapes.length - 1);
+  } catch {}
+}
+
+load();
+if (!shapes.length){
+  shapes = [defaultShape(0)];
+  shapes[0].dots = new Set(["3,1","4,1","3,2","4,2","5,2"]);   // стартовый кластер, чтобы стиль был виден сразу
+}
+document.getElementById("chkDots").checked = showDots;
+document.getElementById("chkBreath").checked = breath;
+syncFormatUI(); syncGridUI(); syncFrame();
+render();
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
