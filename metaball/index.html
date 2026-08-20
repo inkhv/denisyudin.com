@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Конструктор · точки + метабол</title>
-<meta name="description" content="Интерактивный конструктор графического приёма «точки + метабол»: выделяй точки на сетке 16:9, получай векторные метабол-фигуры и копируй SVG прямо в Figma.">
+<meta name="description" content="Интерактивный конструктор графического приёма «точки + метабол»: выделяй точки на сетке, получай векторные метабол-фигуры и копируй SVG прямо в Figma.">
 <meta property="og:title" content="Конструктор · точки + метабол">
 <meta property="og:description" content="Сетка точек → векторные метабол-фигуры → SVG в Figma. Инструмент Дениса Юдина.">
 <meta property="og:type" content="website">
@@ -63,6 +63,7 @@
   .slider-row output{width:30px; text-align:right; color:var(--ui-dim); font-size:11.5px;}
   .grid-row{display:flex; gap:10px; align-items:center; font-size:12px;}
   .grid-row input{width:52px; font:inherit; font-size:12.5px; padding:5px 7px; border:1px solid var(--ui-line); border-radius:7px;}
+  select{font:inherit; font-size:12.5px; padding:6px 8px; border:1px solid var(--ui-line); border-radius:7px; background:#fff; color:var(--ui-text); width:100%; cursor:pointer;}
   .check-row{display:flex; align-items:center; gap:7px; font-size:12px; cursor:pointer; user-select:none;}
   .check-row input{accent-color:var(--ui-text);}
   .btns{display:flex; flex-direction:column; gap:7px;}
@@ -102,6 +103,7 @@
     <div class="swatches">
       <div class="sw" data-c="#E1495F" style="background:#E1495F"></div>
       <div class="sw" data-c="#130A66" style="background:#130A66"></div>
+      <div class="sw" data-c="#00BFD9" style="background:#00BFD9"></div>
       <div class="sw" data-c="#D8D8D8" style="background:#D8D8D8"></div>
       <input type="color" id="customColor" value="#E1495F" title="свой цвет">
     </div>
@@ -115,6 +117,23 @@
   </div>
 
   <div class="sec">
+    <label>Формат</label>
+    <select id="fmtSel">
+      <option value="1920x1080">1920 × 1080 — 16:9</option>
+      <option value="1080x1080">1080 × 1080 — квадрат</option>
+      <option value="1080x1920">1080 × 1920 — сторис 9:16</option>
+      <option value="1080x1350">1080 × 1350 — пост 4:5</option>
+      <option value="1920x600">1920 × 600 — лента</option>
+      <option value="custom">свой размер</option>
+    </select>
+    <div class="grid-row">
+      <input type="number" id="fmtW" min="200" max="4096" value="1920"> ×
+      <input type="number" id="fmtH" min="200" max="4096" value="1080">
+      <span class="hint" style="margin-left:2px">px</span>
+    </div>
+  </div>
+
+  <div class="sec">
     <label>Сетка</label>
     <div class="grid-row">
       <input type="number" id="gCols" min="3" max="19" value="9"> ×
@@ -125,7 +144,7 @@
   </div>
 
   <div class="sec">
-    <label>Экспорт · 1920×1080</label>
+    <label>Экспорт · <span id="expSize">1920×1080</span></label>
     <div class="btns">
       <button class="primary" id="btnCopy">Копировать SVG (для Figma)</button>
       <button id="btnSvg">Скачать SVG</button>
@@ -142,13 +161,15 @@
 <script>
 "use strict";
 /* ===== state ===== */
-const W = 1920, H = 1080, DOT_R = 27;
+let W = 1920, H = 1080;
+const DOT_R = 27;                                   // радиус точки при базе 1080
 let cols = 9, rows = 5;
 let showDots = true;
+function unit(){ return Math.min(W, H) / 1080; }    // масштаб метрик относительно базового формата
 let shapes = [];            // {dots:Set<int>, color:string, R, goo, jit}
 let activeIdx = 0;
 const DEFAULT_PLASTICS = { R: 108, goo: 0.50, jit: 0.35 };
-const PRESETS = ["#E1495F", "#130A66", "#D8D8D8"];
+const PRESETS = ["#E1495F", "#130A66", "#00BFD9", "#D8D8D8"];
 
 function defaultShape(i){
   // новая фигура наследует пластику активной
@@ -158,7 +179,8 @@ function defaultShape(i){
 
 /* ===== grid geometry ===== */
 function gridGeom(){
-  const mx = 160, my = 140;
+  const mx = Math.round(W / 12);                 // 160 при 1920
+  const my = Math.round(H * 140 / 1080);         // 140 при 1080
   const sx = (W - 2*mx) / (cols - 1);
   const sy = (H - 2*my) / (rows - 1);
   return { mx, my, sx, sy };
@@ -175,7 +197,7 @@ function hash01(i){ const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x
 function shapePathD(shape){
   const idxs = [...shape.dots];
   if (!idxs.length) return "";
-  const R = shape.R ?? DEFAULT_PLASTICS.R;
+  const R = (shape.R ?? DEFAULT_PLASTICS.R) * unit();
   const t = 0.28 + 0.50 * (shape.goo ?? DEFAULT_PLASTICS.goo);   // выше слипание -> жирнее перемычки
   const sigma = R / Math.sqrt(-2 * Math.log(t));
   const inv2s2 = 1 / (2 * sigma * sigma);
@@ -342,6 +364,10 @@ const svg = document.getElementById("canvas");
 const NS = "http://www.w3.org/2000/svg";
 
 function render(){
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.style.aspectRatio = W + " / " + H;
+  document.getElementById("frameWrap").style.maxWidth = `calc((100vh - 64px) * ${(W / H).toFixed(4)})`;
+  document.getElementById("expSize").textContent = W + "×" + H;
   svg.innerHTML = "";
   const bg = document.createElementNS(NS, "rect");
   bg.setAttribute("width", W); bg.setAttribute("height", H); bg.setAttribute("fill", "#FFFFFF");
@@ -362,7 +388,7 @@ function render(){
     const [x, y] = dotPos(i);
     if (act && act.dots.has(i)){
       const ring = document.createElementNS(NS, "circle");
-      ring.setAttribute("cx", x); ring.setAttribute("cy", y); ring.setAttribute("r", DOT_R + 13);
+      ring.setAttribute("cx", x); ring.setAttribute("cy", y); ring.setAttribute("r", (DOT_R + 13) * unit());
       ring.setAttribute("fill", "none");
       ring.setAttribute("stroke", "rgba(20,20,20,.28)");
       ring.setAttribute("stroke-width", 3);
@@ -372,7 +398,7 @@ function render(){
     }
     if (showDots){
       const dot = document.createElementNS(NS, "circle");
-      dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", DOT_R);
+      dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", DOT_R * unit());
       dot.setAttribute("fill", "#0A0A0A");
       dot.setAttribute("class", "dot");
       svg.appendChild(dot);
@@ -479,6 +505,27 @@ document.getElementById("gRows").addEventListener("change", e => {
   render();
 });
 
+function applyFormat(w, h){
+  W = Math.max(200, Math.min(4096, Math.round(w) || 1920));
+  H = Math.max(200, Math.min(4096, Math.round(h) || 1080));
+  syncFormatUI();
+  render();
+}
+function syncFormatUI(){
+  document.getElementById("fmtW").value = W;
+  document.getElementById("fmtH").value = H;
+  const sel = document.getElementById("fmtSel");
+  const key = W + "x" + H;
+  sel.value = [...sel.options].some(o => o.value === key) ? key : "custom";
+}
+document.getElementById("fmtSel").addEventListener("change", e => {
+  if (e.target.value === "custom") return;
+  const [w, h] = e.target.value.split("x").map(Number);
+  applyFormat(w, h);
+});
+document.getElementById("fmtW").addEventListener("change", e => applyFormat(+e.target.value, H));
+document.getElementById("fmtH").addEventListener("change", e => applyFormat(W, +e.target.value));
+
 document.getElementById("chkDots").addEventListener("change", e => {
   showDots = e.target.checked; render();
 });
@@ -499,7 +546,7 @@ function buildExportSVG(){
   }
   if (showDots) for (let i = 0; i < cols * rows; i++){
     const [x, y] = dotPos(i);
-    parts.push(`<circle cx="${x}" cy="${y}" r="${DOT_R}" fill="#0A0A0A"/>`);
+    parts.push(`<circle cx="${+x.toFixed(1)}" cy="${+y.toFixed(1)}" r="${+(DOT_R * unit()).toFixed(1)}" fill="#0A0A0A"/>`);
   }
   parts.push("</svg>");
   return parts.join("\n");
@@ -553,7 +600,7 @@ document.getElementById("btnPng").addEventListener("click", () => {
 function save(){
   try {
     localStorage.setItem("metaball-konstruktor", JSON.stringify({
-      cols, rows, activeIdx, showDots,
+      cols, rows, activeIdx, showDots, W, H,
       shapes: shapes.map(s => ({ dots: [...s.dots], color: s.color, R: s.R, goo: s.goo, jit: s.jit }))
     }));
   } catch {}
@@ -565,6 +612,9 @@ function load(){
     cols = st.cols || 9; rows = st.rows || 5;
     showDots = st.showDots !== false;
     document.getElementById("chkDots").checked = showDots;
+    W = Math.max(200, Math.min(4096, st.W || 1920));
+    H = Math.max(200, Math.min(4096, st.H || 1080));
+    syncFormatUI();
     const legacy = st.params || DEFAULT_PLASTICS;   // миграция старых сохранений с общей пластикой
     shapes = (st.shapes || []).map(s => ({
       dots: new Set(s.dots), color: s.color,
