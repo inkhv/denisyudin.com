@@ -57,7 +57,7 @@
   .slider-row{display:flex; align-items:center; gap:10px; font-size:12px;}
   .slider-row label{width:80px; color:var(--ui-text); flex-shrink:0;}
   .slider-row input[type=range]{flex:1; accent-color:var(--ui-text);}
-  .slider-row output{width:34px; text-align:right; color:var(--ui-dim); font-size:11.5px;}
+  .slider-row output{width:46px; text-align:right; color:var(--ui-dim); font-size:11.5px; white-space:nowrap;}
   .grid-row{display:flex; gap:10px; align-items:center; font-size:12px;}
   .grid-row input{width:52px; font:inherit; font-size:12.5px; padding:5px 7px; border:1px solid var(--ui-line); border-radius:7px;}
   select{font:inherit; font-size:12.5px; padding:6px 8px; border:1px solid var(--ui-line); border-radius:7px; background:#fff; color:var(--ui-text); width:100%; cursor:pointer;}
@@ -86,7 +86,7 @@
 </div></div>
 
 <div id="panel">
-  <h1>Metaball Simple <span>· точки + кисть · сборка 2026-08-21.13</span></h1>
+  <h1>Metaball Simple <span>· точки + кисть · сборка 2026-08-21.14</span></h1>
 
   <div class="sec">
     <label>Фигуры</label>
@@ -104,9 +104,10 @@
 
   <div class="sec">
     <label>Кисть активной фигуры</label>
-    <div class="slider-row"><label>Жирность</label><input type="range" id="rFat" min="50" max="100" value="85"><output id="oFat">85 %</output></div>
+    <div class="slider-row"><label>Жирность</label><input type="range" id="rFat" min="5" max="100" value="85"><output id="oFat">85 %</output></div>
     <div class="slider-row"><label>Скругление</label><input type="range" id="rRound" min="0" max="100" value="100"><output id="oRound">100 %</output></div>
-    <div class="hint">Жирность — радиус кисти в % от шага сетки: 50 % — соседние мазки только касаются, 100 % — край проходит по соседней точке. Скругление — радиус углов в % от жирности: 100 % — одна точка = круг, ряд = пилюля; 0 % — прямые углы. Контур всегда из прямых и дуг.</div>
+    <div class="hint" id="brushInfo"></div>
+    <div class="hint">Жирность — радиус кисти в % от шага сетки: минимум — размер точки (кисть не тоньше точки), 50 % — соседние мазки только касаются, 100 % — край проходит по соседней точке. Скругление — радиус углов в % от жирности: 100 % — одна точка = круг, ряд = пилюля; 0 % — прямые углы. Контур всегда из прямых и дуг.</div>
   </div>
 
   <div class="sec">
@@ -226,7 +227,8 @@ function validNodes(shape){
    3. Рёбра сшиваются в замкнутые контуры, коллинеарные сливаются → прямоугольный многоугольник с углами 90°.
    4. Каждый угол (выпуклый и вогнутый) заменяется дугой радиуса min(скругление·R, половина соседних граней) — контур из прямых и дуг, без волны. */
 const fx2 = v => +v.toFixed(2);
-function brushR(shape){ return (shape.fat ?? DEFAULT_BRUSH.fat) * gridS; }
+function fatMin(){ return Math.max(1, Math.ceil(dotR / gridS * 100)); }                 // нижняя граница жирности — радиус текущей точки
+function brushR(shape){ return Math.max((shape.fat ?? DEFAULT_BRUSH.fat) * gridS, dotR); }   // кисть не тоньше точки
 function shapeLoops(shape){
   const pts = validNodes(shape);
   if (!pts.length) return [];
@@ -363,7 +365,9 @@ function renderPanel(){
   document.querySelectorAll("#bgSwatches .sw").forEach(sw => sw.classList.toggle("sel", sw.dataset.c.toUpperCase() === bgColor.toUpperCase()));
   document.querySelectorAll("#dotSwatches .sw").forEach(sw => sw.classList.toggle("sel", sw.dataset.c.toUpperCase() === dotColor.toUpperCase()));
   if (s){
-    document.getElementById("rFat").value = Math.round(s.fat * 100);   document.getElementById("oFat").textContent = Math.round(s.fat * 100) + " %";
+    const fatPct = Math.max(fatMin(), Math.round(s.fat * 100));
+    const rFat = document.getElementById("rFat"); rFat.min = fatMin(); rFat.value = fatPct; document.getElementById("oFat").textContent = fatPct + " %";
+    document.getElementById("brushInfo").textContent = `радиус кисти ${Math.round(brushR(s))} px · минимум — точка ${dotR} px · шаг ${gridS} px`;
     document.getElementById("rRound").value = Math.round(s.round * 100); document.getElementById("oRound").textContent = Math.round(s.round * 100) + " %";
   }
   document.getElementById("rStep").value = gridS; document.getElementById("oStep").textContent = gridS;
