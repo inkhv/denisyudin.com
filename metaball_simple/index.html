@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metaball Simple · точки + кисть</title>
+<meta name="description" content="Упрощённый конструктор приёма «точки + метабол»: закрашивай точки сетки круглой кистью — получай ровный вектор из прямых и дуг, копируй SVG в Figma.">
+<meta property="og:title" content="Metaball Simple">
+<meta property="og:description" content="Точки + кисть: две ручки — жирность и скругление. Ровный вектор в Figma одним Cmd+V.">
+<meta property="og:type" content="website">
+<style>
+  :root{
+    --ui-bg:#F4F4F4; --ui-panel:#FFFFFF; --ui-line:#E4E4E4; --ui-text:#141414; --ui-dim:#8A8A8A;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:"Manrope","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--ui-bg); color:var(--ui-text); height:100vh; display:flex; overflow:hidden;
+  }
+  #stage{flex:1; display:flex; align-items:center; justify-content:center; padding:32px; min-width:0;}
+  #frameWrap{width:100%; max-width:calc((100vh - 64px) * 16 / 9);}
+  #canvas{
+    width:100%; aspect-ratio:16/9; background:#fff; display:block;
+    box-shadow:0 2px 24px rgba(0,0,0,.10); border-radius:2px; touch-action:none;
+  }
+  #canvas .dot-hit{fill:transparent; cursor:crosshair;}
+  #panel{
+    width:292px; background:var(--ui-panel); border-left:1px solid var(--ui-line);
+    padding:20px 18px; overflow-y:auto; display:flex; flex-direction:column; gap:18px; flex-shrink:0;
+  }
+  h1{font-size:14px; font-weight:700; letter-spacing:.01em;}
+  h1 span{color:var(--ui-dim); font-weight:500;}
+  .sec{display:flex; flex-direction:column; gap:8px;}
+  .sec > label{font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--ui-dim);}
+  .hint{font-size:11.5px; line-height:1.45; color:var(--ui-dim);}
+  button{
+    font:inherit; font-size:12.5px; font-weight:600; border:1px solid var(--ui-line);
+    background:#fff; color:var(--ui-text); border-radius:8px; padding:8px 10px; cursor:pointer;
+  }
+  button:hover{border-color:#bdbdbd;}
+  button.primary{background:var(--ui-text); color:#fff; border-color:var(--ui-text);}
+  button.primary:hover{background:#000;}
+  .shape-row{
+    display:flex; align-items:center; gap:8px; padding:7px 8px; border:1px solid var(--ui-line);
+    border-radius:8px; cursor:pointer; font-size:12.5px;
+  }
+  .shape-row.active{border-color:var(--ui-text); box-shadow:0 0 0 1px var(--ui-text);}
+  .shape-row .sw{width:16px; height:16px; border-radius:50%; flex-shrink:0; border:1px solid rgba(0,0,0,.12);}
+  .shape-row .nm{flex:1;}
+  .shape-row .cnt{color:var(--ui-dim); font-size:11.5px;}
+  .shape-row .del{border:none; background:none; color:var(--ui-dim); font-size:14px; padding:0 2px; cursor:pointer;}
+  .shape-row .del:hover{color:#c00;}
+  .swatches{display:flex; gap:8px; align-items:center;}
+  .swatches .sw{width:26px; height:26px; border-radius:50%; cursor:pointer; border:1px solid rgba(0,0,0,.12);}
+  .swatches .sw.sel{box-shadow:0 0 0 2px #fff, 0 0 0 3.5px var(--ui-text);}
+  .swatches input[type=color]{width:26px; height:26px; border:none; background:none; cursor:pointer; padding:0;}
+  .slider-row{display:flex; align-items:center; gap:10px; font-size:12px;}
+  .slider-row label{width:80px; color:var(--ui-text); flex-shrink:0;}
+  .slider-row input[type=range]{flex:1; accent-color:var(--ui-text);}
+  .slider-row output{width:34px; text-align:right; color:var(--ui-dim); font-size:11.5px;}
+  .grid-row{display:flex; gap:10px; align-items:center; font-size:12px;}
+  .grid-row input{width:52px; font:inherit; font-size:12.5px; padding:5px 7px; border:1px solid var(--ui-line); border-radius:7px;}
+  select{font:inherit; font-size:12.5px; padding:6px 8px; border:1px solid var(--ui-line); border-radius:7px; background:#fff; color:var(--ui-text); width:100%; cursor:pointer;}
+  .check-row{display:flex; align-items:center; gap:7px; font-size:12px; cursor:pointer; user-select:none;}
+  .check-row input{accent-color:var(--ui-text);}
+  .btns{display:flex; flex-direction:column; gap:7px;}
+  #toast{
+    position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(80px);
+    background:var(--ui-text); color:#fff; font-size:12.5px; font-weight:600;
+    padding:9px 16px; border-radius:10px; transition:transform .25s ease; pointer-events:none;
+  }
+  #toast.show{transform:translateX(-50%) translateY(0);}
+  .footer-link{font-size:11.5px; color:var(--ui-dim); text-decoration:none; margin-top:auto; padding-top:10px;}
+  .footer-link:hover{color:var(--ui-text);}
+  @media (max-width: 900px){
+    body{flex-direction:column; height:auto; overflow:auto;}
+    #stage{padding:14px; flex:none;}
+    #panel{width:100%; border-left:none; border-top:1px solid var(--ui-line);}
+  }
+</style>
+</head>
+<body>
+
+<div id="stage"><div id="frameWrap">
+  <svg id="canvas" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg"></svg>
+</div></div>
+
+<div id="panel">
+  <h1>Metaball Simple <span>· точки + кисть · сборка 2026-08-21.13</span></h1>
+
+  <div class="sec">
+    <label>Фигуры</label>
+    <div id="shapeList" style="display:flex; flex-direction:column; gap:6px;"></div>
+    <button id="addShape">+ фигура</button>
+    <div class="swatches" id="shapeSwatches">
+      <div class="sw" data-c="#E1495F" style="background:#E1495F"></div>
+      <div class="sw" data-c="#130A66" style="background:#130A66"></div>
+      <div class="sw" data-c="#00BFD9" style="background:#00BFD9"></div>
+      <div class="sw" data-c="#D8D8D8" style="background:#D8D8D8"></div>
+      <input type="color" id="customColor" value="#E1495F" title="свой цвет">
+    </div>
+    <div class="hint">Клик по точке — закрасить кистью, повторный клик — стереть. Можно вести с зажатой кнопкой.</div>
+  </div>
+
+  <div class="sec">
+    <label>Кисть активной фигуры</label>
+    <div class="slider-row"><label>Жирность</label><input type="range" id="rFat" min="50" max="100" value="85"><output id="oFat">85 %</output></div>
+    <div class="slider-row"><label>Скругление</label><input type="range" id="rRound" min="0" max="100" value="100"><output id="oRound">100 %</output></div>
+    <div class="hint">Жирность — радиус кисти в % от шага сетки: 50 % — соседние мазки только касаются, 100 % — край проходит по соседней точке. Скругление — радиус углов в % от жирности: 100 % — одна точка = круг, ряд = пилюля; 0 % — прямые углы. Контур всегда из прямых и дуг.</div>
+  </div>
+
+  <div class="sec">
+    <label>Фон и точки</label>
+    <div class="swatches" id="bgSwatches">
+      <div class="sw" data-c="#FFFFFF" style="background:#FFFFFF"></div>
+      <div class="sw" data-c="#F7F6F3" style="background:#F7F6F3"></div>
+      <div class="sw" data-c="#D8D8D8" style="background:#D8D8D8"></div>
+      <div class="sw" data-c="#130A66" style="background:#130A66"></div>
+      <div class="sw" data-c="#E1495F" style="background:#E1495F"></div>
+      <div class="sw" data-c="#0A0A0A" style="background:#0A0A0A"></div>
+      <input type="color" id="bgColorInp" value="#FFFFFF" title="свой цвет фона">
+    </div>
+    <div class="grid-row" style="gap:8px">
+      <span class="hint" style="width:52px">точки</span>
+      <div class="swatches" id="dotSwatches">
+        <div class="sw" data-c="#0A0A0A" style="background:#0A0A0A"></div>
+        <div class="sw" data-c="#FFFFFF" style="background:#FFFFFF"></div>
+        <div class="sw" data-c="#D8D8D8" style="background:#D8D8D8"></div>
+        <input type="color" id="dotColorInp" value="#0A0A0A" title="свой цвет точек">
+      </div>
+    </div>
+    <label class="check-row"><input type="checkbox" id="chkDots" checked> показывать точки</label>
+  </div>
+
+  <div class="sec">
+    <label>Формат</label>
+    <select id="fmtSel">
+      <option value="1920x1080">1920 × 1080 — 16:9</option>
+      <option value="1080x1080">1080 × 1080 — квадрат</option>
+      <option value="1080x1920">1080 × 1920 — сторис 9:16</option>
+      <option value="1080x1350">1080 × 1350 — пост 4:5</option>
+      <option value="1920x600">1920 × 600 — лента</option>
+      <option value="custom">свой размер</option>
+    </select>
+    <div class="grid-row">
+      <input type="number" id="fmtW" min="200" max="4096" value="1920"> ×
+      <input type="number" id="fmtH" min="200" max="4096" value="1080">
+      <span class="hint" style="margin-left:2px">px</span>
+    </div>
+  </div>
+
+  <div class="sec">
+    <label>Сетка</label>
+    <div class="slider-row"><label>Шаг</label><input type="range" id="rStep" min="60" max="400" value="200"><output id="oStep">200</output></div>
+    <div class="slider-row"><label>Точка</label><input type="range" id="rDot" min="4" max="60" value="27"><output id="oDot">27</output></div>
+    <div class="slider-row"><label>Отступ</label><input type="range" id="rMar" min="0" max="400" value="140"><output id="oMar">140</output></div>
+    <select id="gridMode">
+      <option value="square">ритм: прямая сетка</option>
+      <option value="stagger">ритм: со сдвигом в полшага</option>
+    </select>
+    <div class="hint" id="gridInfo">сетка 9 × 5</div>
+  </div>
+
+  <div class="sec">
+    <label>Экспорт · <span id="expSize">1920×1080</span></label>
+    <div class="btns">
+      <button class="primary" id="btnCopy">Копировать SVG (для Figma)</button>
+      <button id="btnSvg">Скачать SVG</button>
+      <button id="btnPng">Скачать PNG 2×</button>
+      <button id="btnClear">Очистить всё</button>
+    </div>
+    <div class="hint">Одна фигура = один путь из прямых и дуг (evenodd, дырки внутри). Cmd+V в Figma — редактируемый вектор. Полные конструкторы: <a href="/metaball/" style="color:inherit">классика</a> и <a href="/metaball_next/" style="color:inherit">next</a>.</div>
+  </div>
+
+  <a class="footer-link" href="https://denisyudin.com">denisyudin.com</a>
+</div>
+
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* ===== state ===== */
+let W = 1920, H = 1080;
+let gridS = 200, dotR = 27, gridM = 140;
+let stagger = false;                      // ритм: каждый второй ряд сдвинут на полшага, ряды вдвое чаще
+let showDots = true;
+let bgColor = "#FFFFFF", dotColor = "#0A0A0A";
+let shapes = [], activeIdx = 0;           // {dots:Set<"c,r">, color, fat (доля шага), round (доля жирности)}
+const DEFAULT_BRUSH = { fat: 0.85, round: 1.0 };
+const PRESETS = ["#E1495F", "#130A66", "#00BFD9", "#D8D8D8"];
+function defaultShape(i){
+  const src = shapes[activeIdx] || DEFAULT_BRUSH;       // новая фигура наследует кисть активной
+  return { dots: new Set(), color: PRESETS[i % PRESETS.length], fat: src.fat, round: src.round };
+}
+
+/* ===== grid ===== */
+function gridGeom(){
+  const sx = gridS, sy = stagger ? gridS / 2 : gridS;
+  const cols = Math.max(1, Math.floor((W - 2 * gridM) / sx) + 1);
+  const rows = Math.max(1, Math.floor((H - 2 * gridM) / sy) + 1);
+  const ox = gridM + (W - 2 * gridM - (cols - 1) * sx) / 2;
+  const oy = gridM + (H - 2 * gridM - (rows - 1) * sy) / 2;
+  const colsOdd = stagger ? ((ox + (cols - 0.5) * sx <= W - gridM + 0.01) ? cols : cols - 1) : cols;   // сдвинутый ряд: влезает ли последняя точка
+  return { cols, rows, ox, oy, sx, sy, colsOdd };
+}
+function rowCols(g, r){ return (stagger && (r % 2 === 1)) ? g.colsOdd : g.cols; }
+function nodeXY(c, r){
+  const g = gridGeom();
+  const shift = (stagger && (r % 2 === 1)) ? g.sx / 2 : 0;
+  return [ g.ox + c * g.sx + shift, g.oy + r * g.sy ];
+}
+function hitRadius(g){ return Math.min(g.sx, g.sy) * 0.42; }
+function validNodes(shape){
+  const g = gridGeom(), pts = [];
+  for (const k of shape.dots){
+    const [c, r] = k.split(",").map(Number);
+    if (c < 0 || r < 0 || r >= g.rows || c >= rowCols(g, r)) continue;
+    pts.push(nodeXY(c, r));
+  }
+  return pts;
+}
+
+/* ===== геометрия: квадратные штампы кисти → прямоугольный контур → дуги в углах =====
+   1. Каждая закрашенная точка — квадрат со стороной 2R (R = жирность · шаг).
+   2. Объединение квадратов — через сетку из всех границ: заполненные ячейки → рёбра границы (фигура справа по ходу, по часовой на экране).
+   3. Рёбра сшиваются в замкнутые контуры, коллинеарные сливаются → прямоугольный многоугольник с углами 90°.
+   4. Каждый угол (выпуклый и вогнутый) заменяется дугой радиуса min(скругление·R, половина соседних граней) — контур из прямых и дуг, без волны. */
+const fx2 = v => +v.toFixed(2);
+function brushR(shape){ return (shape.fat ?? DEFAULT_BRUSH.fat) * gridS; }
+function shapeLoops(shape){
+  const pts = validNodes(shape);
+  if (!pts.length) return [];
+  const R = brushR(shape);
+  const q = v => Math.round(v * 100) / 100;                    // квантование координат граней — совпадающие грани сливаются
+  const xsSet = new Set(), ysSet = new Set();
+  for (const [x, y] of pts){ xsSet.add(q(x - R)); xsSet.add(q(x + R)); ysSet.add(q(y - R)); ysSet.add(q(y + R)); }
+  const xs = [...xsSet].sort((a, b) => a - b), ys = [...ysSet].sort((a, b) => a - b);
+  const nx = xs.length - 1, ny = ys.length - 1;
+  if (nx < 1 || ny < 1) return [];
+  const lower = (arr, v) => { let lo = 0, hi = arr.length; while (lo < hi){ const m = (lo + hi) >> 1; if (arr[m] < v - 1e-6) lo = m + 1; else hi = m; } return lo; };
+  const filled = new Uint8Array(nx * ny);
+  for (const [x, y] of pts){
+    const i0 = lower(xs, q(x - R)), i1 = lower(xs, q(x + R)), j0 = lower(ys, q(y - R)), j1 = lower(ys, q(y + R));
+    for (let j = j0; j < j1; j++) for (let i = i0; i < i1; i++) filled[j * nx + i] = 1;
+  }
+  const F = (i, j) => (i >= 0 && j >= 0 && i < nx && j < ny) ? filled[j * nx + i] : 0;
+  const key = p => p[0] + "_" + p[1];
+  const edges = new Map();                                      // начало ребра → рёбра из него
+  const add = (a, b) => { const k = key(a); if (!edges.has(k)) edges.set(k, []); edges.get(k).push([a, b]); };
+  for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++){
+    if (!filled[j * nx + i]) continue;
+    const x0 = xs[i], x1 = xs[i + 1], y0 = ys[j], y1 = ys[j + 1];
+    if (!F(i, j - 1)) add([x0, y0], [x1, y0]);                  // верх: →
+    if (!F(i + 1, j)) add([x1, y0], [x1, y1]);                  // право: ↓
+    if (!F(i, j + 1)) add([x1, y1], [x0, y1]);                  // низ: ←
+    if (!F(i - 1, j)) add([x0, y1], [x0, y0]);                  // лево: ↑
+  }
+  const dirOf = e => [Math.sign(e[1][0] - e[0][0]), Math.sign(e[1][1] - e[0][1])];
+  const cross = (a, b) => a[0] * b[1] - a[1] * b[0];
+  const loops = [];
+  for (const list0 of edges.values()){
+    while (list0.length){
+      let e = list0.shift();
+      const start = key(e[0]), loop = [e[0]];
+      let dir = dirOf(e); const dir0 = dir;
+      let guard = 200000;
+      while (guard-- > 0){
+        const cur = e[1];
+        if (key(cur) === start) break;
+        const cands = edges.get(key(cur));
+        if (!cands || !cands.length) break;
+        let pick = 0;
+        if (cands.length > 1) for (let c = 0; c < cands.length; c++) if (cross(dir, dirOf(cands[c])) > 0){ pick = c; break; }   // касание углами: поворот направо — области не склеиваем
+        e = cands.splice(pick, 1)[0];
+        const d2 = dirOf(e);
+        if (d2[0] !== dir[0] || d2[1] !== dir[1]) loop.push(e[0]);  // поворот — вершина; коллинеарные рёбра сливаются
+        dir = d2;
+      }
+      if (dir[0] === dir0[0] && dir[1] === dir0[1]) loop.shift();   // стартовая точка лежала на прямой — не вершина
+      if (loop.length >= 4) loops.push(loop);
+    }
+  }
+  return loops;
+}
+function loopPathD(loop, rho){
+  const n = loop.length, L = [], D = [];
+  for (let i = 0; i < n; i++){
+    const a = loop[i], b = loop[(i + 1) % n], dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy) || 1e-9;
+    L.push(len); D.push([dx / len, dy / len]);
+  }
+  const r = loop.map((_, i) => Math.max(0, Math.min(rho, L[(i - 1 + n) % n] / 2, L[i] / 2)));   // радиус угла ≤ половины соседних граней
+  let d = "", last = null;
+  const pt = p => `${fx2(p[0])} ${fx2(p[1])}`;
+  const same = (a, b) => a && Math.abs(a[0] - b[0]) < 0.01 && Math.abs(a[1] - b[1]) < 0.01;
+  for (let k = 0; k <= n; k++){
+    const i = k % n, v = loop[i], din = D[(i - 1 + n) % n], dout = D[i], ri = r[i];
+    const pin = [v[0] - din[0] * ri, v[1] - din[1] * ri], pout = [v[0] + dout[0] * ri, v[1] + dout[1] * ri];
+    const sweep = cross2(din, dout) > 0 ? 1 : 0;                 // направо (выпуклый угол) — по часовой на экране
+    if (k === 0){ d = `M ${pt(pout)}`; last = pout; continue; }
+    if (!same(last, pin)) d += ` L ${pt(pin)}`;
+    if (ri > 0.01) d += ` A ${fx2(ri)} ${fx2(ri)} 0 0 ${sweep} ${pt(pout)}`;
+    last = pout;
+  }
+  return d + " Z";
+}
+function cross2(a, b){ return a[0] * b[1] - a[1] * b[0]; }
+function shapePathD(shape){
+  const loops = shapeLoops(shape);
+  if (!loops.length) return "";
+  const rho = (shape.round ?? DEFAULT_BRUSH.round) * brushR(shape);
+  return loops.map(l => loopPathD(l, rho)).join(" ");
+}
+
+/* ===== render ===== */
+const svg = document.getElementById("canvas");
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; }
+function render(){
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.style.aspectRatio = W + " / " + H;
+  document.getElementById("frameWrap").style.maxWidth = `calc((100vh - 64px) * ${(W / H).toFixed(4)})`;
+  document.getElementById("expSize").textContent = W + "×" + H;
+  const g = gridGeom();
+  document.getElementById("gridInfo").textContent = `сетка ${g.cols} × ${g.rows}` + (stagger ? " · сдвиг" : "");
+  svg.innerHTML = "";
+  svg.appendChild(el("rect", { width: W, height: H, fill: bgColor }));
+  for (const s of shapes){
+    const d = shapePathD(s);
+    if (d) svg.appendChild(el("path", { d, fill: s.color, "fill-rule": "evenodd" }));
+  }
+  const act = shapes[activeIdx];
+  for (let r = 0; r < g.rows; r++) for (let c = 0; c < rowCols(g, r); c++){
+    const [x, y] = nodeXY(c, r), k = c + "," + r;
+    if (act && act.dots.has(k))
+      svg.appendChild(el("circle", { cx: x, cy: y, r: dotR + 13, fill: "none", stroke: "rgba(20,20,20,.28)", "stroke-width": 3, "stroke-dasharray": "1 7", "stroke-linecap": "round" }));
+    if (showDots) svg.appendChild(el("circle", { cx: x, cy: y, r: dotR, fill: dotColor }));
+    const hit = el("circle", { cx: x, cy: y, r: hitRadius(g), fill: "transparent", class: "dot-hit" });
+    hit.dataset.k = k;
+    svg.appendChild(hit);
+  }
+  renderPanel();
+  save();
+}
+function renderPanel(){
+  const list = document.getElementById("shapeList");
+  list.innerHTML = "";
+  shapes.forEach((s, i) => {
+    const row = document.createElement("div");
+    row.className = "shape-row" + (i === activeIdx ? " active" : "");
+    row.innerHTML = `<div class="sw" style="background:${s.color}"></div><span class="nm">Фигура ${i + 1}</span><span class="cnt">${s.dots.size} тчк</span><button class="del" title="удалить">✕</button>`;
+    row.addEventListener("click", e => {
+      if (e.target.classList.contains("del")){
+        shapes.splice(i, 1);
+        if (!shapes.length) shapes.push(defaultShape(0));
+        activeIdx = Math.min(activeIdx, shapes.length - 1);
+      } else activeIdx = i;
+      render();
+    });
+    list.appendChild(row);
+  });
+  const s = shapes[activeIdx];
+  document.querySelectorAll("#shapeSwatches .sw").forEach(sw => sw.classList.toggle("sel", !!s && sw.dataset.c === s.color));
+  document.querySelectorAll("#bgSwatches .sw").forEach(sw => sw.classList.toggle("sel", sw.dataset.c.toUpperCase() === bgColor.toUpperCase()));
+  document.querySelectorAll("#dotSwatches .sw").forEach(sw => sw.classList.toggle("sel", sw.dataset.c.toUpperCase() === dotColor.toUpperCase()));
+  if (s){
+    document.getElementById("rFat").value = Math.round(s.fat * 100);   document.getElementById("oFat").textContent = Math.round(s.fat * 100) + " %";
+    document.getElementById("rRound").value = Math.round(s.round * 100); document.getElementById("oRound").textContent = Math.round(s.round * 100) + " %";
+  }
+  document.getElementById("rStep").value = gridS; document.getElementById("oStep").textContent = gridS;
+  document.getElementById("rDot").value = dotR;   document.getElementById("oDot").textContent = dotR;
+  document.getElementById("rMar").value = gridM;  document.getElementById("oMar").textContent = gridM;
+  document.getElementById("gridMode").value = stagger ? "stagger" : "square";
+  document.getElementById("chkDots").checked = showDots;
+}
+
+/* ===== interactions: кисть по точкам ===== */
+let dragMode = null;                                          // "add" | "remove"
+svg.addEventListener("pointerdown", e => {
+  const k = e.target.dataset?.k; if (k === undefined) return;
+  const s = shapes[activeIdx]; if (!s) return;
+  dragMode = s.dots.has(k) ? "remove" : "add";
+  applyDot(k);
+});
+svg.addEventListener("pointerover", e => {
+  if (dragMode === null || !(e.buttons & 1)) return;
+  const k = e.target.dataset?.k; if (k === undefined) return;
+  applyDot(k);
+});
+window.addEventListener("pointerup", () => { dragMode = null; });
+function applyDot(k){ const s = shapes[activeIdx]; if (dragMode === "add") s.dots.add(k); else s.dots.delete(k); render(); }
+
+document.getElementById("addShape").addEventListener("click", () => { shapes.push(defaultShape(shapes.length)); activeIdx = shapes.length - 1; render(); });
+document.querySelectorAll("#shapeSwatches .sw").forEach(sw => sw.addEventListener("click", () => { shapes[activeIdx].color = sw.dataset.c; render(); }));
+document.getElementById("customColor").addEventListener("input", e => { shapes[activeIdx].color = e.target.value; render(); });
+document.querySelectorAll("#bgSwatches .sw").forEach(sw => sw.addEventListener("click", () => { bgColor = sw.dataset.c; render(); }));
+document.getElementById("bgColorInp").addEventListener("input", e => { bgColor = e.target.value; render(); });
+document.querySelectorAll("#dotSwatches .sw").forEach(sw => sw.addEventListener("click", () => { dotColor = sw.dataset.c; render(); }));
+document.getElementById("dotColorInp").addEventListener("input", e => { dotColor = e.target.value; render(); });
+document.getElementById("chkDots").addEventListener("change", e => { showDots = e.target.checked; render(); });
+document.getElementById("gridMode").addEventListener("change", e => { stagger = e.target.value === "stagger"; render(); });
+function bindSlider(id, fn){ const inp = document.getElementById(id); inp.addEventListener("input", () => { fn(+inp.value); render(); }); }
+bindSlider("rFat",   v => { if (shapes[activeIdx]) shapes[activeIdx].fat = v / 100; });
+bindSlider("rRound", v => { if (shapes[activeIdx]) shapes[activeIdx].round = v / 100; });
+bindSlider("rStep",  v => gridS = v);
+bindSlider("rDot",   v => dotR = v);
+bindSlider("rMar",   v => gridM = v);
+
+function applyFormat(w, h){
+  W = Math.max(200, Math.min(4096, Math.round(w) || 1920));
+  H = Math.max(200, Math.min(4096, Math.round(h) || 1080));
+  syncFormatUI(); render();
+}
+function syncFormatUI(){
+  document.getElementById("fmtW").value = W; document.getElementById("fmtH").value = H;
+  const sel = document.getElementById("fmtSel"), key = W + "x" + H;
+  sel.value = [...sel.options].some(o => o.value === key) ? key : "custom";
+}
+document.getElementById("fmtSel").addEventListener("change", e => { if (e.target.value === "custom") return; const [w, h] = e.target.value.split("x").map(Number); applyFormat(w, h); });
+document.getElementById("fmtW").addEventListener("change", e => applyFormat(+e.target.value, H));
+document.getElementById("fmtH").addEventListener("change", e => applyFormat(W, +e.target.value));
+document.getElementById("btnClear").addEventListener("click", () => { shapes = [defaultShape(0)]; activeIdx = 0; render(); });
+
+/* ===== export ===== */
+function buildExportSVG(){
+  const parts = [
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`,
+    `<rect width="${W}" height="${H}" fill="${bgColor}"/>`
+  ];
+  for (const s of shapes){ const d = shapePathD(s); if (d) parts.push(`<path d="${d}" fill="${s.color}" fill-rule="evenodd"/>`); }
+  if (showDots){
+    const g = gridGeom();
+    for (let r = 0; r < g.rows; r++) for (let c = 0; c < rowCols(g, r); c++){ const [x, y] = nodeXY(c, r); parts.push(`<circle cx="${fx2(x)}" cy="${fx2(y)}" r="${dotR}" fill="${dotColor}"/>`); }
+  }
+  parts.push("</svg>");
+  return parts.join("\n");
+}
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(toast._h); toast._h = setTimeout(() => t.classList.remove("show"), 1800);
+}
+document.getElementById("btnCopy").addEventListener("click", async () => {
+  const s = buildExportSVG();
+  try { await navigator.clipboard.writeText(s); }
+  catch { const ta = document.createElement("textarea"); ta.value = s; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
+  toast("SVG в буфере — вставь в Figma (Cmd+V)");
+});
+function download(name, blob){
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+document.getElementById("btnSvg").addEventListener("click", () => download("metaball-simple.svg", new Blob([buildExportSVG()], { type: "image/svg+xml" })));
+document.getElementById("btnPng").addEventListener("click", () => {
+  const img = new Image();
+  const url = URL.createObjectURL(new Blob([buildExportSVG()], { type: "image/svg+xml" }));
+  img.onload = () => {
+    const c = document.createElement("canvas"); c.width = W * 2; c.height = H * 2;
+    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    c.toBlob(b => download("metaball-simple.png", b), "image/png");
+    URL.revokeObjectURL(url);
+  };
+  img.src = url;
+});
+
+/* ===== persistence ===== */
+function save(){
+  try {
+    localStorage.setItem("metaball-simple", JSON.stringify({ W, H, gridS, dotR, gridM, stagger, showDots, bgColor, dotColor, activeIdx,
+      shapes: shapes.map(s => ({ dots: [...s.dots], color: s.color, fat: s.fat, round: s.round })) }));
+  } catch {}
+}
+function load(){
+  try {
+    const st = JSON.parse(localStorage.getItem("metaball-simple")); if (!st) return;
+    W = Math.max(200, Math.min(4096, st.W || 1920)); H = Math.max(200, Math.min(4096, st.H || 1080));
+    gridS = st.gridS || 200; dotR = st.dotR || 27; gridM = st.gridM ?? 140; stagger = !!st.stagger;
+    showDots = st.showDots !== false; bgColor = st.bgColor || "#FFFFFF"; dotColor = st.dotColor || "#0A0A0A";
+    shapes = (st.shapes || []).map(s => ({ dots: new Set(s.dots || []), color: s.color || PRESETS[0], fat: +s.fat || DEFAULT_BRUSH.fat, round: s.round != null ? +s.round : DEFAULT_BRUSH.round }));
+    activeIdx = Math.min(st.activeIdx || 0, Math.max(0, shapes.length - 1));
+  } catch {}
+}
+
+load();
+if (!shapes.length){
+  shapes = [defaultShape(0)];
+  shapes[0].dots = new Set(["1,1","2,1","3,1","1,2","2,2","3,2","5,1","6,1"]);   // стартовый мазок, чтобы кисть была видна сразу
+}
+syncFormatUI();
+render();
+</script>
+</body>
+</html>
