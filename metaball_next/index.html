@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Metaball Next · шейдерный конструктор</title>
-<meta name="description" content="Шейдерная версия конструктора «точки + метабол»: живое поле, стили — градиент, хром, желе, ризо. Экспорт PNG.">
+<meta name="description" content="Шейдерная версия конструктора «точки + метабол»: живое поле, стили — градиент, хром, желе, ризо. Экспорт PNG, вектор во флэте.">
 <meta property="og:title" content="Metaball Next">
 <meta property="og:description" content="Точки + метабол в шейдерах: градиент, хром, желе, ризо.">
 <meta property="og:type" content="website">
@@ -69,6 +69,7 @@
   .check-row{display:flex; align-items:center; gap:7px; font-size:12px; cursor:pointer; user-select:none;}
   .check-row input{accent-color:var(--ui-text);}
   .btns{display:flex; flex-direction:column; gap:7px;}
+  button.dim{opacity:.4;}
   #toast{
     position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(80px);
     background:var(--ui-text); color:#111; font-size:12.5px; font-weight:600;
@@ -151,9 +152,10 @@
     <label>Экспорт · <span id="expSize">1920×1080</span></label>
     <div class="btns">
       <button class="primary" id="btnPng">Скачать PNG 2×</button>
+      <button id="btnSvg">Копировать SVG (для Figma)</button>
       <button id="btnClear">Очистить всё</button>
     </div>
-    <div class="hint">Шейдерная графика — растровая. Векторная версия: <a href="/metaball/" style="color:inherit">/metaball/</a>.</div>
+    <div class="hint">SVG-вектор доступен в стиле «Флэт» (безье-архитектура, как в <a href="/metaball/" style="color:inherit">классике</a>). Остальные стили — растровый PNG.</div>
   </div>
 </div>
 
@@ -516,6 +518,7 @@ function renderPanel(){
   document.querySelectorAll(".swatches .sw").forEach(sw => {
     sw.classList.toggle("sel", shapes[activeIdx] && sw.dataset.c === shapes[activeIdx].color);
   });
+  document.getElementById("btnSvg").classList.toggle("dim", styleId !== 0);
   syncPlasticsUI();
 }
 
@@ -606,6 +609,125 @@ document.getElementById("btnClear").addEventListener("click", () => {
   shapes = [defaultShape(0)]; activeIdx = 0; render();
 });
 
+/* ===== векторный экспорт (безье-архитектура из классики) — только для стиля Флэт ===== */
+const fxv = v => +v.toFixed(1);
+
+function circlePathV(x, y, r){
+  return `M ${fxv(x + r)} ${fxv(y)} A ${fxv(r)} ${fxv(r)} 0 1 1 ${fxv(x - r)} ${fxv(y)} A ${fxv(r)} ${fxv(r)} 0 1 1 ${fxv(x + r)} ${fxv(y)} Z`;
+}
+
+function bridgePathV(p1, p2, v){
+  const HALF_PI = Math.PI / 2, HANDLE = 2.4;
+  const r1 = p1.rad, r2 = p2.rad;
+  const dx = p2.x - p1.x, dy = p2.y - p1.y;
+  const d = Math.hypot(dx, dy);
+  if (r1 <= 0 || r2 <= 0 || d <= Math.abs(r1 - r2)) return "";
+  if (d > (r1 + r2) * 1.8) return "";
+  let u1 = 0, u2 = 0;
+  if (d < r1 + r2){
+    u1 = Math.acos((r1*r1 + d*d - r2*r2) / (2 * r1 * d));
+    u2 = Math.acos((r2*r2 + d*d - r1*r1) / (2 * r2 * d));
+  }
+  const ang = Math.atan2(dy, dx);
+  const maxSpread = Math.acos((r1 - r2) / d);
+  const a1 = ang + u1 + (maxSpread - u1) * v;
+  const a2 = ang - u1 - (maxSpread - u1) * v;
+  const a3 = ang + Math.PI - u2 - (Math.PI - u2 - maxSpread) * v;
+  const a4 = ang - Math.PI + u2 + (Math.PI - u2 - maxSpread) * v;
+  const vec = (x, y, a, r) => [ x + Math.cos(a) * r, y + Math.sin(a) * r ];
+  const P1 = vec(p1.x, p1.y, a1, r1), P2 = vec(p1.x, p1.y, a2, r1);
+  const P3 = vec(p2.x, p2.y, a3, r2), P4 = vec(p2.x, p2.y, a4, r2);
+  const total = r1 + r2;
+  let d2 = Math.min(v * HANDLE, Math.hypot(P3[0]-P1[0], P3[1]-P1[1]) / total);
+  d2 *= Math.min(1, d * 2 / total);
+  {
+    const n = [ -Math.sin(ang), Math.cos(ang) ];
+    const dir = (a, r) => [ Math.cos(a) * r, Math.sin(a) * r ];
+    const vA = dir(a1 - HALF_PI, r1), vA3 = dir(a3 + HALF_PI, r2);
+    const vB = dir(a4 - HALF_PI, r2), vB2 = dir(a2 + HALF_PI, r1);
+    const S0 = [ (P4[0]+P2[0]-P1[0]-P3[0])/2, (P4[1]+P2[1]-P1[1]-P3[1])/2 ];
+    const S1 = [ 0.375*(vB[0]+vB2[0]-vA[0]-vA3[0]), 0.375*(vB[1]+vB2[1]-vA[1]-vA3[1]) ];
+    const s0 = S0[0]*n[0] + S0[1]*n[1];
+    const s1 = S1[0]*n[0] + S1[1]*n[1];
+    const SMIN = 2;
+    if (s0 * s1 < 0 && Math.abs(d2 * s1) > Math.abs(s0) - SMIN)
+      d2 = Math.max(0, (Math.abs(s0) - SMIN) / Math.abs(s1));
+  }
+  const h1 = vec(P1[0], P1[1], a1 - HALF_PI, r1 * d2);
+  const h2 = vec(P2[0], P2[1], a2 + HALF_PI, r1 * d2);
+  const h3 = vec(P3[0], P3[1], a3 + HALF_PI, r2 * d2);
+  const h4 = vec(P4[0], P4[1], a4 - HALF_PI, r2 * d2);
+  const pt = p => `${fxv(p[0])} ${fxv(p[1])}`;
+  const quad = [P1, P3, P4, P2];
+  let s2 = 0;
+  for (let q = 0; q < 4; q++){ const a = quad[q], b = quad[(q + 1) % 4]; s2 += a[0]*b[1] - b[0]*a[1]; }
+  return s2 >= 0
+    ? `M ${pt(P1)} C ${pt(h1)} ${pt(h3)} ${pt(P3)} L ${pt(P4)} C ${pt(h4)} ${pt(h2)} ${pt(P2)} Z`
+    : `M ${pt(P2)} C ${pt(h2)} ${pt(h4)} ${pt(P4)} L ${pt(P3)} C ${pt(h3)} ${pt(h1)} ${pt(P1)} Z`;
+}
+
+function vectorShapeParts(shape){
+  const g = gridGeom();
+  const R = shape.R ?? DEFAULT_PLASTICS.R;
+  const goo = shape.goo ?? DEFAULT_PLASTICS.goo;
+  const jit = shape.jit ?? DEFAULT_PLASTICS.jit;
+  const pts = [];
+  for (const k of shape.dots){
+    const [c, r] = k.split(",").map(Number);
+    if (c < 0 || r < 0 || c >= g.cols || r >= g.rows) continue;
+    const [x, y] = nodeXY(c, r);
+    pts.push({ c, r, x, y, rad: R * (1 + 0.12 * jit * (hash01(c * 31 + r * 7) * 2 - 1)) });
+  }
+  if (!pts.length) return [];
+  const d = [];
+  for (const p of pts) d.push(circlePathV(p.x, p.y, p.rad));
+  if (goo > 0){
+    const v = 0.08 + 0.72 * goo;
+    const near = (a, b) => Math.abs(a.c - b.c) <= 1 && Math.abs(a.r - b.r) <= 1;
+    for (let i = 0; i < pts.length; i++)
+      for (let j = i + 1; j < pts.length; j++){
+        if (!near(pts[i], pts[j])) continue;
+        const bp = bridgePathV(pts[i], pts[j], v);
+        if (bp) d.push(bp);
+      }
+    for (let i = 0; i < pts.length; i++)
+      for (let j = i + 1; j < pts.length; j++){
+        if (!near(pts[i], pts[j])) continue;
+        for (let k2 = j + 1; k2 < pts.length; k2++){
+          if (!near(pts[i], pts[k2]) || !near(pts[j], pts[k2])) continue;
+          const a = pts[i], b = pts[j], c = pts[k2];
+          const s2 = (b.x - a.x)*(c.y - a.y) - (c.x - a.x)*(b.y - a.y);
+          const t = s2 >= 0 ? [a, b, c] : [a, c, b];
+          d.push(`M ${fxv(t[0].x)} ${fxv(t[0].y)} L ${fxv(t[1].x)} ${fxv(t[1].y)} L ${fxv(t[2].x)} ${fxv(t[2].y)} Z`);
+        }
+      }
+  }
+  return d;
+}
+
+function buildFlatSVG(){
+  const parts = [
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`,
+    `<rect width="${W}" height="${H}" fill="#FFFFFF"/>`
+  ];
+  for (const s of shapes){
+    const sub = vectorShapeParts(s);
+    if (!sub.length) continue;
+    parts.push(`<g fill="${s.color}">`);
+    for (const dStr of sub) parts.push(`  <path d="${dStr}" fill-rule="nonzero"/>`);
+    parts.push(`</g>`);
+  }
+  if (showDots){
+    const g = gridGeom();
+    for (let r = 0; r < g.rows; r++) for (let c = 0; c < g.cols; c++){
+      const [x, y] = nodeXY(c, r);
+      parts.push(`<circle cx="${fxv(x)}" cy="${fxv(y)}" r="${dotR}" fill="#0A0A0A"/>`);
+    }
+  }
+  parts.push("</svg>");
+  return parts.join("\n");
+}
+
 /* ===== export PNG ===== */
 function toast(msg){
   const t = document.getElementById("toast");
@@ -614,6 +736,23 @@ function toast(msg){
   clearTimeout(toast._h);
   toast._h = setTimeout(() => t.classList.remove("show"), 1800);
 }
+document.getElementById("btnSvg").addEventListener("click", async () => {
+  if (styleId !== 0){
+    toast("Вектор доступен только в стиле «Флэт»");
+    return;
+  }
+  const s = buildFlatSVG();
+  try {
+    await navigator.clipboard.writeText(s);
+    toast("SVG в буфере — вставь в Figma (Cmd+V)");
+  } catch {
+    const ta = document.createElement("textarea");
+    ta.value = s; document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); ta.remove();
+    toast("SVG в буфере — вставь в Figma (Cmd+V)");
+  }
+});
+
 document.getElementById("btnPng").addEventListener("click", () => {
   const k = 2;
   glCanvas.width = W * k; glCanvas.height = H * k;
