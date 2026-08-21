@@ -88,7 +88,7 @@
 </div></div>
 
 <div id="panel">
-  <h1>Metaball <span>· next / шейдеры · сборка 2026-08-20.8</span></h1>
+  <h1>Metaball <span>· next / шейдеры · сборка 2026-08-20.9</span></h1>
 
   <div class="sec">
     <label>Стиль</label>
@@ -105,8 +105,32 @@
   </div>
 
   <div class="sec">
+    <label>Линии · нить через точки</label>
+    <div id="lineList" style="display:flex; flex-direction:column; gap:6px;"></div>
+    <div class="grid-row" style="gap:6px">
+      <button id="addLine" style="flex:1">+ линия</button>
+      <button id="lineUndo" style="flex:1">↶ убрать точку</button>
+    </div>
+    <div class="swatches" id="lineSwatches">
+      <div class="sw" data-c="#8BE23C" style="background:#8BE23C"></div>
+      <div class="sw" data-c="#E1495F" style="background:#E1495F"></div>
+      <div class="sw" data-c="#130A66" style="background:#130A66"></div>
+      <div class="sw" data-c="#00BFD9" style="background:#00BFD9"></div>
+      <div class="sw" data-c="#0A0A0A" style="background:#0A0A0A"></div>
+      <input type="color" id="lineColor" value="#8BE23C" title="свой цвет">
+    </div>
+    <div class="slider-row"><label>Толщина</label><input type="range" id="rLW" min="2" max="40" value="8"><output id="oLW">8</output></div>
+    <select id="lineStyle">
+      <option value="thread">нить: огибает точки кольцами</option>
+      <option value="line">линия: просто через центры</option>
+    </select>
+    <label class="check-row"><input type="checkbox" id="chkClosed"> замкнуть линию</label>
+    <div class="hint">Когда активна линия, клик по точке добавляет её в маршрут (можно вести с зажатой кнопкой, точку можно проходить повторно). Backspace убирает последнюю.</div>
+  </div>
+
+  <div class="sec">
     <label>Цвет активной фигуры</label>
-    <div class="swatches">
+    <div class="swatches" id="shapeSwatches">
       <div class="sw" data-c="#E1495F" style="background:#E1495F"></div>
       <div class="sw" data-c="#130A66" style="background:#130A66"></div>
       <div class="sw" data-c="#00BFD9" style="background:#00BFD9"></div>
@@ -199,6 +223,7 @@ let manual = false, manCols = 9, manRows = 5;   // ручное количест
 let showDots = true;
 let styleId = 1;            // 0 флэт, 1 градиент, 2 хром, 3 желе, 4 ризо
 let svgMode = "field";      // "field" = контур поля как на холсте, "bezier" = безье-архитектура классики
+let lines = [], activeKind = "shape", activeLine = 0;   // линии-нити: {nodes:[\"c,r\"...], color, width, closed, style}
 let breath = true;
 let shapes = [];            // {dots:Set<"c,r">, color, R, goo, jit}
 let activeIdx = 0;
@@ -488,13 +513,14 @@ function renderOverlay(){
   const g = gridGeom();
   document.getElementById("gridInfo").textContent = `сетка ${g.cols} × ${g.rows}` + (stagger ? " · сдвиг" : "") + (manual ? ` · шаг ${Math.round(g.sx)}×${Math.round(g.sy)}` : "");
   svg.innerHTML = "";
+  for (const el of lineElements()) svg.appendChild(el);     // линии — поверх фигур, под точками
   const act = shapes[activeIdx];
   const inkDots = styleId === 4 ? "#1E1A5E" : "#0A0A0A";   // ризо: чернильный синий
   for (let r = 0; r < g.rows; r++){
     for (let c = 0; c < rowCols(g, r); c++){
       const [x, y] = nodeXY(c, r);
       const k = c + "," + r;
-      if (act && act.dots.has(k)){
+      if (activeKind === "shape" && act && act.dots.has(k)){
         const ring = document.createElementNS(NS, "circle");
         ring.setAttribute("cx", x); ring.setAttribute("cy", y); ring.setAttribute("r", dotR + 13);
         ring.setAttribute("fill", "none");
@@ -554,7 +580,7 @@ function renderPanel(){
   list.innerHTML = "";
   shapes.forEach((s, i) => {
     const row = document.createElement("div");
-    row.className = "shape-row" + (i === activeIdx ? " active" : "");
+    row.className = "shape-row" + (activeKind === "shape" && i === activeIdx ? " active" : "");
     row.innerHTML = `<div class="sw" style="background:${s.color}"></div>
       <span class="nm">Фигура ${i+1}</span><span class="cnt">${s.dots.size} тчк</span>
       <button class="del" title="удалить">✕</button>`;
@@ -563,24 +589,137 @@ function renderPanel(){
         shapes.splice(i, 1);
         if (!shapes.length) shapes.push(defaultShape(0));
         activeIdx = Math.min(activeIdx, shapes.length - 1);
-      } else activeIdx = i;
+      } else { activeIdx = i; activeKind = "shape"; }
       render();
     });
     list.appendChild(row);
   });
-  document.querySelectorAll(".swatches .sw").forEach(sw => {
+  document.querySelectorAll("#shapeSwatches .sw").forEach(sw => {
     sw.classList.toggle("sel", shapes[activeIdx] && sw.dataset.c === shapes[activeIdx].color);
   });
   document.getElementById("btnSvg").classList.toggle("dim", styleId !== 0);
   syncPlasticsUI();
   syncGridUI();
+  renderLinesPanel();
 }
+
+/* ===== линии · нить через точки (поверх фигур, под точками) ===== */
+const fmt1 = v => Math.round(v * 10) / 10;
+function defaultLine(){
+  const src = lines[activeLine];
+  return { nodes: [], color: src ? src.color : "#8BE23C", width: src ? src.width : 8, closed: false, style: src ? src.style : "thread" };
+}
+function linePoints(ln){
+  const g = gridGeom();
+  return ln.nodes.map(k => { const [c, r] = k.split(",").map(Number); if (c < 0 || r < 0 || r >= g.rows || c >= rowCols(g, r)) return null; return nodeXY(c, r); }).filter(Boolean);
+}
+function lineGeom(ln){
+  const pts = linePoints(ln);
+  let d = "";
+  if (pts.length >= 2){
+    d = `M ${fmt1(pts[0][0])} ${fmt1(pts[0][1])}`;
+    for (let i = 1; i < pts.length; i++) d += ` L ${fmt1(pts[i][0])} ${fmt1(pts[i][1])}`;
+    if (ln.closed) d += " Z";
+  }
+  return { pts, d, ringR: dotR + ln.width / 2 + 3 };
+}
+function lineElements(){
+  const els = [];
+  lines.forEach((ln, li) => {
+    const { pts, d, ringR } = lineGeom(ln);
+    if (d){
+      const p = document.createElementNS(NS, "path");
+      p.setAttribute("d", d); p.setAttribute("fill", "none"); p.setAttribute("stroke", ln.color);
+      p.setAttribute("stroke-width", ln.width); p.setAttribute("stroke-linecap", "round"); p.setAttribute("stroke-linejoin", "round");
+      els.push(p);
+    }
+    if (ln.style === "thread") for (const [x, y] of pts){
+      const c = document.createElementNS(NS, "circle");
+      c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", ringR);
+      c.setAttribute("fill", "none"); c.setAttribute("stroke", ln.color); c.setAttribute("stroke-width", ln.width);
+      els.push(c);
+    }
+    if (activeKind === "line" && li === activeLine && pts.length){      // маркер последней точки маршрута
+      const [x, y] = pts[pts.length - 1];
+      const m = document.createElementNS(NS, "circle");
+      m.setAttribute("cx", x); m.setAttribute("cy", y); m.setAttribute("r", ringR + ln.width / 2 + 8);
+      m.setAttribute("fill", "none"); m.setAttribute("stroke", "rgba(20,20,20,.35)"); m.setAttribute("stroke-width", 3);
+      m.setAttribute("stroke-dasharray", "1 7"); m.setAttribute("stroke-linecap", "round");
+      els.push(m);
+    }
+  });
+  return els;
+}
+function lineSVGParts(){
+  const out = [];
+  for (const ln of lines){
+    const { pts, d, ringR } = lineGeom(ln);
+    if (d) out.push(`<path d="${d}" fill="none" stroke="${ln.color}" stroke-width="${ln.width}" stroke-linecap="round" stroke-linejoin="round"/>`);
+    if (ln.style === "thread") for (const [x, y] of pts) out.push(`<circle cx="${fmt1(x)}" cy="${fmt1(y)}" r="${fmt1(ringR)}" fill="none" stroke="${ln.color}" stroke-width="${ln.width}"/>`);
+  }
+  return out;
+}
+function drawLinesCanvas(ctx, k){
+  for (const ln of lines){
+    const { pts, ringR } = lineGeom(ln);
+    ctx.strokeStyle = ln.color; ctx.lineWidth = ln.width * k; ctx.lineCap = "round"; ctx.lineJoin = "round";
+    if (pts.length >= 2){
+      ctx.beginPath(); ctx.moveTo(pts[0][0] * k, pts[0][1] * k);
+      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0] * k, pts[i][1] * k);
+      if (ln.closed) ctx.closePath();
+      ctx.stroke();
+    }
+    if (ln.style === "thread") for (const [x, y] of pts){ ctx.beginPath(); ctx.arc(x * k, y * k, ringR * k, 0, Math.PI * 2); ctx.stroke(); }
+  }
+}
+function renderLinesPanel(){
+  const list = document.getElementById("lineList");
+  list.innerHTML = "";
+  lines.forEach((ln, i) => {
+    const row = document.createElement("div");
+    row.className = "shape-row" + (activeKind === "line" && i === activeLine ? " active" : "");
+    row.innerHTML = `<div class="sw" style="background:${ln.color}"></div><span class="nm">Линия ${i+1}</span><span class="cnt">${ln.nodes.length} тчк</span><button class="del" title="удалить">✕</button>`;
+    row.addEventListener("click", e => {
+      if (e.target.classList.contains("del")){
+        lines.splice(i, 1);
+        activeLine = Math.min(activeLine, Math.max(0, lines.length - 1));
+        if (!lines.length) activeKind = "shape";
+      } else { activeKind = "line"; activeLine = i; }
+      render();
+    });
+    list.appendChild(row);
+  });
+  const ln = lines[activeLine];
+  document.querySelectorAll("#lineSwatches .sw").forEach(sw => sw.classList.toggle("sel", !!ln && sw.dataset.c === ln.color));
+  if (ln){
+    document.getElementById("rLW").value = ln.width; document.getElementById("oLW").textContent = ln.width;
+    document.getElementById("lineStyle").value = ln.style;
+    document.getElementById("chkClosed").checked = !!ln.closed;
+  }
+}
+document.getElementById("addLine").addEventListener("click", () => { lines.push(defaultLine()); activeLine = lines.length - 1; activeKind = "line"; render(); });
+document.getElementById("lineUndo").addEventListener("click", () => { const ln = lines[activeLine]; if (ln){ ln.nodes.pop(); activeKind = "line"; render(); } });
+document.querySelectorAll("#lineSwatches .sw").forEach(sw => sw.addEventListener("click", () => { const ln = lines[activeLine]; if (ln){ ln.color = sw.dataset.c; activeKind = "line"; render(); } }));
+document.getElementById("lineColor").addEventListener("input", e => { const ln = lines[activeLine]; if (ln){ ln.color = e.target.value; activeKind = "line"; render(); } });
+document.getElementById("rLW").addEventListener("input", e => { const ln = lines[activeLine]; document.getElementById("oLW").textContent = e.target.value; if (ln){ ln.width = +e.target.value; render(); } });
+document.getElementById("lineStyle").addEventListener("change", e => { const ln = lines[activeLine]; if (ln){ ln.style = e.target.value; render(); } });
+document.getElementById("chkClosed").addEventListener("change", e => { const ln = lines[activeLine]; if (ln){ ln.closed = e.target.checked; render(); } });
+window.addEventListener("keydown", e => {
+  if ((e.key === "Backspace" || e.key === "Delete") && activeKind === "line" && !["INPUT","SELECT","TEXTAREA"].includes(document.activeElement.tagName)){
+    e.preventDefault(); const ln = lines[activeLine]; if (ln){ ln.nodes.pop(); render(); }
+  }
+});
 
 /* ===== interactions ===== */
 let dragMode = null;
 svg.addEventListener("pointerdown", e => {
   const k = e.target.dataset?.k;
   if (k === undefined) return;
+  if (activeKind === "line"){                                   // ведём нить: точка добавляется в маршрут
+    const ln = lines[activeLine]; if (!ln) return;
+    if (ln.nodes[ln.nodes.length - 1] !== k) ln.nodes.push(k);
+    dragMode = "line"; render(); return;
+  }
   const s = shapes[activeIdx];
   dragMode = s.dots.has(k) ? "remove" : "add";
   applyDot(k);
@@ -588,7 +727,9 @@ svg.addEventListener("pointerdown", e => {
 svg.addEventListener("pointerover", e => {
   if (dragMode === null || !(e.buttons & 1)) return;
   const k = e.target.dataset?.k;
-  if (k !== undefined) applyDot(k);
+  if (k === undefined) return;
+  if (dragMode === "line"){ const ln = lines[activeLine]; if (ln && ln.nodes[ln.nodes.length - 1] !== k){ ln.nodes.push(k); render(); } return; }
+  applyDot(k);
 });
 window.addEventListener("pointerup", () => { dragMode = null; });
 function applyDot(k){
@@ -608,8 +749,8 @@ document.getElementById("fillAll").addEventListener("click", () => {
   for (let r = 0; r < g.rows; r++) for (let c = 0; c < rowCols(g, r); c++) s.dots.add(c + "," + r);
   render();
 });
-document.querySelectorAll(".swatches .sw").forEach(sw => {
-  sw.addEventListener("click", () => { shapes[activeIdx].color = sw.dataset.c; render(); });
+document.querySelectorAll("#shapeSwatches .sw").forEach(sw => {
+  sw.addEventListener("click", () => { shapes[activeIdx].color = sw.dataset.c; activeKind = "shape"; render(); });
 });
 document.getElementById("customColor").addEventListener("input", e => {
   shapes[activeIdx].color = e.target.value; render();
@@ -678,7 +819,7 @@ document.getElementById("chkDots").addEventListener("change", e => { showDots = 
 document.getElementById("chkBreath").addEventListener("change", e => { breath = e.target.checked; render(); });
 document.getElementById("svgMode").addEventListener("change", e => { svgMode = e.target.value; save(); });
 document.getElementById("btnClear").addEventListener("click", () => {
-  shapes = [defaultShape(0)]; activeIdx = 0; render();
+  shapes = [defaultShape(0)]; activeIdx = 0; lines = []; activeLine = 0; activeKind = "shape"; render();
 });
 
 /* ===== векторный экспорт (безье-архитектура из классики) — только для стиля Флэт ===== */
@@ -1004,6 +1145,7 @@ function buildFlatSVG(){
     for (const dStr of sub) parts.push(`  <path d="${dStr}" fill-rule="nonzero"/>`);
     parts.push(`</g>`);
   }
+  parts.push(...lineSVGParts());                          // линии поверх фигур, под точками
   if (showDots){
     const g = gridGeom();
     for (let r = 0; r < g.rows; r++) for (let c = 0; c < rowCols(g, r); c++){
@@ -1049,6 +1191,7 @@ document.getElementById("btnPng").addEventListener("click", () => {
   c.width = W * k; c.height = H * k;
   const ctx = c.getContext("2d");
   ctx.drawImage(glCanvas, 0, 0);
+  drawLinesCanvas(ctx, k);
   if (showDots){
     const g = gridGeom();
     ctx.fillStyle = styleId === 4 ? "#1E1A5E" : "#0A0A0A";
@@ -1150,7 +1293,7 @@ renderProfileList();
 function save(){
   try {
     localStorage.setItem("metaball-next", JSON.stringify({
-      activeIdx, showDots, W, H, gridS, dotR, gridM, styleId, breath, stagger, manual, manCols, manRows, svgMode,
+      activeIdx, showDots, W, H, gridS, dotR, gridM, styleId, breath, stagger, manual, manCols, manRows, svgMode, lines, activeKind, activeLine,
       shapes: shapes.map(s => ({ dots: [...s.dots], color: s.color, R: s.R, goo: s.goo, jit: s.jit }))
     }));
   } catch {}
@@ -1174,6 +1317,9 @@ function load(){
       R: s.R ?? 108, goo: s.goo ?? 0.5, jit: s.jit ?? 0.35
     }));
     activeIdx = Math.min(st.activeIdx || 0, shapes.length - 1);
+    lines = (st.lines || []).map(l => ({ nodes: (l.nodes || []).slice(), color: l.color || "#8BE23C", width: +l.width || 8, closed: !!l.closed, style: l.style === "line" ? "line" : "thread" }));
+    activeLine = Math.min(st.activeLine || 0, Math.max(0, lines.length - 1));
+    activeKind = (st.activeKind === "line" && lines.length) ? "line" : "shape";
   } catch {}
 }
 
