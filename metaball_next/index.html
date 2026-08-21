@@ -70,6 +70,9 @@
   .check-row input{accent-color:var(--ui-text);}
   .btns{display:flex; flex-direction:column; gap:7px;}
   button.dim{opacity:.4;}
+  .pal{display:flex; gap:6px; align-items:center; flex-wrap:wrap; min-height:26px;}
+  .pal input[type=color]{width:26px; height:26px; border:none; background:none; cursor:pointer; padding:0;}
+  .pal-btn{padding:3px 9px; font-size:13px; border-radius:99px; line-height:1.3;}
   #toast{
     position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(80px);
     background:var(--ui-text); color:#111; font-size:12.5px; font-weight:600;
@@ -88,7 +91,7 @@
 </div></div>
 
 <div id="panel">
-  <h1>Metaball <span>· next / шейдеры · сборка 2026-08-20.11</span></h1>
+  <h1>Metaball <span>· next / шейдеры · сборка 2026-08-21.12</span></h1>
 
   <div class="sec">
     <label>Стиль</label>
@@ -153,6 +156,49 @@
     <div class="slider-row"><label>Жирность</label><input type="range" id="rR" min="20" max="300" value="108"><output id="oR">108</output></div>
     <div class="slider-row"><label>Слипание</label><input type="range" id="rG" min="0" max="100" value="50"><output id="oG">50</output></div>
     <div class="slider-row"><label>Органика</label><input type="range" id="rJ" min="0" max="100" value="35"><output id="oJ">35</output></div>
+  </div>
+
+  <div class="sec">
+    <label>Свечение и размытие активной фигуры</label>
+    <label class="check-row"><input type="checkbox" id="chkGlow"> свечение вокруг фигуры</label>
+    <div class="swatches" id="glowSwatches">
+      <div class="sw" data-c="auto" style="background:conic-gradient(#E1495F,#00BFD9,#8BE23C,#E1495F)" title="цвет фигуры"></div>
+      <div class="sw" data-c="#E1495F" style="background:#E1495F"></div>
+      <div class="sw" data-c="#00BFD9" style="background:#00BFD9"></div>
+      <div class="sw" data-c="#8BE23C" style="background:#8BE23C"></div>
+      <div class="sw" data-c="#B48CFF" style="background:#B48CFF"></div>
+      <input type="color" id="glowColorInp" value="#8BE23C" title="свой цвет свечения">
+    </div>
+    <div class="slider-row"><label>Размах</label><input type="range" id="rGlowS" min="10" max="400" value="120"><output id="oGlowS">120</output></div>
+    <div class="slider-row"><label>Яркость</label><input type="range" id="rGlowA" min="5" max="100" value="70"><output id="oGlowA">70</output></div>
+    <div class="slider-row"><label>Размытие</label><input type="range" id="rBlur" min="0" max="200" value="0"><output id="oBlur">0</output></div>
+    <div class="hint">Свечение — мягкий ореол того же поля за фигурой (цвет «авто» = цвет фигуры). Размытие — расплывчатый край самой фигуры, px.</div>
+  </div>
+
+  <div class="sec">
+    <label>Градиент активной фигуры</label>
+    <select id="gradMode">
+      <option value="none">без градиента — цвет фигуры</option>
+      <option value="rings">кольца по контуру — от края к ядру</option>
+      <option value="v">сверху вниз</option>
+      <option value="h">слева направо</option>
+    </select>
+    <div class="grid-row" style="gap:6px">
+      <div class="pal" id="gradPal" style="flex:1"></div>
+      <button class="pal-btn" id="palAdd" title="добавить цвет">+</button>
+      <button class="pal-btn" id="palDel" title="убрать последний цвет">−</button>
+    </div>
+    <select id="gradPreset">
+      <option value="">— палитра-пресет —</option>
+      <option value="rb">красный → синий</option>
+      <option value="tb">бирюза → синий</option>
+      <option value="gk">серый → чёрный (кольцо)</option>
+      <option value="rainbow">мишень: красный · жёлтый · зелёный · синий · чёрный</option>
+      <option value="blob">зелёный · синий · красный · розовый · жёлтый</option>
+    </select>
+    <label class="check-row"><input type="checkbox" id="chkBands"> полосами, без плавного перехода</label>
+    <div class="slider-row"><label>Глубина</label><input type="range" id="rGradD" min="10" max="300" value="80"><output id="oGradD">80</output></div>
+    <div class="hint">Кольца идут вдоль контура пятна: первый цвет — край, последний — ядро; глубина — ширина градиентной зоны от края, px. Фото отключает градиент; хром / желе / ризо ложатся поверх.</div>
   </div>
 
   <div class="sec">
@@ -261,6 +307,39 @@ let breath = true;
 let shapes = [];            // {dots:Set<"c,r">, color, R, goo, jit}
 let activeIdx = 0;
 const DEFAULT_PLASTICS = { R: 108, goo: 0.50, jit: 0.35 };
+// эффекты фигуры: свечение (ореол поля за фигурой), размытие края, градиент по полю (кольца) или по осям
+const DEFAULT_FX = { glow: { on: false, color: null, spread: 120, opacity: 0.7 }, blur: 0, grad: { mode: "none", colors: ["#E1495F", "#130A66"], bands: false, depth: 80 } };
+const GRAD_PRESETS = {
+  rb: ["#E1495F", "#130A66"], tb: ["#00BFD9", "#130A66"], gk: ["#8C8C8C", "#0A0A0A"],
+  rainbow: ["#E8472E", "#F7D21C", "#46C24A", "#3C6CF0", "#0A0A0A"], blob: ["#46C24A", "#3C6CF0", "#E8472E", "#F06CA8", "#F7D21C"],
+};
+function cloneFx(src){
+  const f = src || DEFAULT_FX, g = f.glow || DEFAULT_FX.glow, gr = f.grad || DEFAULT_FX.grad;
+  return {
+    glow: { on: !!g.on, color: g.color || null, spread: +g.spread || DEFAULT_FX.glow.spread, opacity: g.opacity != null ? +g.opacity : DEFAULT_FX.glow.opacity },
+    blur: Math.max(0, +f.blur || 0),
+    grad: { mode: ["rings", "v", "h"].includes(gr.mode) ? gr.mode : "none", colors: (Array.isArray(gr.colors) && gr.colors.length >= 2 ? gr.colors : DEFAULT_FX.grad.colors).slice(0, 5), bands: !!gr.bands, depth: +gr.depth || DEFAULT_FX.grad.depth }
+  };
+}
+function fxOf(s){ if (!s.glow || !s.grad) Object.assign(s, cloneFx(s)); return s; }
+/* поле фигуры: порог t, сигма; перевод «расстояние от края одиночного узла (px)» → значение поля */
+function shapeField(shape){
+  const t = 0.28 + 0.50 * (shape.goo ?? DEFAULT_PLASTICS.goo), R = shape.R ?? DEFAULT_PLASTICS.R;
+  return { t, R, sigma: R / Math.sqrt(-2 * Math.log(t)) };
+}
+function fieldTAt(shape, dpx){ const { R, sigma } = shapeField(shape); const r = Math.max(0, R + dpx); return Math.exp(-(r * r) / (2 * sigma * sigma)); }
+function blurEdge(shape){ const b = shape.blur || 0; if (!b) { const { t } = shapeField(shape); return [t, t]; } return [fieldTAt(shape, b), fieldTAt(shape, -b)]; }
+function glowHex(shape){ return (shape.glow && shape.glow.color) || shape.color; }
+function activeGrad(shape){ const g = shape.grad; return g && g.mode !== "none" && g.colors.length >= 2 ? g : null; }
+function rampColors(colors, n){      // n цветов плавной палитры — для экспорта плавных колец полосами
+  const out = []; const N = colors.length;
+  for (let i = 0; i < n; i++){
+    const pos = ((i + 0.5) / n) * (N - 1), j = Math.min(N - 2, Math.floor(pos)), k = pos - j;
+    const a = hexRgb(colors[j]), b = hexRgb(colors[j + 1]);
+    out.push("#" + [0, 1, 2].map(c => Math.round((a[c] + (b[c] - a[c]) * k) * 255).toString(16).padStart(2, "0")).join("").toUpperCase());
+  }
+  return out;
+}
 const PRESETS = ["#E1495F", "#130A66", "#00BFD9", "#D8D8D8"];
 const STYLES = [
   { id: 0, name: "Флэт",     bg: [1.00, 1.00, 1.00] },
@@ -272,7 +351,7 @@ const STYLES = [
 
 function defaultShape(i){
   const src = (shapes && shapes[activeIdx]) ? shapes[activeIdx] : DEFAULT_PLASTICS;
-  return { dots: new Set(), color: PRESETS[i % PRESETS.length], R: src.R, goo: src.goo, jit: src.jit };
+  return { dots: new Set(), color: PRESETS[i % PRESETS.length], R: src.R, goo: src.goo, jit: src.jit, ...cloneFx(src) };   // новая фигура наследует пластику и эффекты активной
 }
 function hash01(i){ const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
 function hexRgb(h){ return [parseInt(h.slice(1,3),16)/255, parseInt(h.slice(3,5),16)/255, parseInt(h.slice(5,7),16)/255]; }
@@ -365,19 +444,40 @@ uniform sampler2D uPhoto;
 uniform int uHasPhoto;
 uniform vec4 uPhotoRect;  // x,y,w,h в единицах холста
 uniform vec2 uPhotoSize;  // размер картинки, px
+uniform vec2 uEdge;       // размытие края: порог снаружи / внутри (оба = uThresh, если размытия нет)
+uniform float uGlow;      // > 0: проход свечения — размах ореола в px от края фигуры
+uniform float uSigma;     // сигма поля и жирность R — перевод значения поля в расстояние от края
+uniform float uR;
+uniform int uGradMode;    // 0 нет, 1 кольца по контуру, 2 сверху вниз, 3 слева направо
+uniform int uGradN;
+uniform vec3 uGradCols[5];
+uniform int uGradBands;
+uniform float uGradDepth; // ширина градиентной зоны от края, px
+uniform vec4 uGradBox;    // габарит узлов ± R — для градиента по осям
 out vec4 o;
 float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
 float field(vec2 p){
   float f = 0.0;
+  float cut = uGlow > 0.0 ? 50.0 : 18.0;   // 4.2 сигмы — дальше вклад нулевой; свечению нужен хвост длиннее (7 сигм)
   for (int i = 0; i < uCount; i++){
     vec4 d = texelFetch(uDotsTex, ivec2(i, 0), 0);
     vec2 q = p - d.xy;
     float r2 = dot(q, q);
     float s2 = d.z * d.z;
-    if (r2 > s2 * 18.0) continue;      // 4.2 сигмы — дальше вклад нулевой
+    if (r2 > s2 * cut) continue;
     f += d.w * exp(-r2 / (2.0 * s2));
   }
   return f;
+}
+// глубина от края внутрь в px: эквивалентный радиус одиночного узла с таким же значением поля
+float depthPx(float f){ float fe = clamp(f, 1e-12, 1.0); return uR - uSigma * sqrt(-2.0 * log(fe)); }
+vec3 ramp(float k){
+  k = clamp(k, 0.0, 1.0);
+  float n = float(uGradN);
+  if (uGradBands == 1){ int i = int(min(floor(k * n), n - 1.0)); return uGradCols[i]; }
+  float pos = k * (n - 1.0);
+  int i = int(min(floor(pos), n - 2.0));
+  return mix(uGradCols[i], uGradCols[i + 1], clamp(pos - float(i), 0.0, 1.0));
 }
 void main(){
   vec2 p = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y) * uView / uRes - uOff;
@@ -385,7 +485,9 @@ void main(){
   float w = fwidth(f) * 1.2 + 1e-5;
   float fj = f;
   if (uStyle == 4 && uFlat == 0) fj += (hash(floor(p * 0.55)) - 0.5) * uThresh * 0.3;
-  float a = smoothstep(uThresh - w, uThresh + w, fj);
+  float a;
+  if (uGlow > 0.0) a = 1.0 - smoothstep(0.0, uGlow, -depthPx(f));                    // ореол: 1 на краю, 0 на размахе
+  else a = smoothstep(min(uEdge.x, uThresh - w), max(uEdge.y, uThresh + w), fj);      // край: антиалиасинг или размытие
   if (a <= 0.004) discard;
   vec3 base = uColA;
   if (uHasPhoto == 1 && uFlat == 0){                     // фото cover-ом в прямоугольник фигуры/холста
@@ -393,13 +495,20 @@ void main(){
     vec2 dsz = uPhotoSize * sc;
     vec2 org = uPhotoRect.xy + (uPhotoRect.zw - dsz) * 0.5;
     base = texture(uPhoto, clamp((p - org) / dsz, 0.0, 1.0)).rgb;
+  } else if (uGradMode != 0 && uFlat == 0){              // градиент: кольца по полю или по осям габарита
+    float k;
+    if (uGradMode == 1) k = depthPx(f) / max(uGradDepth, 1.0);
+    else if (uGradMode == 2) k = (p.y - uGradBox.y) / max(uGradBox.w, 1.0);
+    else k = (p.x - uGradBox.x) / max(uGradBox.z, 1.0);
+    base = ramp(k);
   }
+  bool own = uHasPhoto == 1 || uGradMode != 0;          // базовый цвет задан фото/градиентом — двутон стиля не применяем
   vec3 col = base;
   if (uFlat == 0){
     if (uStyle == 1){
       float k = clamp((p.y - uBbox.y) / max(uBbox.w, 1.0), 0.0, 1.0);
       float m = clamp(k + (f - uThresh) * 0.22, 0.0, 1.0);
-      col = uHasPhoto == 1 ? base : mix(uColB, uColA, m);
+      col = own ? base : mix(uColB, uColA, m);
       col += (hash(p * 1.31) - 0.5) * 0.055;
     } else if (uStyle == 2 || uStyle == 3){
       float e = 2.0;
@@ -467,10 +576,9 @@ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-function shapeUniforms(shape, time){
+function shapeUniforms(shape, time, still){
   const g = gridGeom();
-  const t = 0.28 + 0.50 * (shape.goo ?? 0.5);
-  const sigma = (shape.R ?? 108) / Math.sqrt(-2 * Math.log(t));
+  const { t, sigma, R } = shapeField(shape);
   const dots = [];
   let minX = 1e9, minY = 1e9, maxX = -1e9, maxY = -1e9;
   for (const k of shape.dots){
@@ -480,15 +588,16 @@ function shapeUniforms(shape, time){
     const [x, y] = nodeXY(c, r);
     const seed = hash01(c * 31 + r * 7);
     let wgt = 1 + 0.12 * (shape.jit ?? 0.35) * (seed * 2 - 1);
-    if (breath) wgt *= 1 + 0.055 * Math.sin(time * 0.0012 + seed * 6.283);
+    if (breath && !still) wgt *= 1 + 0.055 * Math.sin(time * 0.0012 + seed * 6.283);
     dots.push(x, y, sigma, wgt);
     minX = Math.min(minX, x - sigma*2.5); maxX = Math.max(maxX, x + sigma*2.5);
     minY = Math.min(minY, y - sigma*2.5); maxY = Math.max(maxY, y + sigma*2.5);
   }
-  return { dots, count: dots.length / 4, thresh: t, bbox: [minX, minY, maxX - minX, maxY - minY] };
+  return { dots, count: dots.length / 4, thresh: t, sigma, R, bbox: [minX, minY, maxX - minX, maxY - minY] };
 }
 
-function drawShapePass(shape, u, colA, colB, style, off, alphaMul, flat){
+function drawShapePass(shape, u, colA, colB, style, off, alphaMul, flat, fx){
+  fx = fx || {};
   gl.useProgram(PRG_SHAPE);
   gl.uniform2f(U(PRG_SHAPE, "uRes"), glCanvas.width, glCanvas.height);
   gl.uniform2f(U(PRG_SHAPE, "uView"), W, H);
@@ -505,6 +614,23 @@ function drawShapePass(shape, u, colA, colB, style, off, alphaMul, flat){
   gl.uniform2fv(U(PRG_SHAPE, "uOff"), off);
   gl.uniform1f(U(PRG_SHAPE, "uAlphaMul"), alphaMul);
   gl.uniform1i(U(PRG_SHAPE, "uFlat"), flat ? 1 : 0);
+  const edge = fx.edge || [u.thresh, u.thresh];
+  gl.uniform2f(U(PRG_SHAPE, "uEdge"), edge[0], edge[1]);
+  gl.uniform1f(U(PRG_SHAPE, "uGlow"), fx.glow || 0);
+  gl.uniform1f(U(PRG_SHAPE, "uSigma"), u.sigma);
+  gl.uniform1f(U(PRG_SHAPE, "uR"), u.R);
+  const gr = !flat && fx.grad ? activeGrad({ grad: fx.grad }) : null;
+  gl.uniform1i(U(PRG_SHAPE, "uGradMode"), gr ? ({ rings: 1, v: 2, h: 3 })[gr.mode] : 0);
+  if (gr){
+    const cols = new Float32Array(15);
+    gr.colors.slice(0, 5).forEach((c, i) => cols.set(hexRgb(c), i * 3));
+    gl.uniform3fv(U(PRG_SHAPE, "uGradCols"), cols);
+    gl.uniform1i(U(PRG_SHAPE, "uGradN"), Math.min(5, gr.colors.length));
+    gl.uniform1i(U(PRG_SHAPE, "uGradBands"), gr.bands ? 1 : 0);
+    gl.uniform1f(U(PRG_SHAPE, "uGradDepth"), gr.depth || 80);
+    const bb = shapeBBox(shape) || { x: 0, y: 0, w: 1, h: 1 };
+    gl.uniform4f(U(PRG_SHAPE, "uGradBox"), bb.x, bb.y, bb.w, bb.h);
+  }
   const ph = shape.photo, pr = ph && ph.img && !flat ? photoRect(shape) : null;
   gl.activeTexture(gl.TEXTURE1);
   if (pr){
@@ -543,19 +669,18 @@ function renderGL(time){
     const u = shapeUniforms(s, time);
     if (!u.count) continue;
     const colA = hexRgb(s.color), colB = gradPair(s.color);
-    if (styleId === 3){          // желе: мягкая тень
-      gl.blendEquation(gl.FUNC_ADD);
-      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-      drawShapePass(s, u, [0.06, 0.05, 0.09], colB, styleId, [-9, -13], 0.16, true);
-    }
+    const edge = blurEdge(s);
+    gl.blendEquation(gl.FUNC_ADD);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    if (s.glow && s.glow.on && s.glow.spread > 0)     // свечение: ореол того же поля за фигурой
+      drawShapePass(s, u, hexRgb(glowHex(s)), colB, styleId, [0, 0], s.glow.opacity, true, { glow: s.glow.spread });
+    if (styleId === 3)           // желе: мягкая тень (размывается вместе с фигурой)
+      drawShapePass(s, u, [0.06, 0.05, 0.09], colB, styleId, [-9, -13], 0.16, true, { edge });
     if (styleId === 4){          // ризо: multiply-оверпринт
       gl.blendEquation(gl.FUNC_ADD);
       gl.blendFunc(gl.ZERO, gl.SRC_COLOR);
-    } else {
-      gl.blendEquation(gl.FUNC_ADD);
-      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     }
-    drawShapePass(s, u, colA, colB, styleId, [0, 0], 1.0, false);
+    drawShapePass(s, u, colA, colB, styleId, [0, 0], 1.0, false, { edge, grad: s.grad });
   }
 
   // плёночное зерно: добавить и вычесть шум (альфу не трогаем)
@@ -666,10 +791,59 @@ function renderPanel(){
   });
   document.getElementById("btnSvg").classList.toggle("dim", styleId !== 0);
   syncPlasticsUI();
+  syncFxUI();
   syncGridUI();
   renderLinesPanel();
   syncBgUI();
 }
+
+/* ===== свечение, размытие, градиент активной фигуры ===== */
+function setRange(id, out, v){ document.getElementById(id).value = v; document.getElementById(out).textContent = Math.round(v); }
+function syncFxUI(){
+  const s = shapes[activeIdx]; if (!s) return;
+  fxOf(s);
+  const gw = s.glow, gr = s.grad;
+  document.getElementById("chkGlow").checked = !!gw.on;
+  document.querySelectorAll("#glowSwatches .sw").forEach(sw => sw.classList.toggle("sel", (sw.dataset.c === "auto" && !gw.color) || (!!gw.color && sw.dataset.c.toUpperCase() === gw.color.toUpperCase())));
+  setRange("rGlowS", "oGlowS", gw.spread); setRange("rGlowA", "oGlowA", gw.opacity * 100); setRange("rBlur", "oBlur", s.blur || 0);
+  for (const id of ["rGlowS", "rGlowA"]) document.getElementById(id).parentElement.style.opacity = gw.on ? 1 : .45;
+  document.getElementById("glowSwatches").style.opacity = gw.on ? 1 : .45;
+  document.getElementById("gradMode").value = gr.mode;
+  document.getElementById("chkBands").checked = !!gr.bands;
+  setRange("rGradD", "oGradD", gr.depth);
+  document.getElementById("rGradD").parentElement.style.opacity = gr.mode === "rings" ? 1 : .45;
+  document.getElementById("gradPal").parentElement.style.opacity = gr.mode === "none" ? .45 : 1;
+  document.getElementById("chkBands").parentElement.style.opacity = gr.mode === "none" ? .45 : 1;
+  const pal = document.getElementById("gradPal");
+  if (pal.children.length !== gr.colors.length){        // инпуты пересоздаём только при смене количества — иначе пикер закрывается на каждом кадре
+    pal.innerHTML = "";
+    gr.colors.forEach((c, i) => {
+      const inp = document.createElement("input"); inp.type = "color";
+      inp.addEventListener("input", e => { const sh = shapes[activeIdx]; if (sh && sh.grad.colors[i] != null){ sh.grad.colors[i] = e.target.value; render(); } });
+      pal.appendChild(inp);
+    });
+  }
+  gr.colors.forEach((c, i) => { const inp = pal.children[i]; inp.value = c; inp.title = i === 0 ? "край" : (i === gr.colors.length - 1 ? "ядро" : "цвет " + (i + 1)); });
+  document.getElementById("palAdd").classList.toggle("dim", gr.colors.length >= 5);
+  document.getElementById("palDel").classList.toggle("dim", gr.colors.length <= 2);
+}
+function withShape(fn){ return e => { const s = shapes[activeIdx]; if (!s) return; fxOf(s); fn(s, e); activeKind = "shape"; render(); }; }
+document.getElementById("chkGlow").addEventListener("change", withShape((s, e) => { s.glow.on = e.target.checked; }));
+document.querySelectorAll("#glowSwatches .sw").forEach(sw => sw.addEventListener("click", withShape(s => { s.glow.color = sw.dataset.c === "auto" ? null : sw.dataset.c; s.glow.on = true; })));
+document.getElementById("glowColorInp").addEventListener("input", withShape((s, e) => { s.glow.color = e.target.value; s.glow.on = true; }));
+bindSlider("rGlowS", "oGlowS", v => { const s = shapes[activeIdx]; if (s){ fxOf(s).glow.spread = v; } });
+bindSlider("rGlowA", "oGlowA", v => { const s = shapes[activeIdx]; if (s){ fxOf(s).glow.opacity = v / 100; } });
+bindSlider("rBlur", "oBlur", v => { const s = shapes[activeIdx]; if (s){ fxOf(s).blur = v; } });
+document.getElementById("gradMode").addEventListener("change", withShape((s, e) => { s.grad.mode = e.target.value; }));
+document.getElementById("chkBands").addEventListener("change", withShape((s, e) => { s.grad.bands = e.target.checked; }));
+bindSlider("rGradD", "oGradD", v => { const s = shapes[activeIdx]; if (s){ fxOf(s).grad.depth = v; } });
+document.getElementById("palAdd").addEventListener("click", withShape(s => { const c = s.grad.colors; if (c.length < 5) c.push(c[c.length - 1]); if (s.grad.mode === "none") s.grad.mode = "rings"; }));
+document.getElementById("palDel").addEventListener("click", withShape(s => { if (s.grad.colors.length > 2) s.grad.colors.pop(); }));
+document.getElementById("gradPreset").addEventListener("change", withShape((s, e) => {
+  const p = GRAD_PRESETS[e.target.value]; e.target.value = "";
+  if (!p) return;
+  s.grad.colors = p.slice(); if (s.grad.mode === "none") s.grad.mode = "rings";
+}));
 
 /* ===== линии · нить через точки (поверх фигур, под точками) ===== */
 const fmt1 = v => Math.round(v * 10) / 10;
@@ -994,11 +1168,12 @@ function vectorShapeParts(shape){
 }
 
 /* ===== векторный контур поля — ровно то, что рисует шейдер (marching squares по тому же полю) ===== */
-function fieldShapePath(shape){
+function fieldShapePath(shape, opts){
   const g = gridGeom();
   const R = shape.R ?? DEFAULT_PLASTICS.R, goo = shape.goo ?? DEFAULT_PLASTICS.goo, jit = shape.jit ?? DEFAULT_PLASTICS.jit;
-  const t = 0.28 + 0.50 * goo;
-  const sigma = R / Math.sqrt(-2 * Math.log(t));
+  const t0 = 0.28 + 0.50 * goo;
+  const sigma = R / Math.sqrt(-2 * Math.log(t0));          // сигма — всегда от собственного порога фигуры
+  const t = (opts && opts.thresh) || t0;                   // изолиния на другом уровне: кольца градиента, контур свечения
   const inv2s2 = 1 / (2 * sigma * sigma);
   const pts = [];
   for (const k of shape.dots){
@@ -1009,7 +1184,7 @@ function fieldShapePath(shape){
     pts.push({ x, y, w: 1 + 0.12 * jit * (seed * 2 - 1) });      // без «дыхания» — статичный кадр
   }
   if (!pts.length) return "";
-  const cut = sigma * 3.4;
+  const cut = Math.max(sigma * 3.4, sigma * Math.sqrt(-2 * Math.log(Math.min(t, 0.999))) * 1.25 + 4);   // низкий порог — контур дальше от узлов
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   for (const p of pts){
     minX = Math.min(minX, p.x - cut); maxX = Math.max(maxX, p.x + cut);
@@ -1200,29 +1375,51 @@ function rdp(pts, eps){
 
 function buildFlatSVG(){
   const bgHex = bgColor || "#" + STYLES[styleId].bg.map(v => Math.round(v * 255).toString(16).padStart(2, "0")).join("").toUpperCase();
+  const defs = [];
   const parts = [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`,
     `<rect width="${W}" height="${H}" fill="${bgHex}"/>`
   ];
+  const blurFilter = (id, sd) => { defs.push(`<filter id="${id}" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="${fxv(sd)}"/></filter>`); return ` filter="url(#${id})"`; };
   shapes.forEach((s, si) => {
+    fxOf(s);
     const hasPhoto = !!(s.photo && photoRect(s));
-    if (svgMode === "field"){
-      const dStr = fieldShapePath(s);                       // один path на фигуру, контур = холст
-      if (!dStr) return;
-      if (hasPhoto){ parts.push(`<clipPath id="clip${si}"><path d="${dStr}" clip-rule="evenodd"/></clipPath>`); parts.push(photoImageSVG(s, "clip" + si)); return; }
-      parts.push(`<path d="${dStr}" fill="${s.color}" fill-rule="evenodd"/>`);
-      return;
+    const field = svgMode === "field";
+    const outer = field ? [fieldShapePath(s)].filter(Boolean) : vectorShapeParts(s);   // внешний контур: поле (как на холсте) или безье-архитектура
+    if (!outer.length) return;
+    const rule = field ? "evenodd" : "nonzero";
+    if (s.glow.on && s.glow.spread > 0){                  // свечение: контур поля на полразмаха наружу, размытый фильтром
+      const dG = fieldShapePath(s, { thresh: fieldTAt(s, s.glow.spread / 2) });
+      if (dG) parts.push(`<path d="${dG}" fill="${glowHex(s)}" fill-opacity="${fxv(s.glow.opacity)}" fill-rule="evenodd"${blurFilter("glow" + si, s.glow.spread / 4)}/>`);
     }
-    const sub = vectorShapeParts(s);
-    if (!sub.length) return;
+    const gAttr = s.blur > 0 ? blurFilter("blur" + si, s.blur * 0.47) : "";
+    const gr = hasPhoto ? null : activeGrad(s);
+    const body = [];
     if (hasPhoto){
-      parts.push(`<clipPath id="clip${si}">`); for (const dStr of sub) parts.push(`  <path d="${dStr}"/>`); parts.push(`</clipPath>`);
-      parts.push(photoImageSVG(s, "clip" + si)); return;
+      defs.push(`<clipPath id="clip${si}">` + outer.map(d => `<path d="${d}"${field ? ' clip-rule="evenodd"' : ""}/>`).join("") + `</clipPath>`);
+      body.push(photoImageSVG(s, "clip" + si));
+    } else if (gr && gr.mode === "rings"){                 // кольца: внешний контур первым цветом, внутрь — изолинии поля на глубине i/N
+      const cols = gr.bands ? gr.colors : rampColors(gr.colors, 12);
+      body.push(...outer.map(d => `<path d="${d}" fill="${cols[0]}" fill-rule="${rule}"/>`));
+      for (let i = 1; i < cols.length; i++){
+        const d = fieldShapePath(s, { thresh: fieldTAt(s, -gr.depth * i / cols.length) });
+        if (d) body.push(`<path d="${d}" fill="${cols[i]}" fill-rule="evenodd"/>`);
+      }
+    } else if (gr){                                        // сверху вниз / слева направо: нативный linearGradient по габариту поля
+      const b = shapeBBox(s), N = gr.colors.length;                       // тот же габарит, что в шейдере
+      const [x1, y1, x2, y2] = gr.mode === "v" ? [b.x, b.y, b.x, b.y + b.h] : [b.x, b.y, b.x + b.w, b.y];
+      const stops = gr.bands
+        ? gr.colors.flatMap((c, i) => [`<stop offset="${fxv(i / N * 100)}%" stop-color="${c}"/>`, `<stop offset="${fxv((i + 1) / N * 100)}%" stop-color="${c}"/>`])
+        : gr.colors.map((c, i) => `<stop offset="${fxv(i / (N - 1) * 100)}%" stop-color="${c}"/>`);
+      defs.push(`<linearGradient id="grad${si}" gradientUnits="userSpaceOnUse" x1="${fxv(x1)}" y1="${fxv(y1)}" x2="${fxv(x2)}" y2="${fxv(y2)}">${stops.join("")}</linearGradient>`);
+      body.push(...outer.map(d => `<path d="${d}" fill="url(#grad${si})" fill-rule="${rule}"/>`));
+    } else {
+      body.push(...outer.map(d => `<path d="${d}" fill="${s.color}" fill-rule="${rule}"/>`));
     }
-    parts.push(`<g fill="${s.color}">`);
-    for (const dStr of sub) parts.push(`  <path d="${dStr}" fill-rule="nonzero"/>`);
-    parts.push(`</g>`);
+    if (body.length === 1 && !gAttr) parts.push(body[0]);
+    else parts.push(`<g${gAttr}>`, ...body.map(x => "  " + x), `</g>`);
   });
+  if (defs.length) parts.splice(1, 0, `<defs>`, ...defs.map(x => "  " + x), `</defs>`);
   if (showDots){
     const g = gridGeom();
     for (let r = 0; r < g.rows; r++) for (let c = 0; c < rowCols(g, r); c++){
@@ -1297,7 +1494,7 @@ function storeProfiles(p){ try { localStorage.setItem(PROF_KEY, JSON.stringify(p
 function currentProfile(name){
   const s = shapes[activeIdx] || DEFAULT_PLASTICS;
   const p = { name, W, H, gridS, dotR, gridM, stagger, manual, manCols, manRows, showDots, R: s.R, goo: s.goo, jit: s.jit };
-  if (typeof styleId !== "undefined"){ p.styleId = styleId; p.breath = breath; }
+  if (typeof styleId !== "undefined"){ p.styleId = styleId; p.breath = breath; if (s.glow) p.fx = cloneFx(s); }
   return p;
 }
 function applyProfile(p){
@@ -1312,6 +1509,7 @@ function applyProfile(p){
   if (typeof styleId !== "undefined"){
     if (p.styleId != null) styleId = +p.styleId;
     if (p.breath != null){ breath = !!p.breath; document.getElementById("chkBreath").checked = breath; }
+    if (p.fx && s) Object.assign(s, cloneFx(p.fx));
   }
   syncFormatUI(); syncGridUI();
   if (typeof syncFrame === "function") syncFrame();
@@ -1428,7 +1626,7 @@ function save(){
   try {
     const state = {
       activeIdx, showDots, W, H, gridS, dotR, gridM, styleId, breath, stagger, manual, manCols, manRows, svgMode, lines, activeKind, activeLine, bgColor, dotColor,
-      shapes: shapes.map(s => ({ dots: [...s.dots], color: s.color, R: s.R, goo: s.goo, jit: s.jit,
+      shapes: shapes.map(s => ({ dots: [...s.dots], color: s.color, R: s.R, goo: s.goo, jit: s.jit, glow: s.glow, blur: s.blur, grad: s.grad,
         photo: s.photo ? { src: s.photo.src, w: s.photo.w, h: s.photo.h, fit: s.photo.fit } : null }))
     };
     let json = JSON.stringify(state);
@@ -1453,7 +1651,7 @@ function load(){
     document.getElementById("svgMode").value = svgMode;
     shapes = (st.shapes || []).map(s => ({
       dots: new Set(s.dots || []), color: s.color,
-      R: s.R ?? 108, goo: s.goo ?? 0.5, jit: s.jit ?? 0.35,
+      R: s.R ?? 108, goo: s.goo ?? 0.5, jit: s.jit ?? 0.35, ...cloneFx(s),
       photo: s.photo && s.photo.src ? { src: s.photo.src, w: s.photo.w, h: s.photo.h, fit: s.photo.fit || "shape", img: null } : null
     }));
     shapes.forEach(loadPhotoImg);
