@@ -99,6 +99,7 @@
     <label>Фигуры</label>
     <div id="shapeList" style="display:flex; flex-direction:column; gap:6px;"></div>
     <button id="addShape">+ фигура</button>
+    <button id="fillAll">залить всю сетку</button>
     <div class="hint">Клик по точке — добавить/убрать из активной фигуры. Можно вести с зажатой кнопкой.</div>
   </div>
 
@@ -238,7 +239,7 @@ precision highp float;
 uniform vec2 uRes;
 uniform vec2 uView;
 uniform int uCount;
-uniform vec4 uDots[64];
+uniform sampler2D uDotsTex;
 uniform float uThresh;
 uniform vec3 uColA;
 uniform vec3 uColB;
@@ -251,11 +252,13 @@ out vec4 o;
 float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
 float field(vec2 p){
   float f = 0.0;
-  for (int i = 0; i < 64; i++){
-    if (i >= uCount) break;
-    vec2 q = p - uDots[i].xy;
-    float s = uDots[i].z;
-    f += uDots[i].w * exp(-dot(q,q) / (2.0*s*s));
+  for (int i = 0; i < uCount; i++){
+    vec4 d = texelFetch(uDotsTex, ivec2(i, 0), 0);
+    vec2 q = p - d.xy;
+    float r2 = dot(q, q);
+    float s2 = d.z * d.z;
+    if (r2 > s2 * 18.0) continue;      // 4.2 сигмы — дальше вклад нулевой
+    f += d.w * exp(-r2 / (2.0 * s2));
   }
   return f;
 }
@@ -331,6 +334,15 @@ function mkProgram(fs){
 const PRG_BG = mkProgram(FS_BG), PRG_SHAPE = mkProgram(FS_SHAPE), PRG_GRAIN = mkProgram(FS_GRAIN);
 const U = (prg, n) => gl.getUniformLocation(prg, n);
 
+const MAX_DOTS = 2048;
+const dotsTex = gl.createTexture();
+gl.bindTexture(gl.TEXTURE_2D, dotsTex);
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, MAX_DOTS, 1, 0, gl.RGBA, gl.FLOAT, null);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
 function shapeUniforms(shape, time){
   const g = gridGeom();
   const t = 0.28 + 0.50 * (shape.goo ?? 0.5);
@@ -340,7 +352,7 @@ function shapeUniforms(shape, time){
   for (const k of shape.dots){
     const [c, r] = k.split(",").map(Number);
     if (c < 0 || r < 0 || c >= g.cols || r >= g.rows) continue;
-    if (dots.length >= 64) break;
+    if (dots.length >= MAX_DOTS * 4) break;
     const [x, y] = nodeXY(c, r);
     const seed = hash01(c * 31 + r * 7);
     let wgt = 1 + 0.12 * (shape.jit ?? 0.35) * (seed * 2 - 1);
@@ -357,8 +369,10 @@ function drawShapePass(shape, u, colA, colB, style, off, alphaMul, flat){
   gl.uniform2f(U(PRG_SHAPE, "uRes"), glCanvas.width, glCanvas.height);
   gl.uniform2f(U(PRG_SHAPE, "uView"), W, H);
   gl.uniform1i(U(PRG_SHAPE, "uCount"), u.count);
-  const arr = new Float32Array(64 * 4); arr.set(u.dots);
-  gl.uniform4fv(U(PRG_SHAPE, "uDots"), arr);
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, dotsTex);
+  gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, u.count, 1, gl.RGBA, gl.FLOAT, new Float32Array(u.dots));
+  gl.uniform1i(U(PRG_SHAPE, "uDotsTex"), 0);
   gl.uniform1f(U(PRG_SHAPE, "uThresh"), u.thresh);
   gl.uniform3fv(U(PRG_SHAPE, "uColA"), colA);
   gl.uniform3fv(U(PRG_SHAPE, "uColB"), colB);
@@ -529,6 +543,12 @@ function applyDot(k){
 document.getElementById("addShape").addEventListener("click", () => {
   shapes.push(defaultShape(shapes.length));
   activeIdx = shapes.length - 1;
+  render();
+});
+document.getElementById("fillAll").addEventListener("click", () => {
+  const g = gridGeom();
+  const s = shapes[activeIdx];
+  for (let r = 0; r < g.rows; r++) for (let c = 0; c < g.cols; c++) s.dots.add(c + "," + r);
   render();
 });
 document.querySelectorAll(".swatches .sw").forEach(sw => {
