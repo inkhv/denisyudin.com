@@ -137,6 +137,10 @@
     <div class="slider-row"><label>Шаг</label><input type="range" id="rStep" min="60" max="400" value="200"><output id="oStep">200</output></div>
     <div class="slider-row"><label>Точка</label><input type="range" id="rDot" min="4" max="60" value="27"><output id="oDot">27</output></div>
     <div class="slider-row"><label>Отступ</label><input type="range" id="rMar" min="0" max="400" value="140"><output id="oMar">140</output></div>
+    <select id="gridMode">
+      <option value="square">ритм: прямая сетка</option>
+      <option value="stagger">ритм: со сдвигом в полшага</option>
+    </select>
     <div class="hint" id="gridInfo">9 × 5</div>
     <label class="check-row"><input type="checkbox" id="chkDots" checked> показывать чёрные точки</label>
   </div>
@@ -161,6 +165,7 @@
 /* ===== state ===== */
 let W = 1920, H = 1080;
 let gridS = 200;    // шаг сетки
+let stagger = false; // ритм: false = прямая сетка, true = каждый второй ряд сдвинут на полшага, ряды вдвое чаще
 let dotR = 27;      // радиус чёрной точки
 let gridM = 140;    // отступ сетки от края формата
 let showDots = true;
@@ -179,15 +184,20 @@ function defaultShape(i){
    Кол-во точек считается от формата: сколько шагов помещается внутри отступов.
    Остаток распределяется поровну — сетка всегда центрирована. */
 function gridGeom(){
+  const pitchY = stagger ? gridS / 2 : gridS;                 // со сдвигом: ряды вдвое чаще
   const cols = Math.max(1, Math.floor((W - 2 * gridM) / gridS) + 1);
-  const rows = Math.max(1, Math.floor((H - 2 * gridM) / gridS) + 1);
+  const rows = Math.max(1, Math.floor((H - 2 * gridM) / pitchY) + 1);
   const ox = gridM + (W - 2 * gridM - (cols - 1) * gridS) / 2;
-  const oy = gridM + (H - 2 * gridM - (rows - 1) * gridS) / 2;
-  return { cols, rows, ox, oy };
+  const oy = gridM + (H - 2 * gridM - (rows - 1) * pitchY) / 2;
+  // сдвинутый ряд: влезает ли его последняя точка в отступ
+  const colsOdd = stagger ? ((ox + (cols - 0.5) * gridS <= W - gridM + 0.01) ? cols : cols - 1) : cols;
+  return { cols, rows, ox, oy, pitchY, colsOdd };
 }
+function rowCols(g, r){ return (stagger && (r % 2 === 1)) ? g.colsOdd : g.cols; }
 function nodeXY(c, r){
   const g = gridGeom();
-  return [ g.ox + c * gridS, g.oy + r * gridS ];
+  const shift = (stagger && (r % 2 === 1)) ? gridS / 2 : 0;
+  return [ g.ox + c * gridS + shift, g.oy + r * g.pitchY ];
 }
 
 /* ===== metaball: безье-архитектура =====
@@ -264,7 +274,7 @@ function shapePathD(shape){
   const key = new Map();
   for (const k of shape.dots){
     const [c, r] = k.split(",").map(Number);
-    if (c < 0 || r < 0 || c >= g.cols || r >= g.rows) continue;   // вне текущей сетки — не рисуем, но помним
+    if (c < 0 || r < 0 || r >= g.rows || c >= rowCols(g, r)) continue;   // вне текущей сетки — не рисуем, но помним
     const [x, y] = nodeXY(c, r);
     const p = { c, r, x, y, rad: R * (1 + 0.12 * jit * (hash01(c * 31 + r * 7) * 2 - 1)) };
     pts.push(p);
@@ -275,17 +285,17 @@ function shapePathD(shape){
   for (const p of pts) d.push(circlePath(p.x, p.y, p.rad));
   if (goo > 0){
     const v = 0.08 + 0.72 * goo;
+    const near = (a, b) => Math.hypot(a.x - b.x, a.y - b.y) <= gridS * 1.5;   // соседи по расстоянию: орто, диагональ, сдвинутые ряды
     for (let i = 0; i < pts.length; i++){
       for (let j = i + 1; j < pts.length; j++){
         const a = pts[i], b = pts[j];
-        if (Math.abs(a.c - b.c) > 1 || Math.abs(a.r - b.r) > 1) continue;   // мосты только между соседями
+        if (!near(a, b)) continue;   // мосты только между соседями
         const bp = bridgePath(a, b, v);
         if (bp) d.push(bp);
       }
     }
     // ядро кластера: каждая тройка попарно-соседних узлов заливается треугольником центров —
     // закрывает карманы тройных стыков (полный 2×2 покрывается четырьмя треугольниками)
-    const near = (a, b) => Math.abs(a.c - b.c) <= 1 && Math.abs(a.r - b.r) <= 1;
     for (let i = 0; i < pts.length; i++)
       for (let j = i + 1; j < pts.length; j++){
         if (!near(pts[i], pts[j])) continue;
@@ -311,7 +321,7 @@ function render(){
   document.getElementById("frameWrap").style.maxWidth = `calc((100vh - 64px) * ${(W / H).toFixed(4)})`;
   document.getElementById("expSize").textContent = W + "×" + H;
   const g = gridGeom();
-  document.getElementById("gridInfo").textContent = `сетка ${g.cols} × ${g.rows}`;
+  document.getElementById("gridInfo").textContent = `сетка ${g.cols} × ${g.rows}` + (stagger ? " · сдвиг" : "");
   svg.innerHTML = "";
   const bg = document.createElementNS(NS, "rect");
   bg.setAttribute("width", W); bg.setAttribute("height", H); bg.setAttribute("fill", "#FFFFFF");
@@ -333,7 +343,7 @@ function render(){
 
   const act = shapes[activeIdx];
   for (let r = 0; r < g.rows; r++){
-    for (let c = 0; c < g.cols; c++){
+    for (let c = 0; c < rowCols(g, r); c++){
       const [x, y] = nodeXY(c, r);
       const k = c + "," + r;
       if (act && act.dots.has(k)){
@@ -354,7 +364,7 @@ function render(){
         svg.appendChild(dot);
       }
       const hit = document.createElementNS(NS, "circle");
-      hit.setAttribute("cx", x); hit.setAttribute("cy", y); hit.setAttribute("r", gridS * 0.42);
+      hit.setAttribute("cx", x); hit.setAttribute("cy", y); hit.setAttribute("r", gridS * (stagger ? 0.3 : 0.42));
       hit.setAttribute("fill", "transparent");
       hit.setAttribute("class", "dot-hit");
       hit.dataset.k = k;
@@ -433,6 +443,7 @@ bindSlider("rJ", "oJ", v => { if (shapes[activeIdx]) shapes[activeIdx].jit = v /
 bindSlider("rStep", "oStep", v => gridS = v);
 bindSlider("rDot", "oDot", v => dotR = v);
 bindSlider("rMar", "oMar", v => gridM = v);
+document.getElementById("gridMode").addEventListener("change", e => { stagger = e.target.value === "stagger"; render(); });
 
 function syncPlasticsUI(){
   const s = shapes[activeIdx];
@@ -448,6 +459,7 @@ function syncGridUI(){
   document.getElementById("rStep").value = gridS; document.getElementById("oStep").textContent = gridS;
   document.getElementById("rDot").value = dotR;   document.getElementById("oDot").textContent = dotR;
   document.getElementById("rMar").value = gridM;  document.getElementById("oMar").textContent = gridM;
+  document.getElementById("gridMode").value = stagger ? "stagger" : "square";
 }
 
 function applyFormat(w, h){
@@ -494,7 +506,7 @@ function buildExportSVG(){
   }
   if (showDots){
     const g = gridGeom();
-    for (let r = 0; r < g.rows; r++) for (let c = 0; c < g.cols; c++){
+    for (let r = 0; r < g.rows; r++) for (let c = 0; c < rowCols(g, r); c++){
       const [x, y] = nodeXY(c, r);
       parts.push(`<circle cx="${fx(x)}" cy="${fx(y)}" r="${dotR}" fill="#0A0A0A"/>`);
     }
@@ -551,7 +563,7 @@ document.getElementById("btnPng").addEventListener("click", () => {
 function save(){
   try {
     localStorage.setItem("metaball-konstruktor", JSON.stringify({
-      activeIdx, showDots, W, H, gridS, dotR, gridM,
+      activeIdx, showDots, W, H, gridS, dotR, gridM, stagger,
       shapes: shapes.map(s => ({ dots: [...s.dots], color: s.color, R: s.R, goo: s.goo, jit: s.jit }))
     }));
   } catch {}
@@ -563,6 +575,7 @@ function load(){
     W = Math.max(200, Math.min(4096, st.W || 1920));
     H = Math.max(200, Math.min(4096, st.H || 1080));
     gridS = st.gridS || 200; dotR = st.dotR || 27; gridM = st.gridM ?? 140;
+    stagger = !!st.stagger;
     showDots = st.showDots !== false;
     document.getElementById("chkDots").checked = showDots;
     const legacy = st.params || DEFAULT_PLASTICS;
