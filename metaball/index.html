@@ -89,7 +89,7 @@
 </div></div>
 
 <div id="panel">
-  <h1>Точки + метабол <span>· конструктор · сборка 2026-08-21.14</span></h1>
+  <h1>Точки + метабол <span>· конструктор · сборка 2026-08-21.15</span></h1>
 
   <div class="sec">
     <label>Фигуры</label>
@@ -122,13 +122,13 @@
       <div class="sw" data-c="#0A0A0A" style="background:#0A0A0A"></div>
       <input type="color" id="lineColor" value="#8BE23C" title="свой цвет">
     </div>
-    <div class="slider-row"><label>Толщина</label><input type="range" id="rLW" min="2" max="40" value="8"><output id="oLW">8</output></div>
+    <div class="slider-row"><label>Толщина</label><input type="range" id="rLW" min="2" max="190" value="8"><output id="oLW">8</output></div>
     <select id="lineStyle">
       <option value="line">линия сквозь точки — поверх</option>
       <option value="thread">нить: огибает точки кольцами</option>
     </select>
     <label class="check-row"><input type="checkbox" id="chkClosed"> замкнуть линию</label>
-    <div class="hint">Когда активна линия, клик по точке добавляет её в маршрут (можно вести с зажатой кнопкой, точку можно проходить повторно). Backspace убирает последнюю.</div>
+    <div class="hint">Когда активна линия, клик по точке добавляет её в маршрут (можно вести с зажатой кнопкой, точку можно проходить повторно). Backspace убирает последнюю. Толщина — до 95 % шага сетки (потолок следует за шагом).</div>
   </div>
 
   <div class="sec">
@@ -583,7 +583,12 @@ function drawLinesCanvas(ctx, k){
     if (ln.style === "thread") for (const [x, y] of pts){ ctx.beginPath(); ctx.arc(x * k, y * k, ringR * k, 0, Math.PI * 2); ctx.stroke(); }
   }
 }
+function lineMaxWidth(){                                  // потолок толщины линии — 95 % расстояния между соседними точками
+  const g = gridGeom();
+  return Math.max(40, Math.round(Math.min(g.sx || Infinity, (stagger ? g.syFull : g.sy) || Infinity) * 0.95));
+}
 function renderLinesPanel(){
+  const rLW = document.getElementById("rLW"); rLW.max = lineMaxWidth();
   const list = document.getElementById("lineList");
   list.innerHTML = "";
   lines.forEach((ln, i) => {
