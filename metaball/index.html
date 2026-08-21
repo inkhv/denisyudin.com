@@ -66,6 +66,7 @@
   .check-row{display:flex; align-items:center; gap:7px; font-size:12px; cursor:pointer; user-select:none;}
   .check-row input{accent-color:var(--ui-text);}
   .btns{display:flex; flex-direction:column; gap:7px;}
+  button.dim{opacity:.4;}
   #toast{
     position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(80px);
     background:var(--ui-text); color:#fff; font-size:12.5px; font-weight:600;
@@ -88,12 +89,21 @@
 </div></div>
 
 <div id="panel">
-  <h1>Точки + метабол <span>· конструктор · сборка 2026-08-20.10</span></h1>
+  <h1>Точки + метабол <span>· конструктор · сборка 2026-08-20.11</span></h1>
 
   <div class="sec">
     <label>Фигуры</label>
     <div id="shapeList" style="display:flex; flex-direction:column; gap:6px;"></div>
     <button id="addShape">+ фигура</button>
+    <div class="grid-row" style="gap:6px">
+      <button id="photoBtn" style="flex:1">Фото в фигуру…</button>
+      <button id="photoClear" style="flex:1">Убрать фото</button>
+    </div>
+    <select id="photoFit">
+      <option value="shape">фото: вписать в фигуру (cover)</option>
+      <option value="canvas">фото: на весь холст (cover)</option>
+    </select>
+    <input type="file" id="photoFile" accept="image/*" style="display:none">
     <div class="hint">Клик по точке — добавить/убрать из активной фигуры. Можно вести с зажатой кнопкой.</div>
   </div>
 
@@ -137,6 +147,29 @@
     <div class="slider-row"><label>Жирность</label><input type="range" id="rR" min="20" max="300" value="108"><output id="oR">108</output></div>
     <div class="slider-row"><label>Слипание</label><input type="range" id="rG" min="0" max="100" value="50"><output id="oG">50</output></div>
     <div class="slider-row"><label>Органика</label><input type="range" id="rJ" min="0" max="100" value="35"><output id="oJ">35</output></div>
+  </div>
+
+  <div class="sec">
+    <label>Фон и точки</label>
+    <div class="swatches" id="bgSwatches">
+      <div class="sw" data-c="auto" style="background:linear-gradient(135deg,#F7F6F3 50%,#1A1A1C 50%)" title="авто"></div>
+      <div class="sw" data-c="#FFFFFF" style="background:#FFFFFF"></div>
+      <div class="sw" data-c="#F7F6F3" style="background:#F7F6F3"></div>
+      <div class="sw" data-c="#D8D8D8" style="background:#D8D8D8"></div>
+      <div class="sw" data-c="#130A66" style="background:#130A66"></div>
+      <div class="sw" data-c="#E1495F" style="background:#E1495F"></div>
+      <div class="sw" data-c="#0A0A0A" style="background:#0A0A0A"></div>
+      <input type="color" id="bgColorInp" value="#FFFFFF" title="свой цвет фона">
+    </div>
+    <div class="grid-row" style="gap:8px">
+      <span class="hint" style="width:52px">точки</span>
+      <div class="swatches" id="dotSwatches">
+        <div class="sw" data-c="#0A0A0A" style="background:#0A0A0A"></div>
+        <div class="sw" data-c="#FFFFFF" style="background:#FFFFFF"></div>
+        <div class="sw" data-c="#D8D8D8" style="background:#D8D8D8"></div>
+        <input type="color" id="dotColorInp" value="#0A0A0A" title="свой цвет точек">
+      </div>
+    </div>
   </div>
 
   <div class="sec">
@@ -212,6 +245,7 @@ let gridS = 200;    // шаг сетки
 let stagger = false; // ритм: false = прямая сетка, true = каждый второй ряд сдвинут на полшага, ряды вдвое чаще
 let manual = false, manCols = 9, manRows = 5;   // ручное количество точек (иначе — от шага)
 let lines = [], activeKind = "shape", activeLine = 0;   // линии-нити: {nodes:[\"c,r\"...], color, width, closed, style}
+let bgColor = null, dotColor = "#0A0A0A";              // фон (null = авто) и цвет чёрных точек
 let dotR = 27;      // радиус чёрной точки
 let gridM = 140;    // отступ сетки от края формата
 let showDots = true;
@@ -384,12 +418,26 @@ function render(){
   document.getElementById("gridInfo").textContent = `сетка ${g.cols} × ${g.rows}` + (stagger ? " · сдвиг" : "") + (manual ? ` · шаг ${Math.round(g.sx)}×${Math.round(g.sy)}` : "");
   svg.innerHTML = "";
   const bg = document.createElementNS(NS, "rect");
-  bg.setAttribute("width", W); bg.setAttribute("height", H); bg.setAttribute("fill", "#FFFFFF");
+  bg.setAttribute("width", W); bg.setAttribute("height", H); bg.setAttribute("fill", effBg() || "#FFFFFF");
   svg.appendChild(bg);
 
-  for (const s of shapes){
+  let defs = null;
+  shapes.forEach((s, si) => {
     const parts = shapePathD(s);
-    if (!parts || !parts.length) continue;
+    if (!parts || !parts.length) return;
+    const rect = s.photo ? photoRect(s) : null;
+    if (s.photo && rect){                                  // фото, обрезанное контуром фигуры
+      if (!defs){ defs = document.createElementNS(NS, "defs"); svg.appendChild(defs); }
+      const cp = document.createElementNS(NS, "clipPath"); cp.setAttribute("id", "clip" + si);
+      for (const dStr of parts){ const p = document.createElementNS(NS, "path"); p.setAttribute("d", dStr); cp.appendChild(p); }
+      defs.appendChild(cp);
+      const im = document.createElementNS(NS, "image");
+      im.setAttribute("href", s.photo.src);
+      im.setAttribute("x", rect.x); im.setAttribute("y", rect.y); im.setAttribute("width", rect.w); im.setAttribute("height", rect.h);
+      im.setAttribute("preserveAspectRatio", "xMidYMid slice"); im.setAttribute("clip-path", `url(#clip${si})`);
+      svg.appendChild(im);
+      return;
+    }
     const grp = document.createElementNS(NS, "g");
     grp.setAttribute("fill", s.color);
     for (const dStr of parts){
@@ -399,7 +447,7 @@ function render(){
       grp.appendChild(p);
     }
     svg.appendChild(grp);
-  }
+  });
 
   const act = shapes[activeIdx];
   for (let r = 0; r < g.rows; r++){
@@ -419,7 +467,7 @@ function render(){
       if (showDots){
         const dot = document.createElementNS(NS, "circle");
         dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", dotR);
-        dot.setAttribute("fill", "#0A0A0A");
+        dot.setAttribute("fill", dotColor);
         dot.setAttribute("class", "dot");
         svg.appendChild(dot);
       }
@@ -461,6 +509,7 @@ function renderPanel(){
   syncPlasticsUI();
   syncGridUI();
   renderLinesPanel();
+  syncBgUI();
 }
 
 /* ===== линии · нить через точки (поверх фигур, под точками) ===== */
@@ -689,20 +738,27 @@ document.getElementById("btnClear").addEventListener("click", () => {
 function buildExportSVG(){
   const parts = [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`,
-    `<rect width="${W}" height="${H}" fill="#FFFFFF"/>`
+    `<rect width="${W}" height="${H}" fill="${effBg() || "#FFFFFF"}"/>`
   ];
-  for (const s of shapes){
+  shapes.forEach((s, si) => {
     const sub = shapePathD(s);
-    if (!sub || !sub.length) continue;
+    if (!sub || !sub.length) return;
+    if (s.photo && photoRect(s)){
+      parts.push(`<clipPath id="clip${si}">`);
+      for (const dStr of sub) parts.push(`  <path d="${dStr}"/>`);
+      parts.push(`</clipPath>`);
+      parts.push(photoImageSVG(s, "clip" + si));
+      return;
+    }
     parts.push(`<g fill="${s.color}">`);
     for (const dStr of sub) parts.push(`  <path d="${dStr}" fill-rule="nonzero"/>`);
     parts.push(`</g>`);
-  }
+  });
   if (showDots){
     const g = gridGeom();
     for (let r = 0; r < g.rows; r++) for (let c = 0; c < rowCols(g, r); c++){
       const [x, y] = nodeXY(c, r);
-      parts.push(`<circle cx="${fx(x)}" cy="${fx(y)}" r="${dotR}" fill="#0A0A0A"/>`);
+      parts.push(`<circle cx="${fx(x)}" cy="${fx(y)}" r="${dotR}" fill="${dotColor}"/>`);
     }
   }
   parts.push(...lineSVGParts());                          // линии — поверх всего, сквозь точки
@@ -831,13 +887,73 @@ document.getElementById("profPaste").addEventListener("click", () => {
 });
 renderProfileList();
 
+/* ===== фон, цвет точек, фото в фигуре ===== */
+function effBg(){ return bgColor || (typeof STYLES !== "undefined" ? null : "#FFFFFF"); }
+document.querySelectorAll("#bgSwatches .sw").forEach(sw => sw.addEventListener("click", () => { bgColor = sw.dataset.c === "auto" ? null : sw.dataset.c; render(); }));
+document.getElementById("bgColorInp").addEventListener("input", e => { bgColor = e.target.value; render(); });
+document.querySelectorAll("#dotSwatches .sw").forEach(sw => sw.addEventListener("click", () => { dotColor = sw.dataset.c; render(); }));
+document.getElementById("dotColorInp").addEventListener("input", e => { dotColor = e.target.value; render(); });
+function syncBgUI(){
+  document.querySelectorAll("#bgSwatches .sw").forEach(sw => sw.classList.toggle("sel", (sw.dataset.c === "auto" && !bgColor) || (!!bgColor && sw.dataset.c.toUpperCase() === bgColor.toUpperCase())));
+  document.querySelectorAll("#dotSwatches .sw").forEach(sw => sw.classList.toggle("sel", sw.dataset.c.toUpperCase() === dotColor.toUpperCase()));
+  const s = shapes[activeIdx];
+  document.getElementById("photoFit").value = s && s.photo ? s.photo.fit : "shape";
+  document.getElementById("photoClear").classList.toggle("dim", !(s && s.photo));
+  document.getElementById("photoBtn").textContent = s && s.photo ? "Заменить фото…" : "Фото в фигуру…";
+}
+function loadPhotoImg(s){
+  if (!s.photo || s.photo.img) return;
+  const img = new Image();
+  img.onload = () => { s.photo.img = img; s._tex = null; if (typeof needsRender !== "undefined") needsRender = true; };
+  img.src = s.photo.src;
+}
+document.getElementById("photoBtn").addEventListener("click", () => { activeKind = "shape"; document.getElementById("photoFile").click(); });
+document.getElementById("photoFile").addEventListener("change", e => {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      const s = shapes[activeIdx]; if (!s) return;
+      s.photo = { src: reader.result, w: img.naturalWidth, h: img.naturalHeight, fit: document.getElementById("photoFit").value, img };
+      s._tex = null; render(); toast("Фото вставлено в активную фигуру");
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+  e.target.value = "";
+});
+document.getElementById("photoClear").addEventListener("click", () => { const s = shapes[activeIdx]; if (s && s.photo){ s.photo = null; s._tex = null; render(); } });
+document.getElementById("photoFit").addEventListener("change", e => { const s = shapes[activeIdx]; if (s && s.photo){ s.photo.fit = e.target.value; render(); } });
+function shapeBBox(shape){
+  const g = gridGeom(); const R = (shape.R ?? DEFAULT_PLASTICS.R) * 1.15;
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for (const k of shape.dots){
+    const [c, r] = k.split(",").map(Number);
+    if (c < 0 || r < 0 || r >= g.rows || c >= rowCols(g, r)) continue;
+    const [x, y] = nodeXY(c, r);
+    x0 = Math.min(x0, x - R); y0 = Math.min(y0, y - R); x1 = Math.max(x1, x + R); y1 = Math.max(y1, y + R);
+  }
+  if (x0 === Infinity) return null;
+  return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+}
+function photoRect(shape){ return shape.photo && shape.photo.fit === "canvas" ? { x: 0, y: 0, w: W, h: H } : shapeBBox(shape); }
+function photoImageSVG(shape, id){
+  const r = photoRect(shape); if (!r) return "";
+  return `<image href="${shape.photo.src}" x="${Math.round(r.x*10)/10}" y="${Math.round(r.y*10)/10}" width="${Math.round(r.w*10)/10}" height="${Math.round(r.h*10)/10}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})"/>`;
+}
+
 /* ===== persistence ===== */
 function save(){
   try {
-    localStorage.setItem("metaball-konstruktor", JSON.stringify({
-      activeIdx, showDots, W, H, gridS, dotR, gridM, stagger, manual, manCols, manRows, lines, activeKind, activeLine,
-      shapes: shapes.map(s => ({ dots: [...s.dots], color: s.color, R: s.R, goo: s.goo, jit: s.jit }))
-    }));
+    const state = {
+      activeIdx, showDots, W, H, gridS, dotR, gridM, stagger, manual, manCols, manRows, lines, activeKind, activeLine, bgColor, dotColor,
+      shapes: shapes.map(s => ({ dots: [...s.dots], color: s.color, R: s.R, goo: s.goo, jit: s.jit,
+        photo: s.photo ? { src: s.photo.src, w: s.photo.w, h: s.photo.h, fit: s.photo.fit } : null }))
+    };
+    let json = JSON.stringify(state);
+    if (json.length > 4500000){ state.shapes.forEach(s => s.photo = null); json = JSON.stringify(state); }   // фото не влезает в localStorage — сохраняем без него
+    localStorage.setItem("metaball-konstruktor", json);
   } catch {}
 }
 function load(){
@@ -848,6 +964,7 @@ function load(){
     H = Math.max(200, Math.min(4096, st.H || 1080));
     gridS = st.gridS || 200; dotR = st.dotR || 27; gridM = st.gridM ?? 140;
     stagger = !!st.stagger;
+    bgColor = st.bgColor || null; dotColor = st.dotColor || "#0A0A0A";
     manual = !!st.manual; manCols = st.manCols || 9; manRows = st.manRows || 5;
     showDots = st.showDots !== false;
     document.getElementById("chkDots").checked = showDots;
@@ -856,8 +973,10 @@ function load(){
     shapes = (st.shapes || []).map(s => ({
       dots: new Set((s.dots || []).map(d => typeof d === "number" ? (d % oldCols) + "," + Math.floor(d / oldCols) : d)),
       color: s.color,
-      R: s.R ?? legacy.R, goo: s.goo ?? legacy.goo, jit: s.jit ?? legacy.jit
+      R: s.R ?? legacy.R, goo: s.goo ?? legacy.goo, jit: s.jit ?? legacy.jit,
+      photo: s.photo && s.photo.src ? { src: s.photo.src, w: s.photo.w, h: s.photo.h, fit: s.photo.fit || "shape", img: null } : null
     }));
+    shapes.forEach(loadPhotoImg);
     activeIdx = Math.min(st.activeIdx || 0, shapes.length - 1);
     lines = (st.lines || []).map(l => ({ nodes: (l.nodes || []).slice(), color: l.color || "#8BE23C", width: +l.width || 8, closed: !!l.closed, style: l.style === "thread" ? "thread" : "line" }));
     activeLine = Math.min(st.activeLine || 0, Math.max(0, lines.length - 1));
