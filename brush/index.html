@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="theme-color" content="#070707"/>
+  <title>Liquid Light Brush — Denis Yudin</title>
+  <meta name="description" content="Интерактивная жидкая светящаяся кисть — рисуйте мышью, стилусом или пальцем."/>
+  <meta property="og:title" content="Liquid Light Brush — Denis Yudin"/>
+  <meta property="og:description" content="Интерактивная жидкая светящаяся кисть."/>
+  <link href="../assets/694eb3c01c94deb52f44b88a_p10 0062_24.png" rel="shortcut icon" type="image/x-icon"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:#070707}
+    body{color:#f6f4ef;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overscroll-behavior:none}
+    button,input{font:inherit}
+    button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid #b9f5ff;outline-offset:2px}
+    .app-shell{min-height:100svh;padding:16px;background:radial-gradient(circle at 50% 0%,#181818 0,#070707 58%)}
+    .drawing-app{width:min(1440px,100%);min-height:calc(100svh - 32px);margin:0 auto;overflow:hidden;border:1px solid rgba(255,255,255,.13);border-radius:24px;background:#000;box-shadow:0 22px 70px rgba(0,0,0,.38)}
+    .toolbar{min-height:72px;display:flex;align-items:center;gap:12px;padding:13px 14px 13px 20px;border-bottom:1px solid rgba(255,255,255,.13);background:rgba(20,20,20,.96)}
+    .brand{margin-right:auto;min-width:148px}
+    .brand strong{display:block;font-size:14px;letter-spacing:-.01em}
+    .brand span{display:block;margin-top:3px;color:#8c8a86;font-size:11px}
+    .size-control{display:flex;align-items:center;gap:9px}
+    .size-control span{color:#8c8a86;font-size:11px}
+    .size-control input{width:112px;accent-color:#fff}
+    button{height:40px;padding:0 14px;border:1px solid rgba(255,255,255,.13);border-radius:12px;background:#222;color:#f6f4ef;font-size:12px;cursor:pointer}
+    .toolbar>button:hover{background:#2c2c2c}
+    .mode-control{display:flex;gap:4px;padding:3px;border:1px solid rgba(255,255,255,.13);border-radius:13px}
+    .mode-control button{height:32px;padding:0 11px;border:0;background:transparent;color:#8c8a86}
+    .mode-control button.active{background:#f4f1eb;color:#111}
+    .home-link{display:grid;place-items:center;width:40px;height:40px;border:1px solid rgba(255,255,255,.13);border-radius:12px;color:#aaa;text-decoration:none;font-size:15px;transition:background .2s,color .2s}
+    .home-link:hover{background:#2c2c2c;color:#fff}
+    .stage{position:relative;min-height:calc(100svh - 105px);background:#000;touch-action:none}
+    canvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair;touch-action:none}
+    .hint{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,.46);font-size:13px;pointer-events:none;transition:opacity .3s ease}
+    .hint.hidden{opacity:0}
+    .brush-cursor{position:absolute;width:46px;height:46px;border:1px solid rgba(255,255,255,.52);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;mix-blend-mode:difference;transition:width .12s,height .12s,opacity .12s}
+    @media(max-width:680px){
+      .app-shell{padding:0}
+      .drawing-app{min-height:100svh;border:0;border-radius:0}
+      .toolbar{min-height:0;flex-wrap:wrap;padding:14px}
+      .brand{flex:1 1 calc(100% - 56px)}
+      .size-control{flex:1 1 100%;order:3}
+      .size-control input{width:auto;flex:1}
+      .mode-control{order:4}
+      .toolbar>button{order:5;padding:0 12px}
+      .home-link{order:2}
+      .stage{min-height:calc(100svh - 194px)}
+      .brush-cursor{display:none}
+    }
+    @media(prefers-reduced-motion:reduce){.hint,.brush-cursor{transition:none}}
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <section class="drawing-app" aria-label="Liquid Light Brush">
+      <header class="toolbar">
+        <div class="brand"><strong>Liquid Light Brush</strong><span>рисуйте мышью или пальцем</span></div>
+        <label class="size-control"><span>Размер</span><input id="size" type="range" min="18" max="82" value="46" aria-label="Размер кисти"/></label>
+        <div class="mode-control" aria-label="Цвет кисти">
+          <button type="button" data-mode="prism" class="active" aria-pressed="true">Призма</button>
+          <button type="button" data-mode="pearl" aria-pressed="false">Перламутр</button>
+        </div>
+        <button type="button" id="undo" aria-label="Отменить последний штрих">Отменить</button>
+        <button type="button" id="clear">Очистить</button>
+        <a class="home-link" href="../" aria-label="На главную denisyudin.com">↗</a>
+      </header>
+      <div class="stage" id="stage">
+        <canvas id="canvas" aria-label="Интерактивный холст с жидкой светящейся кистью"></canvas>
+        <div class="hint" id="hint">Зажмите и проведите</div>
+        <div class="brush-cursor" id="brush-cursor" aria-hidden="true"></div>
+      </div>
+    </section>
+  </main>
+  <script>
+    (()=>{
+      const stage=document.getElementById('stage');
+      const canvas=document.getElementById('canvas');
+      const ctx=canvas.getContext('2d');
+      const hint=document.getElementById('hint');
+      const cursor=document.getElementById('brush-cursor');
+      const sizeInput=document.getElementById('size');
+      const strokes=[];
+      let active=null;
+      let mode='prism';
+      let dpr=Math.min(2,window.devicePixelRatio||1);
+      const start=performance.now();
+      const palettes={
+        prism:['#ff72c6','#75e5ff','#fff0a8','#9c8cff','#ff9b75','#a3ffb8'],
+        pearl:['#fffdf8','#d9f7ff','#ffe1f3','#ece0ff','#fff2cb']
+      };
+
+      function resize(){
+        const rect=stage.getBoundingClientRect();
+        dpr=Math.min(2,window.devicePixelRatio||1);
+        canvas.width=Math.max(1,Math.round(rect.width*dpr));
+        canvas.height=Math.max(1,Math.round(rect.height*dpr));
+      }
+
+      function pointFromEvent(event){
+        const rect=canvas.getBoundingClientRect();
+        return{x:event.clientX-rect.left,y:event.clientY-rect.top,pressure:event.pressure||.55,time:performance.now()};
+      }
+
+      function addPoint(stroke,point){
+        const previous=stroke.points[stroke.points.length-1];
+        if(!previous){stroke.points.push(point);return}
+        const distance=Math.hypot(point.x-previous.x,point.y-previous.y);
+        const step=Math.max(5,stroke.size*.19);
+        const count=Math.floor(distance/step);
+        for(let index=1;index<=count;index++){
+          const ratio=index/(count+1);
+          stroke.points.push({
+            x:previous.x+(point.x-previous.x)*ratio,
+            y:previous.y+(point.y-previous.y)*ratio,
+            pressure:previous.pressure+(point.pressure-previous.pressure)*ratio,
+            time:previous.time+(point.time-previous.time)*ratio
+          });
+        }
+        stroke.points.push(point);
+      }
+
+      function begin(event){
+        canvas.setPointerCapture(event.pointerId);
+        active={mode,size:Number(sizeInput.value),seed:Math.random()*999,points:[]};
+        addPoint(active,pointFromEvent(event));
+        strokes.push(active);
+        hint.classList.add('hidden');
+      }
+
+      function move(event){
+        const rect=stage.getBoundingClientRect();
+        cursor.style.left=(event.clientX-rect.left)+'px';
+        cursor.style.top=(event.clientY-rect.top)+'px';
+        cursor.style.opacity='1';
+        if(active)addPoint(active,pointFromEvent(event));
+      }
+
+      function end(){active=null}
+
+      function orb(x,y,radius,color,glow,alpha){
+        const gradient=ctx.createRadialGradient(x-radius*.28,y-radius*.32,radius*.05,x,y,radius);
+        gradient.addColorStop(0,'rgba(255,255,255,'+Math.min(1,alpha+.18)+')');
+        gradient.addColorStop(.22,color);
+        gradient.addColorStop(.72,color);
+        gradient.addColorStop(1,'rgba(0,0,0,0)');
+        ctx.globalAlpha=alpha;
+        ctx.shadowColor=color;
+        ctx.shadowBlur=glow;
+        ctx.fillStyle=gradient;
+        ctx.beginPath();
+        ctx.arc(x,y,radius,0,Math.PI*2);
+        ctx.fill();
+      }
+
+      function draw(now){
+        const width=canvas.width/dpr;
+        const height=canvas.height/dpr;
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+        ctx.clearRect(0,0,width,height);
+        ctx.globalCompositeOperation='screen';
+        const time=(now-start)/1000;
+        for(const stroke of strokes){
+          const colors=palettes[stroke.mode];
+          stroke.points.forEach((point,index)=>{
+            const age=(now-point.time)/1000;
+            const drift=Math.min(1,age/4);
+            const wobble=Math.sin(time*1.35+index*.78+stroke.seed)*stroke.size*.07*drift;
+            const wobbleY=Math.cos(time*1.08+index*.51+stroke.seed)*stroke.size*.055*drift;
+            const pulse=1+Math.sin(time*1.7+index*.9+stroke.seed)*.08;
+            const pressure=.72+Math.min(1,point.pressure)*.4;
+            const radius=stroke.size*(.47+(index%4)*.035)*pulse*pressure;
+            orb(point.x+wobble,point.y+wobbleY,radius,colors[index%colors.length],stroke.size*.36,.58);
+            if(index%2===0)orb(point.x-wobble*.35,point.y-wobbleY*.2,radius*.58,colors[(index+2)%colors.length],stroke.size*.18,.42);
+          });
+        }
+        ctx.globalCompositeOperation='source-over';
+        ctx.globalAlpha=1;
+        ctx.shadowBlur=0;
+        requestAnimationFrame(draw);
+      }
+
+      canvas.addEventListener('pointerdown',begin);
+      canvas.addEventListener('pointermove',move);
+      canvas.addEventListener('pointerup',end);
+      canvas.addEventListener('pointercancel',end);
+      canvas.addEventListener('pointerleave',()=>{cursor.style.opacity='0'});
+      sizeInput.addEventListener('input',()=>{cursor.style.width=sizeInput.value+'px';cursor.style.height=sizeInput.value+'px'});
+      document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>{
+        mode=button.dataset.mode;
+        document.querySelectorAll('[data-mode]').forEach(item=>{
+          item.classList.toggle('active',item===button);
+          item.setAttribute('aria-pressed',String(item===button));
+        });
+      }));
+      document.getElementById('undo').addEventListener('click',()=>{
+        strokes.pop();
+        if(!strokes.length)hint.classList.remove('hidden');
+      });
+      document.getElementById('clear').addEventListener('click',()=>{
+        strokes.length=0;
+        hint.classList.remove('hidden');
+      });
+      new ResizeObserver(resize).observe(stage);
+      resize();
+      requestAnimationFrame(draw);
+    })();
+  </script>
+</body>
+</html>
