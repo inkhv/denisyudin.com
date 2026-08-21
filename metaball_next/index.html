@@ -88,7 +88,7 @@
 </div></div>
 
 <div id="panel">
-  <h1>Metaball <span>· next / шейдеры · сборка 2026-08-20.9</span></h1>
+  <h1>Metaball <span>· next / шейдеры · сборка 2026-08-20.10</span></h1>
 
   <div class="sec">
     <label>Стиль</label>
@@ -105,7 +105,7 @@
   </div>
 
   <div class="sec">
-    <label>Линии · нить через точки</label>
+    <label>Линии · сквозь точки</label>
     <div id="lineList" style="display:flex; flex-direction:column; gap:6px;"></div>
     <div class="grid-row" style="gap:6px">
       <button id="addLine" style="flex:1">+ линия</button>
@@ -121,8 +121,8 @@
     </div>
     <div class="slider-row"><label>Толщина</label><input type="range" id="rLW" min="2" max="40" value="8"><output id="oLW">8</output></div>
     <select id="lineStyle">
+      <option value="line">линия сквозь точки — поверх</option>
       <option value="thread">нить: огибает точки кольцами</option>
-      <option value="line">линия: просто через центры</option>
     </select>
     <label class="check-row"><input type="checkbox" id="chkClosed"> замкнуть линию</label>
     <div class="hint">Когда активна линия, клик по точке добавляет её в маршрут (можно вести с зажатой кнопкой, точку можно проходить повторно). Backspace убирает последнюю.</div>
@@ -513,7 +513,6 @@ function renderOverlay(){
   const g = gridGeom();
   document.getElementById("gridInfo").textContent = `сетка ${g.cols} × ${g.rows}` + (stagger ? " · сдвиг" : "") + (manual ? ` · шаг ${Math.round(g.sx)}×${Math.round(g.sy)}` : "");
   svg.innerHTML = "";
-  for (const el of lineElements()) svg.appendChild(el);     // линии — поверх фигур, под точками
   const act = shapes[activeIdx];
   const inkDots = styleId === 4 ? "#1E1A5E" : "#0A0A0A";   // ризо: чернильный синий
   for (let r = 0; r < g.rows; r++){
@@ -544,6 +543,7 @@ function renderOverlay(){
       svg.appendChild(hit);
     }
   }
+  for (const el of lineElements()) svg.appendChild(el);     // линии — поверх всего, сквозь точки
 }
 
 /* ===== layout / render loop ===== */
@@ -607,7 +607,7 @@ function renderPanel(){
 const fmt1 = v => Math.round(v * 10) / 10;
 function defaultLine(){
   const src = lines[activeLine];
-  return { nodes: [], color: src ? src.color : "#8BE23C", width: src ? src.width : 8, closed: false, style: src ? src.style : "thread" };
+  return { nodes: [], color: src ? src.color : "#8BE23C", width: src ? src.width : 8, closed: false, style: src ? src.style : "line" };
 }
 function linePoints(ln){
   const g = gridGeom();
@@ -631,12 +631,14 @@ function lineElements(){
       const p = document.createElementNS(NS, "path");
       p.setAttribute("d", d); p.setAttribute("fill", "none"); p.setAttribute("stroke", ln.color);
       p.setAttribute("stroke-width", ln.width); p.setAttribute("stroke-linecap", "round"); p.setAttribute("stroke-linejoin", "round");
+      p.setAttribute("pointer-events", "none");
       els.push(p);
     }
     if (ln.style === "thread") for (const [x, y] of pts){
       const c = document.createElementNS(NS, "circle");
       c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", ringR);
       c.setAttribute("fill", "none"); c.setAttribute("stroke", ln.color); c.setAttribute("stroke-width", ln.width);
+      c.setAttribute("pointer-events", "none");
       els.push(c);
     }
     if (activeKind === "line" && li === activeLine && pts.length){      // маркер последней точки маршрута
@@ -644,7 +646,7 @@ function lineElements(){
       const m = document.createElementNS(NS, "circle");
       m.setAttribute("cx", x); m.setAttribute("cy", y); m.setAttribute("r", ringR + ln.width / 2 + 8);
       m.setAttribute("fill", "none"); m.setAttribute("stroke", "rgba(20,20,20,.35)"); m.setAttribute("stroke-width", 3);
-      m.setAttribute("stroke-dasharray", "1 7"); m.setAttribute("stroke-linecap", "round");
+      m.setAttribute("stroke-dasharray", "1 7"); m.setAttribute("stroke-linecap", "round"); m.setAttribute("pointer-events", "none");
       els.push(m);
     }
   });
@@ -1145,7 +1147,6 @@ function buildFlatSVG(){
     for (const dStr of sub) parts.push(`  <path d="${dStr}" fill-rule="nonzero"/>`);
     parts.push(`</g>`);
   }
-  parts.push(...lineSVGParts());                          // линии поверх фигур, под точками
   if (showDots){
     const g = gridGeom();
     for (let r = 0; r < g.rows; r++) for (let c = 0; c < rowCols(g, r); c++){
@@ -1153,6 +1154,7 @@ function buildFlatSVG(){
       parts.push(`<circle cx="${fxv(x)}" cy="${fxv(y)}" r="${dotR}" fill="#0A0A0A"/>`);
     }
   }
+  parts.push(...lineSVGParts());                          // линии — поверх всего, сквозь точки
   parts.push("</svg>");
   return parts.join("\n");
 }
@@ -1191,7 +1193,6 @@ document.getElementById("btnPng").addEventListener("click", () => {
   c.width = W * k; c.height = H * k;
   const ctx = c.getContext("2d");
   ctx.drawImage(glCanvas, 0, 0);
-  drawLinesCanvas(ctx, k);
   if (showDots){
     const g = gridGeom();
     ctx.fillStyle = styleId === 4 ? "#1E1A5E" : "#0A0A0A";
@@ -1200,6 +1201,7 @@ document.getElementById("btnPng").addEventListener("click", () => {
       ctx.beginPath(); ctx.arc(x * k, y * k, dotR * k, 0, 7); ctx.fill();
     }
   }
+  drawLinesCanvas(ctx, k);                                  // линии — поверх точек
   c.toBlob(b => {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(b);
@@ -1317,7 +1319,7 @@ function load(){
       R: s.R ?? 108, goo: s.goo ?? 0.5, jit: s.jit ?? 0.35
     }));
     activeIdx = Math.min(st.activeIdx || 0, shapes.length - 1);
-    lines = (st.lines || []).map(l => ({ nodes: (l.nodes || []).slice(), color: l.color || "#8BE23C", width: +l.width || 8, closed: !!l.closed, style: l.style === "line" ? "line" : "thread" }));
+    lines = (st.lines || []).map(l => ({ nodes: (l.nodes || []).slice(), color: l.color || "#8BE23C", width: +l.width || 8, closed: !!l.closed, style: l.style === "thread" ? "thread" : "line" }));
     activeLine = Math.min(st.activeLine || 0, Math.max(0, lines.length - 1));
     activeKind = (st.activeKind === "line" && lines.length) ? "line" : "shape";
   } catch {}
