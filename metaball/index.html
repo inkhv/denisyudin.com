@@ -141,8 +141,28 @@
       <option value="square">ритм: прямая сетка</option>
       <option value="stagger">ритм: со сдвигом в полшага</option>
     </select>
+    <label class="check-row"><input type="checkbox" id="chkManual"> задать количество вручную</label>
+    <div class="grid-row">
+      <input type="number" id="gCols" min="1" max="80" value="9"> ×
+      <input type="number" id="gRows" min="1" max="80" value="5">
+      <span class="hint" style="margin-left:2px">колонки × ряды</span>
+    </div>
     <div class="hint" id="gridInfo">9 × 5</div>
     <label class="check-row"><input type="checkbox" id="chkDots" checked> показывать чёрные точки</label>
+  </div>
+
+  <div class="sec">
+    <label>Профили настроек</label>
+    <select id="profSel"><option value="">— выбрать профиль —</option></select>
+    <div class="grid-row" style="gap:6px">
+      <button id="profSave" style="flex:1">Сохранить…</button>
+      <button id="profDel" style="flex:1">Удалить</button>
+    </div>
+    <div class="grid-row" style="gap:6px">
+      <button id="profCopy" style="flex:1">Копировать JSON</button>
+      <button id="profPaste" style="flex:1">Вставить JSON</button>
+    </div>
+    <div class="hint">Профиль = формат, сетка, ритм, точки и пластика активной фигуры. Общие для классики и next на одном адресе; JSON — для переноса между файлом и сайтом.</div>
   </div>
 
   <div class="sec">
@@ -166,6 +186,7 @@
 let W = 1920, H = 1080;
 let gridS = 200;    // шаг сетки
 let stagger = false; // ритм: false = прямая сетка, true = каждый второй ряд сдвинут на полшага, ряды вдвое чаще
+let manual = false, manCols = 9, manRows = 5;   // ручное количество точек (иначе — от шага)
 let dotR = 27;      // радиус чёрной точки
 let gridM = 140;    // отступ сетки от края формата
 let showDots = true;
@@ -184,21 +205,35 @@ function defaultShape(i){
    Кол-во точек считается от формата: сколько шагов помещается внутри отступов.
    Остаток распределяется поровну — сетка всегда центрирована. */
 function gridGeom(){
-  const pitchY = stagger ? gridS / 2 : gridS;                 // со сдвигом: ряды вдвое чаще
-  const cols = Math.max(1, Math.floor((W - 2 * gridM) / gridS) + 1);
-  const rows = Math.max(1, Math.floor((H - 2 * gridM) / pitchY) + 1);
-  const ox = gridM + (W - 2 * gridM - (cols - 1) * gridS) / 2;
-  const oy = gridM + (H - 2 * gridM - (rows - 1) * pitchY) / 2;
+  let cols, rows, sx, sy, ox, oy;
+  if (manual){
+    // ручное количество: точки растягиваются между отступами, шаг по осям может различаться
+    cols = Math.max(1, manCols); rows = Math.max(1, manRows);
+    sx = cols > 1 ? (W - 2 * gridM) / (cols - 1) : 0;
+    sy = rows > 1 ? (H - 2 * gridM) / (rows - 1) : 0;
+    ox = cols > 1 ? gridM : W / 2;
+    oy = rows > 1 ? gridM : H / 2;
+  } else {
+    sx = gridS;
+    sy = stagger ? gridS / 2 : gridS;                        // со сдвигом: ряды вдвое чаще
+    cols = Math.max(1, Math.floor((W - 2 * gridM) / sx) + 1);
+    rows = Math.max(1, Math.floor((H - 2 * gridM) / sy) + 1);
+    ox = gridM + (W - 2 * gridM - (cols - 1) * sx) / 2;
+    oy = gridM + (H - 2 * gridM - (rows - 1) * sy) / 2;
+  }
+  const pitchY = sy;
+  const syFull = stagger ? sy * 2 : sy;                      // «полный» вертикальный шаг для соседства
   // сдвинутый ряд: влезает ли его последняя точка в отступ
-  const colsOdd = stagger ? ((ox + (cols - 0.5) * gridS <= W - gridM + 0.01) ? cols : cols - 1) : cols;
-  return { cols, rows, ox, oy, pitchY, colsOdd };
+  const colsOdd = stagger ? ((ox + (cols - 0.5) * sx <= W - gridM + 0.01) ? cols : cols - 1) : cols;
+  return { cols, rows, ox, oy, sx, sy, pitchY, syFull, colsOdd };
 }
 function rowCols(g, r){ return (stagger && (r % 2 === 1)) ? g.colsOdd : g.cols; }
 function nodeXY(c, r){
   const g = gridGeom();
-  const shift = (stagger && (r % 2 === 1)) ? gridS / 2 : 0;
-  return [ g.ox + c * gridS + shift, g.oy + r * g.pitchY ];
+  const shift = (stagger && (r % 2 === 1)) ? g.sx / 2 : 0;
+  return [ g.ox + c * g.sx + shift, g.oy + r * g.pitchY ];
 }
+function hitRadius(g){ const a = g.sx || g.pitchY || 100, b = g.pitchY || g.sx || 100; return Math.min(a, b) * 0.42; }
 
 /* ===== metaball: безье-архитектура =====
    Узел = круг радиуса R (жирность). Связь между соседними узлами (орто и диагональ) =
@@ -285,7 +320,7 @@ function shapePathD(shape){
   for (const p of pts) d.push(circlePath(p.x, p.y, p.rad));
   if (goo > 0){
     const v = 0.08 + 0.72 * goo;
-    const near = (a, b) => Math.hypot(a.x - b.x, a.y - b.y) <= gridS * 1.5;   // соседи по расстоянию: орто, диагональ, сдвинутые ряды
+    const near = (a, b) => Math.abs(a.x - b.x) <= g.sx * 1.05 + 0.5 && Math.abs(a.y - b.y) <= g.syFull * 1.05 + 0.5;   // соседи: орто и диагональ текущей решётки
     for (let i = 0; i < pts.length; i++){
       for (let j = i + 1; j < pts.length; j++){
         const a = pts[i], b = pts[j];
@@ -321,7 +356,7 @@ function render(){
   document.getElementById("frameWrap").style.maxWidth = `calc((100vh - 64px) * ${(W / H).toFixed(4)})`;
   document.getElementById("expSize").textContent = W + "×" + H;
   const g = gridGeom();
-  document.getElementById("gridInfo").textContent = `сетка ${g.cols} × ${g.rows}` + (stagger ? " · сдвиг" : "");
+  document.getElementById("gridInfo").textContent = `сетка ${g.cols} × ${g.rows}` + (stagger ? " · сдвиг" : "") + (manual ? ` · шаг ${Math.round(g.sx)}×${Math.round(g.sy)}` : "");
   svg.innerHTML = "";
   const bg = document.createElementNS(NS, "rect");
   bg.setAttribute("width", W); bg.setAttribute("height", H); bg.setAttribute("fill", "#FFFFFF");
@@ -364,7 +399,7 @@ function render(){
         svg.appendChild(dot);
       }
       const hit = document.createElementNS(NS, "circle");
-      hit.setAttribute("cx", x); hit.setAttribute("cy", y); hit.setAttribute("r", gridS * (stagger ? 0.3 : 0.42));
+      hit.setAttribute("cx", x); hit.setAttribute("cy", y); hit.setAttribute("r", hitRadius(g));
       hit.setAttribute("fill", "transparent");
       hit.setAttribute("class", "dot-hit");
       hit.dataset.k = k;
@@ -398,6 +433,7 @@ function renderPanel(){
     sw.classList.toggle("sel", shapes[activeIdx] && sw.dataset.c === shapes[activeIdx].color);
   });
   syncPlasticsUI();
+  syncGridUI();
 }
 
 /* ===== interactions ===== */
@@ -444,6 +480,15 @@ bindSlider("rStep", "oStep", v => gridS = v);
 bindSlider("rDot", "oDot", v => dotR = v);
 bindSlider("rMar", "oMar", v => gridM = v);
 document.getElementById("gridMode").addEventListener("change", e => { stagger = e.target.value === "stagger"; render(); });
+document.getElementById("chkManual").addEventListener("change", e => {
+  const g0 = gridGeom();                       // текущие авто-значения — чтобы сетка не прыгнула
+  manual = e.target.checked;
+  if (manual){ manCols = g0.cols; manRows = g0.rows; }
+  syncGridUI(); render();
+});
+const clampN = v => Math.max(1, Math.min(80, Math.round(+v) || 1));
+document.getElementById("gCols").addEventListener("change", e => { manCols = clampN(e.target.value); manual = true; syncGridUI(); render(); });
+document.getElementById("gRows").addEventListener("change", e => { manRows = clampN(e.target.value); manual = true; syncGridUI(); render(); });
 
 function syncPlasticsUI(){
   const s = shapes[activeIdx];
@@ -460,6 +505,12 @@ function syncGridUI(){
   document.getElementById("rDot").value = dotR;   document.getElementById("oDot").textContent = dotR;
   document.getElementById("rMar").value = gridM;  document.getElementById("oMar").textContent = gridM;
   document.getElementById("gridMode").value = stagger ? "stagger" : "square";
+  const gg = gridGeom();
+  document.getElementById("chkManual").checked = manual;
+  document.getElementById("gCols").value = manual ? manCols : gg.cols;
+  document.getElementById("gRows").value = manual ? manRows : gg.rows;
+  document.getElementById("rStep").disabled = manual;
+  document.getElementById("rStep").parentElement.style.opacity = manual ? .45 : 1;
 }
 
 function applyFormat(w, h){
@@ -559,11 +610,88 @@ document.getElementById("btnPng").addEventListener("click", () => {
   img.src = url;
 });
 
+/* ===== профили настроек (общий ключ для классики и next) ===== */
+const PROF_KEY = "metaball-profiles";
+function loadProfiles(){ try { return JSON.parse(localStorage.getItem(PROF_KEY)) || {}; } catch { return {}; } }
+function storeProfiles(p){ try { localStorage.setItem(PROF_KEY, JSON.stringify(p)); } catch {} }
+function currentProfile(name){
+  const s = shapes[activeIdx] || DEFAULT_PLASTICS;
+  const p = { name, W, H, gridS, dotR, gridM, stagger, manual, manCols, manRows, showDots, R: s.R, goo: s.goo, jit: s.jit };
+  if (typeof styleId !== "undefined"){ p.styleId = styleId; p.breath = breath; }
+  return p;
+}
+function applyProfile(p){
+  W = Math.max(200, Math.min(4096, +p.W || W)); H = Math.max(200, Math.min(4096, +p.H || H));
+  if (p.gridS) gridS = +p.gridS; if (p.dotR) dotR = +p.dotR; if (p.gridM != null) gridM = +p.gridM;
+  stagger = !!p.stagger; manual = !!p.manual;
+  if (p.manCols) manCols = +p.manCols; if (p.manRows) manRows = +p.manRows;
+  showDots = p.showDots !== false;
+  document.getElementById("chkDots").checked = showDots;
+  const s = shapes[activeIdx];
+  if (s){ if (p.R) s.R = +p.R; if (p.goo != null) s.goo = +p.goo; if (p.jit != null) s.jit = +p.jit; }
+  if (typeof styleId !== "undefined"){
+    if (p.styleId != null) styleId = +p.styleId;
+    if (p.breath != null){ breath = !!p.breath; document.getElementById("chkBreath").checked = breath; }
+  }
+  syncFormatUI(); syncGridUI();
+  if (typeof syncFrame === "function") syncFrame();
+  render();
+}
+function renderProfileList(){
+  const sel = document.getElementById("profSel");
+  const cur = sel.value;
+  const names = Object.keys(loadProfiles()).sort((a, b) => a.localeCompare(b, "ru"));
+  sel.innerHTML = "";
+  const o0 = document.createElement("option"); o0.value = ""; o0.textContent = "— выбрать профиль —"; sel.appendChild(o0);
+  for (const n of names){ const o = document.createElement("option"); o.value = n; o.textContent = n; sel.appendChild(o); }
+  if (names.includes(cur)) sel.value = cur;
+}
+async function copyText(txt){
+  try { await navigator.clipboard.writeText(txt); }
+  catch { const ta = document.createElement("textarea"); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
+}
+document.getElementById("profSel").addEventListener("change", e => {
+  const p = loadProfiles()[e.target.value];
+  if (p){ applyProfile(p); toast(`Профиль «${p.name}» применён`); }
+});
+document.getElementById("profSave").addEventListener("click", () => {
+  const sel = document.getElementById("profSel");
+  const name = (window.prompt("Имя профиля", sel.value || "мой профиль") || "").trim();
+  if (!name) return;
+  const all = loadProfiles(); all[name] = currentProfile(name); storeProfiles(all);
+  renderProfileList(); sel.value = name; toast(`Профиль «${name}» сохранён`);
+});
+document.getElementById("profDel").addEventListener("click", () => {
+  const sel = document.getElementById("profSel");
+  if (!sel.value) return;
+  const all = loadProfiles(); delete all[sel.value]; storeProfiles(all);
+  renderProfileList(); toast("Профиль удалён");
+});
+document.getElementById("profCopy").addEventListener("click", async () => {
+  const sel = document.getElementById("profSel");
+  const p = sel.value ? loadProfiles()[sel.value] : currentProfile("текущие настройки");
+  await copyText(JSON.stringify(p));
+  toast("JSON профиля в буфере");
+});
+document.getElementById("profPaste").addEventListener("click", () => {
+  const txt = window.prompt("Вставь JSON профиля");
+  if (!txt) return;
+  try {
+    const p = JSON.parse(txt);
+    if (!p || typeof p !== "object") throw 0;
+    p.name = String(p.name || "импорт");
+    const all = loadProfiles(); all[p.name] = p; storeProfiles(all);
+    renderProfileList(); document.getElementById("profSel").value = p.name;
+    applyProfile(p); toast(`Профиль «${p.name}» импортирован`);
+  } catch { toast("Не удалось разобрать JSON"); }
+});
+renderProfileList();
+
 /* ===== persistence ===== */
 function save(){
   try {
     localStorage.setItem("metaball-konstruktor", JSON.stringify({
-      activeIdx, showDots, W, H, gridS, dotR, gridM, stagger,
+      activeIdx, showDots, W, H, gridS, dotR, gridM, stagger, manual, manCols, manRows,
       shapes: shapes.map(s => ({ dots: [...s.dots], color: s.color, R: s.R, goo: s.goo, jit: s.jit }))
     }));
   } catch {}
@@ -576,6 +704,7 @@ function load(){
     H = Math.max(200, Math.min(4096, st.H || 1080));
     gridS = st.gridS || 200; dotR = st.dotR || 27; gridM = st.gridM ?? 140;
     stagger = !!st.stagger;
+    manual = !!st.manual; manCols = st.manCols || 9; manRows = st.manRows || 5;
     showDots = st.showDots !== false;
     document.getElementById("chkDots").checked = showDots;
     const legacy = st.params || DEFAULT_PLASTICS;
