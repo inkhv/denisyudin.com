@@ -804,7 +804,7 @@ function fieldShapePath(shape){
     minX = Math.min(minX, p.x - cut); maxX = Math.max(maxX, p.x + cut);
     minY = Math.min(minY, p.y - cut); maxY = Math.max(maxY, p.y + cut);
   }
-  const step = 4;
+  const step = 2;                                    // плотная сетка поля — контур без лесенки
   minX = Math.floor(minX / step) * step; minY = Math.floor(minY / step) * step;
   const nx = Math.ceil((maxX - minX) / step) + 2, ny = Math.ceil((maxY - minY) / step) + 2;
   const f = new Float32Array(nx * ny);
@@ -868,20 +868,106 @@ function fieldShapePath(shape){
     if (loop.length >= 3) loops.push(loop);
   }
   const d = [];
-  for (let loop of loops){
-    loop = rdpClosed(loop, 1.2);
-    const n = loop.length;
-    if (n < 3) continue;
-    d.push(`M ${fxv(loop[0][0])} ${fxv(loop[0][1])}`);
-    for (let i = 0; i < n; i++){
-      const p0 = loop[(i-1+n)%n], p1 = loop[i], p2 = loop[(i+1)%n], p3 = loop[(i+2)%n];
-      const c1 = [ p1[0] + (p2[0]-p0[0])/6, p1[1] + (p2[1]-p0[1])/6 ];
-      const c2 = [ p2[0] - (p3[0]-p1[0])/6, p2[1] - (p3[1]-p1[1])/6 ];
-      d.push(`C ${fxv(c1[0])} ${fxv(c1[1])} ${fxv(c2[0])} ${fxv(c2[1])} ${fxv(p2[0])} ${fxv(p2[1])}`);
-    }
+  const f2 = v => +v.toFixed(2);
+  for (const loop of loops){
+    if (loop.length < 6) continue;
+    const segs2 = fitClosedLoop(loop, 0.4);            // кубические безье, допуск 0.4 px, G1-стыки
+    if (!segs2.length) continue;
+    d.push(`M ${f2(segs2[0][0][0])} ${f2(segs2[0][0][1])}`);
+    for (const c of segs2) d.push(`C ${f2(c[1][0])} ${f2(c[1][1])} ${f2(c[2][0])} ${f2(c[2][1])} ${f2(c[3][0])} ${f2(c[3][1])}`);
     d.push("Z");
   }
   return d.join(" ");
+}
+
+/* ----- подбор кубических безье по точкам контура (Schneider, Graphics Gems) ----- */
+const vsub = (a, b) => [a[0]-b[0], a[1]-b[1]], vadd = (a, b) => [a[0]+b[0], a[1]+b[1]];
+const vmul = (a, s) => [a[0]*s, a[1]*s], vdot = (a, b) => a[0]*b[0] + a[1]*b[1];
+const vlen = a => Math.hypot(a[0], a[1]), vneg = a => [-a[0], -a[1]];
+const vnorm = a => { const l = vlen(a) || 1e-9; return [a[0]/l, a[1]/l]; };
+function bezAt(c, t){ const m = 1-t, a = m*m*m, b = 3*m*m*t, cc = 3*m*t*t, dd = t*t*t;
+  return [a*c[0][0]+b*c[1][0]+cc*c[2][0]+dd*c[3][0], a*c[0][1]+b*c[1][1]+cc*c[2][1]+dd*c[3][1]]; }
+function bezD1(c, t){ const m = 1-t, a = 3*m*m, b = 6*m*t, cc = 3*t*t;
+  const d0 = vsub(c[1], c[0]), d1 = vsub(c[2], c[1]), d2 = vsub(c[3], c[2]);
+  return [a*d0[0]+b*d1[0]+cc*d2[0], a*d0[1]+b*d1[1]+cc*d2[1]]; }
+function bezD2(c, t){ const m = 1-t;
+  const d0 = vadd(vsub(c[2], vmul(c[1], 2)), c[0]), d1 = vadd(vsub(c[3], vmul(c[2], 2)), c[1]);
+  return [6*(m*d0[0]+t*d1[0]), 6*(m*d0[1]+t*d1[1])]; }
+function fitClosedLoop(pts, maxErr){
+  const n = pts.length;
+  let P = pts;
+  for (let pass = 0; pass < 2; pass++){                // лёгкое сглаживание лесенки marching squares
+    const Q = new Array(n);
+    for (let i = 0; i < n; i++){ const a = P[(i-1+n)%n], b = P[i], c = P[(i+1)%n];
+      Q[i] = [0.25*a[0]+0.5*b[0]+0.25*c[0], 0.25*a[1]+0.5*b[1]+0.25*c[1]]; }
+    P = Q;
+  }
+  const seq = P.concat([P[0]]);
+  const t0 = vnorm(vsub(P[1], P[n-1]));                // касательная на стыке — G1 через начало
+  return fitCubic(seq, t0, vneg(t0), maxErr, 0);
+}
+function fitCubic(points, tHat1, tHat2, error, depth){
+  if (points.length === 2){
+    const dist = vlen(vsub(points[0], points[1])) / 3;
+    return [[points[0], vadd(points[0], vmul(tHat1, dist)), vadd(points[1], vmul(tHat2, dist)), points[1]]];
+  }
+  let u = chordLength(points);
+  let curve = generateBezier(points, u, tHat1, tHat2);
+  let [err, split] = maxErrorOf(points, curve, u);
+  if (err < error || depth > 40) return [curve];
+  if (err < error * 4){
+    for (let i = 0; i < 12; i++){
+      const uP = reparam(points, u, curve);
+      curve = generateBezier(points, uP, tHat1, tHat2);
+      [err, split] = maxErrorOf(points, curve, uP);
+      if (err < error) return [curve];
+      u = uP;
+    }
+  }
+  split = Math.max(1, Math.min(points.length - 2, split));
+  const centerT = vnorm(vsub(points[split-1], points[split+1]));
+  return fitCubic(points.slice(0, split+1), tHat1, centerT, error, depth+1)
+    .concat(fitCubic(points.slice(split), vneg(centerT), tHat2, error, depth+1));
+}
+function chordLength(points){
+  const u = [0];
+  for (let i = 1; i < points.length; i++) u.push(u[i-1] + vlen(vsub(points[i], points[i-1])));
+  const L = u[u.length-1] || 1;
+  return u.map(x => x / L);
+}
+function generateBezier(points, u, tHat1, tHat2){
+  const n = points.length, first = points[0], last = points[n-1];
+  let C00 = 0, C01 = 0, C11 = 0, X0 = 0, X1 = 0;
+  for (let i = 0; i < n; i++){
+    const t = u[i], m = 1-t;
+    const b0 = m*m*m, b1 = 3*t*m*m, b2 = 3*t*t*m, b3 = t*t*t;
+    const A0 = vmul(tHat1, b1), A1 = vmul(tHat2, b2);
+    C00 += vdot(A0, A0); C01 += vdot(A0, A1); C11 += vdot(A1, A1);
+    const tmp = vsub(points[i], vadd(vmul(first, b0 + b1), vmul(last, b2 + b3)));
+    X0 += vdot(A0, tmp); X1 += vdot(A1, tmp);
+  }
+  const det = C00*C11 - C01*C01;
+  let a1 = det === 0 ? 0 : (X0*C11 - X1*C01) / det;
+  let a2 = det === 0 ? 0 : (C00*X1 - C01*X0) / det;
+  const segLen = vlen(vsub(first, last)), eps = 1e-6 * segLen;
+  if (!(a1 > eps) || !(a2 > eps)){ a1 = a2 = segLen / 3; }   // вырожденный случай — эвристика Ву-Барски
+  return [first, vadd(first, vmul(tHat1, a1)), vadd(last, vmul(tHat2, a2)), last];
+}
+function maxErrorOf(points, curve, u){
+  let md = -1, idx = Math.floor(points.length / 2);
+  for (let i = 1; i < points.length - 1; i++){
+    const p = bezAt(curve, u[i]); const dd = (p[0]-points[i][0])**2 + (p[1]-points[i][1])**2;
+    if (dd > md){ md = dd; idx = i; }
+  }
+  return [Math.sqrt(Math.max(md, 0)), idx];
+}
+function reparam(points, u, curve){
+  return u.map((t, i) => {
+    const d = vsub(bezAt(curve, t), points[i]), d1 = bezD1(curve, t), d2 = bezD2(curve, t);
+    const num = vdot(d, d1), den = vdot(d1, d1) + vdot(d, d2);
+    const nt = den === 0 ? t : t - num / den;
+    return Math.min(1, Math.max(0, nt));
+  });
 }
 function rdpClosed(pts, eps){
   if (pts.length < 8) return pts;
