@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Signal Shredder — Generative Glitch Lab</title>
+  <meta name="description" content="Destroy images beautifully with procedural pixels, scanlines and signal noise.">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<main class="app-shell">
+  <header class="topbar">
+    <a class="brand" href="../"><span class="brand-mark">S/</span><span>SIGNAL<br>SHREDDER</span></a>
+    <div class="edition">GENERATIVE IMAGE PROCESSOR <span>©26</span></div>
+    <button class="random-top" id="randomize">RANDOMIZE <span>✦</span></button>
+  </header>
+  <section class="workspace">
+    <aside class="panel controls">
+      <div class="panel-heading"><span>01</span> PARAMETERS</div>
+      <div class="seed-row"><label for="seed">SEED</label><input id="seed" inputmode="numeric"></div>
+      <div id="sliders"></div>
+      <div class="panel-heading small"><span>02</span> PALETTE</div>
+      <div class="palette-grid" id="palettes"></div>
+      <div class="custom-palette" id="customPalette">
+        <div class="custom-title"><span>CUSTOM</span><button id="useCustom">USE</button></div>
+        <div class="color-inputs" id="colors"></div>
+      </div>
+    </aside>
+    <section class="stage-wrap">
+      <div class="stage-meta"><span>LIVE OUTPUT</span><span id="formatLabel">4:5 / RGB</span></div>
+      <div class="canvas-frame portrait" id="frame"><canvas id="art" aria-label="Generated glitch artwork"></canvas></div>
+      <div class="ratio-switch"><button data-ratio="portrait" class="active">4:5</button><button data-ratio="square">1:1</button><button data-ratio="wide">3:2</button></div>
+    </section>
+    <aside class="panel source-panel">
+      <div class="panel-heading"><span>03</span> SOURCE</div>
+      <button class="dropzone" id="dropzone"><span class="upload-icon">↥</span><strong>DROP IMAGE HERE</strong><small>JPG / PNG / WEBP</small></button>
+      <input id="file" hidden type="file" accept="image/*">
+      <div class="file-status"><span id="sourceLight"></span><p id="fileName">NO SOURCE / GENERATIVE MODE</p></div>
+      <button class="remove" id="remove" hidden>REMOVE SOURCE ×</button>
+      <div class="instructions"><span>HOW IT WORKS</span><p>Upload any image, then break it into stepped pixels, displaced scanlines and photocopy textures.</p></div>
+      <button class="export" id="export">EXPORT PNG <span>↓</span></button>
+    </aside>
+  </section>
+  <footer><span>MOVE THE SLIDERS. BREAK THE SIGNAL.</span><span>ALL PROCESSING STAYS IN YOUR BROWSER.</span></footer>
+</main>
+<script src="./app.js"></script>
+</body>
+</html>
