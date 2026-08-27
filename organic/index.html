@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f2f2ef">
+  <title>Organic Cells — Denis Yudin</title>
+  <meta name="description" content="Онлайн-конструктор органических векторных ячеек с ручным редактированием и экспортом SVG.">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="app">
+    <section class="workspace" aria-label="Холст Organic Cells">
+      <header class="workspace-bar">
+        <div>
+          <h1>Organic Cells</h1>
+          <p id="cellCount">Векторный генератор</p>
+        </div>
+        <div class="workspace-actions">
+          <button id="toggleEdit" class="icon-button is-active" type="button" aria-pressed="true" title="Показать центры ячеек">
+            <span class="edit-icon" aria-hidden="true"></span>
+            Редактировать
+          </button>
+          <a class="icon-button home-link" href="../" aria-label="На главную denisyudin.com">↗</a>
+        </div>
+      </header>
+
+      <div class="stage" id="stage">
+        <div class="canvas-wrap" id="canvasWrap">
+          <svg id="artboard" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" role="img" aria-label="Органический паттерн из ячеек"></svg>
+        </div>
+        <div class="stage-hint" id="stageHint">Тяните точки, чтобы менять геометрию · двойной клик — добавить · ⌥ клик — удалить</div>
+      </div>
+    </section>
+
+    <aside class="panel" aria-label="Настройки генератора">
+      <div class="panel-heading">
+        <span class="eyebrow">Generative tool · 01</span>
+        <h2>Органическая<br>структура</h2>
+        <p>Соберите пластичный паттерн и заберите чистый SVG для Figma или печати.</p>
+      </div>
+
+      <section class="control-section">
+        <h3>Геометрия</h3>
+        <label class="range-control" for="cellSize">
+          <span>Масштаб ячеек</span><output id="cellSizeValue">260</output>
+          <input id="cellSize" type="range" min="110" max="460" step="5" value="260">
+        </label>
+        <label class="range-control" for="gapSize">
+          <span>Толщина прожилок</span><output id="gapSizeValue">28</output>
+          <input id="gapSize" type="range" min="0" max="120" step="1" value="28">
+        </label>
+        <label class="range-control" for="smoothness">
+          <span>Скругление</span><output id="smoothnessValue">58</output>
+          <input id="smoothness" type="range" min="0" max="100" step="1" value="58">
+        </label>
+      </section>
+
+      <section class="control-section">
+        <h3>Цвет</h3>
+        <label class="color-control" for="cellColor">
+          <span><i id="cellSwatch"></i>Ячейки</span>
+          <span class="color-value" id="cellColorValue">#FF342B</span>
+          <input id="cellColor" type="color" value="#ff342b">
+        </label>
+        <label class="color-control" for="veinColor">
+          <span><i id="veinSwatch"></i>Прожилки</span>
+          <span class="color-value" id="veinColorValue">#40001F</span>
+          <input id="veinColor" type="color" value="#40001f">
+        </label>
+      </section>
+
+      <section class="control-section">
+        <h3>Формат</h3>
+        <label class="select-control">
+          <span class="sr-only">Формат холста</span>
+          <select id="format">
+            <option value="1080x1080">1080 × 1080 · Square</option>
+            <option value="1080x1350">1080 × 1350 · Portrait</option>
+            <option value="1080x1920">1080 × 1920 · Stories</option>
+            <option value="1920x1080">1920 × 1080 · Landscape</option>
+            <option value="1920x600">1920 × 600 · Banner</option>
+          </select>
+        </label>
+      </section>
+
+      <div class="panel-footer">
+        <button id="randomize" class="primary-button" type="button"><span>Randomize</span><b aria-hidden="true">✦</b></button>
+        <div class="export-grid">
+          <button id="downloadSvg" type="button">Скачать SVG</button>
+          <button id="downloadPng" type="button">PNG</button>
+          <button id="copySvg" type="button">Копировать SVG</button>
+        </div>
+        <p id="toast" role="status" aria-live="polite"></p>
+      </div>
+    </aside>
+  </main>
+  <script src="./app.js"></script>
+</body>
+</html>
