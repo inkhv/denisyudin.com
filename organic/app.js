@@ -8,11 +8,14 @@
   const selectedSizeInput = document.getElementById('selectedSize');
   const selectedSizeOutput = document.getElementById('selectedSizeValue');
   const selectedControl = document.getElementById('selectedControl');
+  const deleteCellButton = document.getElementById('deleteCell');
   const cellColorInput = document.getElementById('cellColor');
   const veinColorInput = document.getElementById('veinColor');
   const cellColorHex = document.getElementById('cellColorHex');
   const veinColorHex = document.getElementById('veinColorHex');
   const formatInput = document.getElementById('format');
+  const frameWidthInput = document.getElementById('frameWidth');
+  const frameHeightInput = document.getElementById('frameHeight');
   const editButton = document.getElementById('toggleEdit');
   const hint = document.getElementById('stageHint');
   const countLabel = document.getElementById('cellCount');
@@ -116,8 +119,8 @@
       const a = 2 * (other.x - site.x);
       const b = 2 * (other.y - site.y);
       const baseSize = Number(sizeInput.value);
-      const siteWeight = ((state.cellScales[siteIndex] || 1) - 1) * baseSize ** 2 * .72;
-      const otherWeight = ((state.cellScales[index] || 1) - 1) * baseSize ** 2 * .72;
+      const siteWeight = (Math.sqrt(state.cellScales[siteIndex] || 1) - 1) * baseSize ** 2;
+      const otherWeight = (Math.sqrt(state.cellScales[index] || 1) - 1) * baseSize ** 2;
       const c = other.x ** 2 + other.y ** 2 - otherWeight - site.x ** 2 - site.y ** 2 + siteWeight;
       polygon = clipPolygon(polygon, a, b, c);
     }
@@ -215,13 +218,8 @@
     const handle = event.target.closest('.editor-handle');
     if (!handle) return;
     const index = Number(handle.dataset.index);
-    if (event.altKey && state.points.length > 4) {
-      state.points.splice(index, 1);
-      state.cellScales.splice(index, 1);
-      if (state.selectedIndex === index) setSelectedIndex(-1, false);
-      else if (state.selectedIndex > index) setSelectedIndex(state.selectedIndex - 1, false);
-      render();
-      notify('Ячейка удалена');
+    if (event.altKey) {
+      deleteCell(index);
       return;
     }
     setSelectedIndex(index);
@@ -253,6 +251,19 @@
     setSelectedIndex(state.points.length - 1, false);
     render();
     notify('Ячейка добавлена');
+  }
+
+  function deleteCell(index = state.selectedIndex) {
+    if (index < 0 || index >= state.points.length) return;
+    if (state.points.length <= 1) {
+      notify('Нельзя удалить последнюю ячейку');
+      return;
+    }
+    state.points.splice(index, 1);
+    state.cellScales.splice(index, 1);
+    setSelectedIndex(-1, false);
+    render();
+    notify('Ячейка удалена');
   }
 
   function cleanSvgString() {
@@ -369,10 +380,29 @@
     state.selectedIndex = index;
     const hasSelection = index >= 0 && index < state.points.length;
     selectedSizeInput.disabled = !hasSelection;
+    deleteCellButton.disabled = !hasSelection || state.points.length <= 1;
     selectedControl.classList.toggle('is-disabled', !hasSelection);
     selectedSizeInput.value = hasSelection ? Math.round((state.cellScales[index] || 1) * 100) : 100;
     selectedSizeOutput.textContent = hasSelection ? `${selectedSizeInput.value}%` : '—';
     if (shouldRender) render();
+  }
+
+  function clampDimension(value, fallback) {
+    const number = Math.round(Number(value));
+    return Number.isFinite(number) ? Math.max(100, Math.min(8192, number)) : fallback;
+  }
+
+  function applyFrameDimensions() {
+    const width = clampDimension(frameWidthInput.value, state.width);
+    const height = clampDimension(frameHeightInput.value, state.height);
+    frameWidthInput.value = width;
+    frameHeightInput.value = height;
+    formatInput.value = 'custom';
+    if (width === state.width && height === state.height) return;
+    state.width = width;
+    state.height = height;
+    state.seed = Math.floor(Math.random() * 0xffffffff);
+    generatePoints();
   }
 
   function selectCell(event) {
@@ -391,14 +421,32 @@
     selectedSizeOutput.textContent = `${selectedSizeInput.value}%`;
     render();
   });
+  deleteCellButton.addEventListener('click', () => deleteCell());
   cellColorInput.addEventListener('input', updateColors);
   veinColorInput.addEventListener('input', updateColors);
   bindHexInput(cellColorHex, cellColorInput);
   bindHexInput(veinColorHex, veinColorInput);
   formatInput.addEventListener('change', () => {
+    if (formatInput.value === 'custom') {
+      frameWidthInput.focus();
+      frameWidthInput.select();
+      return;
+    }
     [state.width, state.height] = formatInput.value.split('x').map(Number);
+    frameWidthInput.value = state.width;
+    frameHeightInput.value = state.height;
     state.seed = Math.floor(Math.random() * 0xffffffff);
     generatePoints();
+  });
+  [frameWidthInput, frameHeightInput].forEach(input => {
+    input.addEventListener('change', applyFrameDimensions);
+    input.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        applyFrameDimensions();
+        input.blur();
+      }
+    });
   });
   editButton.addEventListener('click', () => {
     state.editing = !state.editing;

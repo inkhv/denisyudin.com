@@ -56,8 +56,9 @@
         </label>
         <label class="range-control selected-control is-disabled" id="selectedControl" for="selectedSize">
           <span>Выбранная ячейка</span><output id="selectedSizeValue">—</output>
-          <input id="selectedSize" type="range" min="100" max="250" step="1" value="100" disabled>
+          <input id="selectedSize" type="range" min="20" max="500" step="1" value="100" disabled>
         </label>
+        <button class="delete-cell" id="deleteCell" type="button" disabled><span>Удалить выбранную ячейку</span><b aria-hidden="true">⌫</b></button>
       </section>
 
       <section class="control-section">
@@ -82,8 +83,15 @@
             <option value="1080x1920">1080 × 1920 · Stories</option>
             <option value="1920x1080">1920 × 1080 · Landscape</option>
             <option value="1920x600">1920 × 600 · Banner</option>
+            <option value="custom">Свой размер</option>
           </select>
         </label>
+        <div class="frame-size-row">
+          <label><span>W</span><input id="frameWidth" type="number" min="100" max="8192" step="1" value="1080" inputmode="numeric" aria-label="Ширина фрейма в пикселях"></label>
+          <i>×</i>
+          <label><span>H</span><input id="frameHeight" type="number" min="100" max="8192" step="1" value="1080" inputmode="numeric" aria-label="Высота фрейма в пикселях"></label>
+          <em>px</em>
+        </div>
       </section>
 
       <div class="panel-footer">
