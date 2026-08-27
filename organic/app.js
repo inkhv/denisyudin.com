@@ -5,6 +5,9 @@
   const sizeInput = document.getElementById('cellSize');
   const gapInput = document.getElementById('gapSize');
   const smoothInput = document.getElementById('smoothness');
+  const selectedSizeInput = document.getElementById('selectedSize');
+  const selectedSizeOutput = document.getElementById('selectedSizeValue');
+  const selectedControl = document.getElementById('selectedControl');
   const cellColorInput = document.getElementById('cellColor');
   const veinColorInput = document.getElementById('veinColor');
   const cellColorHex = document.getElementById('cellColorHex');
@@ -19,9 +22,11 @@
     width: 1080,
     height: 1080,
     points: [],
+    cellScales: [],
     seed: Math.floor(Math.random() * 0xffffffff),
     editing: true,
-    dragIndex: -1
+    dragIndex: -1,
+    selectedIndex: -1
   };
 
   const ns = 'http://www.w3.org/2000/svg';
@@ -65,6 +70,8 @@
       points.push(best);
     }
     state.points = points;
+    state.cellScales = points.map(() => 1);
+    setSelectedIndex(-1, false);
     render();
   }
 
@@ -108,7 +115,10 @@
       const other = state.points[index];
       const a = 2 * (other.x - site.x);
       const b = 2 * (other.y - site.y);
-      const c = other.x ** 2 + other.y ** 2 - site.x ** 2 - site.y ** 2;
+      const baseSize = Number(sizeInput.value);
+      const siteWeight = ((state.cellScales[siteIndex] || 1) - 1) * baseSize ** 2 * .72;
+      const otherWeight = ((state.cellScales[index] || 1) - 1) * baseSize ** 2 * .72;
+      const c = other.x ** 2 + other.y ** 2 - otherWeight - site.x ** 2 - site.y ** 2 + siteWeight;
       polygon = clipPolygon(polygon, a, b, c);
     }
     return polygon;
@@ -157,10 +167,12 @@
 
     svg.append(createSvgElement('rect', { width: state.width, height: state.height, fill: veinColor }));
     const cells = createSvgElement('g', { 'aria-label': 'Ячейки' });
+    const cellPaths = state.points.map((point, index) => roundedPath(voronoiCell(point, index)));
     state.points.forEach((point, index) => {
       const path = createSvgElement('path', {
         class: 'cell-path',
-        d: roundedPath(voronoiCell(point, index)),
+        'data-index': index,
+        d: cellPaths[index],
         fill: cellColor,
         stroke: veinColor,
         'stroke-width': gap,
@@ -173,8 +185,15 @@
     if (state.editing) {
       const editor = createSvgElement('g', { class: 'editor-layer', 'aria-label': 'Точки редактирования' });
       const handleRadius = Math.max(8, Math.min(state.width, state.height) * .009);
+      if (state.selectedIndex >= 0 && cellPaths[state.selectedIndex]) {
+        editor.append(createSvgElement('path', { class: 'selection-outline', d: cellPaths[state.selectedIndex] }));
+      }
       state.points.forEach((point, index) => {
-        const handle = createSvgElement('g', { class: 'editor-handle', 'data-index': index, transform: `translate(${point.x} ${point.y})` });
+        const handle = createSvgElement('g', {
+          class: `editor-handle${index === state.selectedIndex ? ' is-selected' : ''}`,
+          'data-index': index,
+          transform: `translate(${point.x} ${point.y})`
+        });
         handle.append(createSvgElement('circle', { class: 'handle-ring', r: handleRadius }));
         handle.append(createSvgElement('circle', { class: 'handle-dot', r: handleRadius * .24 }));
         editor.append(handle);
@@ -198,10 +217,14 @@
     const index = Number(handle.dataset.index);
     if (event.altKey && state.points.length > 4) {
       state.points.splice(index, 1);
+      state.cellScales.splice(index, 1);
+      if (state.selectedIndex === index) setSelectedIndex(-1, false);
+      else if (state.selectedIndex > index) setSelectedIndex(state.selectedIndex - 1, false);
       render();
       notify('Ячейка удалена');
       return;
     }
+    setSelectedIndex(index);
     state.dragIndex = index;
     svg.setPointerCapture(event.pointerId);
     event.preventDefault();
@@ -226,6 +249,8 @@
     if (!state.editing || event.target.closest('.editor-handle')) return;
     const point = svgPoint(event);
     state.points.push({ x: point.x, y: point.y });
+    state.cellScales.push(1);
+    setSelectedIndex(state.points.length - 1, false);
     render();
     notify('Ячейка добавлена');
   }
@@ -239,7 +264,10 @@
     clone.setAttribute('xmlns', ns);
     clone.setAttribute('width', state.width);
     clone.setAttribute('height', state.height);
-    clone.querySelectorAll('.cell-path').forEach(path => path.removeAttribute('class'));
+    clone.querySelectorAll('.cell-path').forEach(path => {
+      path.removeAttribute('class');
+      path.removeAttribute('data-index');
+    });
     return `<?xml version="1.0" encoding="UTF-8"?>\n${new XMLSerializer().serializeToString(clone)}`;
   }
 
@@ -337,9 +365,32 @@
     });
   }
 
+  function setSelectedIndex(index, shouldRender = true) {
+    state.selectedIndex = index;
+    const hasSelection = index >= 0 && index < state.points.length;
+    selectedSizeInput.disabled = !hasSelection;
+    selectedControl.classList.toggle('is-disabled', !hasSelection);
+    selectedSizeInput.value = hasSelection ? Math.round((state.cellScales[index] || 1) * 100) : 100;
+    selectedSizeOutput.textContent = hasSelection ? `${selectedSizeInput.value}%` : '—';
+    if (shouldRender) render();
+  }
+
+  function selectCell(event) {
+    if (!state.editing || state.dragIndex >= 0) return;
+    const cell = event.target.closest('.cell-path');
+    if (cell) setSelectedIndex(Number(cell.dataset.index));
+    else if (event.target.tagName.toLowerCase() === 'rect') setSelectedIndex(-1);
+  }
+
   bindRange(sizeInput, document.getElementById('cellSizeValue'), generatePoints);
   bindRange(gapInput, document.getElementById('gapSizeValue'), render);
   bindRange(smoothInput, document.getElementById('smoothnessValue'), render);
+  selectedSizeInput.addEventListener('input', () => {
+    if (state.selectedIndex < 0) return;
+    state.cellScales[state.selectedIndex] = Number(selectedSizeInput.value) / 100;
+    selectedSizeOutput.textContent = `${selectedSizeInput.value}%`;
+    render();
+  });
   cellColorInput.addEventListener('input', updateColors);
   veinColorInput.addEventListener('input', updateColors);
   bindHexInput(cellColorHex, cellColorInput);
@@ -367,6 +418,7 @@
   svg.addEventListener('pointermove', pointerMove);
   svg.addEventListener('pointerup', pointerUp);
   svg.addEventListener('pointercancel', pointerUp);
+  svg.addEventListener('click', selectCell);
   svg.addEventListener('dblclick', addPoint);
 
   updateColors();

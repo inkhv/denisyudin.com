@@ -88,10 +88,14 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
   user-select: none;
 }
 #artboard.is-editing { cursor: crosshair; }
+#artboard.is-editing .cell-path { cursor: pointer; }
 .editor-handle { cursor: grab; }
 .editor-handle:active { cursor: grabbing; }
 .handle-ring { fill: rgba(255,255,255,.92); stroke: rgba(0,0,0,.72); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
 .handle-dot { fill: #111; pointer-events: none; }
+.editor-handle.is-selected .handle-ring { fill: #111; stroke: #fff; stroke-width: 2.5; }
+.editor-handle.is-selected .handle-dot { fill: #fff; }
+.selection-outline { fill: none; stroke: #fff; stroke-width: 3; stroke-dasharray: 9 7; stroke-linecap: round; vector-effect: non-scaling-stroke; pointer-events: none; }
 .stage-hint {
   position: absolute;
   left: 50%;
@@ -129,6 +133,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 .range-control:first-of-type { margin-top: 0; }
 .range-control output { color: var(--muted); font-variant-numeric: tabular-nums; }
 .range-control input { grid-column: 1 / -1; width: 100%; margin: 1px 0 0; accent-color: var(--ink); cursor: ew-resize; }
+.selected-control { padding-top: 13px; border-top: 1px dashed var(--line); }
+.selected-control.is-disabled { opacity: .42; }
+.selected-control.is-disabled input { cursor: default; }
 input[type="range"] { height: 3px; }
 .color-control {
   min-height: 39px;

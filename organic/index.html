@@ -29,7 +29,7 @@
         <div class="canvas-wrap" id="canvasWrap">
           <svg id="artboard" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" role="img" aria-label="Органический паттерн из ячеек"></svg>
         </div>
-        <div class="stage-hint" id="stageHint">Тяните точки, чтобы менять геометрию · двойной клик — добавить · ⌥ клик — удалить</div>
+        <div class="stage-hint" id="stageHint">Клик по ячейке — выбрать · тяните точки — двигать · двойной клик — добавить · ⌥ клик — удалить</div>
       </div>
     </section>
 
@@ -53,6 +53,10 @@
         <label class="range-control" for="smoothness">
           <span>Скругление</span><output id="smoothnessValue">58</output>
           <input id="smoothness" type="range" min="0" max="100" step="1" value="58">
+        </label>
+        <label class="range-control selected-control is-disabled" id="selectedControl" for="selectedSize">
+          <span>Выбранная ячейка</span><output id="selectedSizeValue">—</output>
+          <input id="selectedSize" type="range" min="100" max="250" step="1" value="100" disabled>
         </label>
       </section>
 
