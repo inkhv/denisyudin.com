@@ -44,7 +44,7 @@
         <h3>Геометрия</h3>
         <label class="range-control" for="cellSize">
           <span>Масштаб ячеек</span><output id="cellSizeValue">260</output>
-          <input id="cellSize" type="range" min="110" max="460" step="5" value="260">
+          <input id="cellSize" type="range" min="110" max="1000" step="10" value="260">
         </label>
         <label class="range-control" for="gapSize">
           <span>Толщина прожилок</span><output id="gapSizeValue">28</output>
@@ -58,16 +58,14 @@
 
       <section class="control-section">
         <h3>Цвет</h3>
-        <label class="color-control" for="cellColor">
-          <span><i id="cellSwatch"></i>Ячейки</span>
-          <span class="color-value" id="cellColorValue">#FF342B</span>
-          <input id="cellColor" type="color" value="#ff342b">
-        </label>
-        <label class="color-control" for="veinColor">
-          <span><i id="veinSwatch"></i>Прожилки</span>
-          <span class="color-value" id="veinColorValue">#40001F</span>
-          <input id="veinColor" type="color" value="#40001f">
-        </label>
+        <div class="color-control">
+          <label class="color-name" for="cellColor"><i id="cellSwatch"></i>Ячейки<input id="cellColor" type="color" value="#ff342b"></label>
+          <input class="color-value" id="cellColorHex" type="text" value="#FF342B" maxlength="7" spellcheck="false" aria-label="HEX-код цвета ячеек">
+        </div>
+        <div class="color-control">
+          <label class="color-name" for="veinColor"><i id="veinSwatch"></i>Прожилки<input id="veinColor" type="color" value="#40001f"></label>
+          <input class="color-value" id="veinColorHex" type="text" value="#40001F" maxlength="7" spellcheck="false" aria-label="HEX-код цвета прожилок">
+        </div>
       </section>
 
       <section class="control-section">

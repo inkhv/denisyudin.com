@@ -7,6 +7,8 @@
   const smoothInput = document.getElementById('smoothness');
   const cellColorInput = document.getElementById('cellColor');
   const veinColorInput = document.getElementById('veinColor');
+  const cellColorHex = document.getElementById('cellColorHex');
+  const veinColorHex = document.getElementById('veinColorHex');
   const formatInput = document.getElementById('format');
   const editButton = document.getElementById('toggleEdit');
   const hint = document.getElementById('stageHint');
@@ -36,7 +38,7 @@
 
   function desiredCount() {
     const size = Number(sizeInput.value);
-    return Math.max(4, Math.min(90, Math.round((state.width * state.height) / (size * size * .92))));
+    return Math.max(2, Math.min(90, Math.round((state.width * state.height) / (size * size * .92))));
   }
 
   function generatePoints() {
@@ -289,12 +291,43 @@
     toastTimer = setTimeout(() => { toast.textContent = ''; }, 2600);
   }
 
-  function updateColors() {
+  function updateColors(syncText = true) {
     document.getElementById('cellSwatch').style.setProperty('--swatch', cellColorInput.value);
     document.getElementById('veinSwatch').style.setProperty('--swatch', veinColorInput.value);
-    document.getElementById('cellColorValue').textContent = cellColorInput.value.toUpperCase();
-    document.getElementById('veinColorValue').textContent = veinColorInput.value.toUpperCase();
+    if (syncText) {
+      cellColorHex.value = cellColorInput.value.toUpperCase();
+      veinColorHex.value = veinColorInput.value.toUpperCase();
+    }
     render();
+  }
+
+  function normalizeHex(value) {
+    let hex = value.trim().replace(/^#/, '');
+    if (/^[0-9a-f]{3}$/i.test(hex)) hex = hex.split('').map(character => character + character).join('');
+    return /^[0-9a-f]{6}$/i.test(hex) ? `#${hex.toLowerCase()}` : null;
+  }
+
+  function bindHexInput(textInput, colorInput) {
+    const apply = () => {
+      const color = normalizeHex(textInput.value);
+      textInput.classList.toggle('is-invalid', !color);
+      if (!color) return false;
+      colorInput.value = color;
+      updateColors(false);
+      return true;
+    };
+    textInput.addEventListener('input', apply);
+    textInput.addEventListener('paste', () => requestAnimationFrame(apply));
+    textInput.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        textInput.blur();
+      }
+    });
+    textInput.addEventListener('blur', () => {
+      if (!apply()) textInput.value = colorInput.value.toUpperCase();
+      textInput.classList.remove('is-invalid');
+    });
   }
 
   function bindRange(input, output, handler) {
@@ -309,6 +342,8 @@
   bindRange(smoothInput, document.getElementById('smoothnessValue'), render);
   cellColorInput.addEventListener('input', updateColors);
   veinColorInput.addEventListener('input', updateColors);
+  bindHexInput(cellColorHex, cellColorInput);
+  bindHexInput(veinColorHex, veinColorInput);
   formatInput.addEventListener('change', () => {
     [state.width, state.height] = formatInput.value.split('x').map(Number);
     state.seed = Math.floor(Math.random() * 0xffffffff);
