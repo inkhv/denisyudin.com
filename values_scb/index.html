@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Как мы обновили цветок ценностей — черновик</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff; --ink:#18181b; --muted:#71717a; --faint:#a1a1aa;
+    --line:#e4e4e7; --card:#fafafa; --card2:#f4f4f5;
+    --accent:#e4002b; --accent-ink:#b0001f;
+    --radius:16px; --maxw:760px;
+    --p-joy:#ffcf00; --p-reliable:#0aae1e; --p-service:#19bade; --p-sense:#1e1e9c; --p-energy:#ff0a24;
+    --font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:17px;line-height:1.6;letter-spacing:-0.01em;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  img{max-width:100%}
+
+  /* top bar */
+  .topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.86);backdrop-filter:saturate(180%) blur(8px);border-bottom:1px solid var(--line)}
+  .topbar .inner{max-width:1120px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:28px}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-0.02em;white-space:nowrap}
+  .brand .dot{width:18px;height:18px;border-radius:50%;background:conic-gradient(from 90deg,var(--p-energy),var(--p-sense),var(--p-service),var(--p-joy),var(--p-reliable),var(--p-energy))}
+  .nav{display:flex;gap:20px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+  .nav a{text-decoration:none}
+  .nav a:hover{color:var(--ink)}
+  @media (max-width:720px){.nav{display:none}}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .draftbar{max-width:var(--maxw);margin:22px auto 0;padding:10px 16px;border:1px dashed var(--accent);border-radius:12px;color:var(--accent-ink);background:#fff5f6;font-size:13px;font-weight:500}
+
+  /* header */
+  header.article{padding:34px 0 6px}
+  .crumbs{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px;margin-bottom:22px}
+  .chip{display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border:1px solid var(--line);border-radius:999px;font-weight:600;color:var(--ink);font-size:12.5px;background:#fff}
+  h1{font-size:clamp(30px,5vw,44px);line-height:1.12;letter-spacing:-0.03em;font-weight:800;margin:0 0 16px}
+  .lead{font-size:clamp(18px,2.4vw,21px);line-height:1.5;color:#3f3f46;margin:0 0 8px}
+
+  /* placeholders */
+  .ph{position:relative;border:1.5px dashed #c9c9cf;border-radius:var(--radius);background:
+      repeating-linear-gradient(135deg,#fafafa,#fafafa 12px,#f2f2f4 12px,#f2f2f4 24px);
+      display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);padding:20px}
+  .ph .ph-label{font-size:13px;font-weight:600;color:#52525b}
+  .ph .ph-sub{display:block;font-size:11.5px;font-weight:500;color:var(--faint);margin-top:4px}
+  .ph.cover{aspect-ratio:16/9;margin:26px 0 6px}
+  .ph.sq{aspect-ratio:1/1}
+  .ph.wide{aspect-ratio:16/7}
+  .ph.tall{aspect-ratio:4/5}
+  .ph-cap{font-size:12.5px;color:var(--faint);margin:8px 2px 0}
+
+  section{padding:30px 0}
+  section+section{border-top:1px solid var(--line)}
+  h2{font-size:clamp(22px,3.2vw,28px);line-height:1.2;letter-spacing:-0.02em;font-weight:750;font-weight:700;margin:0 0 6px}
+  .sub{color:var(--muted);font-size:16px;margin:0 0 18px}
+  p{margin:0 0 16px}
+  .prose p:last-child{margin-bottom:0}
+
+  /* "пригодится если" */
+  .use{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px}
+  .use h3{margin:0 0 14px;font-size:16px;font-weight:700}
+  .use ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+  .use li{position:relative;padding-left:26px;color:#3f3f46}
+  .use li::before{content:"";position:absolute;left:2px;top:9px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+
+  /* value cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .card{border:1px solid var(--line);border-radius:14px;padding:16px 16px 15px;background:#fff}
+  .card .cdot{width:14px;height:14px;border-radius:50%;margin-bottom:11px}
+  .card b{display:block;font-size:15.5px;margin-bottom:3px}
+  .card span{color:var(--muted);font-size:14px;line-height:1.45}
+
+  /* system grid (thumbnails + label) */
+  .sys{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+  .sys .item .ph{aspect-ratio:4/3;margin-bottom:9px}
+  .sys .item b{font-size:14.5px}
+  .sys .item p{font-size:13px;color:var(--muted);margin:2px 0 0;line-height:1.45}
+
+  /* gallery of rejected iterations */
+  .gal-group{margin-bottom:18px}
+  .gal-group h4{margin:0 0 10px;font-size:14px;font-weight:700;color:#52525b;text-transform:none}
+  .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .gal .ph{aspect-ratio:1/1}
+  .note{border-left:3px solid var(--accent);background:#fff5f6;border-radius:0 12px 12px 0;padding:14px 16px;color:#3f3f46;font-size:14.5px;margin-top:16px}
+
+  ul.plain{margin:0 0 4px;padding-left:22px}
+  ul.plain li{margin-bottom:9px;color:#3f3f46}
+
+  /* three sizes */
+  .sizes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media (max-width:620px){.sizes{grid-template-columns:1fr}}
+  .sizes .ph{aspect-ratio:1/1;margin-bottom:10px}
+  .sizes b{font-size:15px}
+  .sizes p{font-size:13.5px;color:var(--muted);margin:3px 0 0}
+
+  /* CTA */
+  .cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:11px;font-weight:600;font-size:15px;text-decoration:none;border:1px solid var(--line);background:#fff;color:var(--ink)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.primary:hover{background:var(--accent-ink);border-color:var(--accent-ink)}
+  .btn:hover{border-color:#c9c9cf}
+  .btn .arr{transition:transform .15s}
+  .btn:hover .arr{transform:translateX(2px)}
+
+  /* owner */
+  .owner{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px}
+  .owner .av{width:56px;height:56px;border-radius:50%;flex:0 0 auto;border:1.5px dashed #c9c9cf;background:#f2f2f4;display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:11px;text-align:center}
+  .owner .who b{display:block;font-size:15.5px}
+  .owner .who span{color:var(--muted);font-size:14px}
+
+  /* related */
+  .rel{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .rel a{display:block;text-decoration:none;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+  .rel a .ph{aspect-ratio:16/9;border:none;border-radius:0;border-bottom:1px solid var(--line)}
+  .rel a .t{padding:13px 15px;font-weight:600;font-size:14.5px}
+  .rel a:hover{border-color:#c9c9cf}
+
+  footer{border-top:1px solid var(--line);margin-top:12px;padding:26px 0 60px;color:var(--faint);font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner">
+    <div class="brand"><span class="dot"></span>Маркетинг&nbsp;Хаб</div>
+    <nav class="nav">
+      <a href="#">Дизайн</a>
+      <a href="#">UX-редакция</a>
+      <a href="#">Исследования</a>
+      <a href="#">Брендбуки</a>
+      <a href="#">Шаблоны и гайды</a>
+      <a href="#">Фотобанк</a>
+    </nav>
+  </div>
+</div>
+
+<div class="draftbar">Черновик · вёрстка статьи для Маркетинг Хаба. Вся графика — плейсхолдеры (экспорт из гайда «Цветок Ценностей 2026» вставим позже).</div>
+
+<div class="wrap">
+  <header class="article">
+    <div class="crumbs">
+      <span class="chip"><span class="dot" style="width:12px;height:12px;border-radius:50%;background:conic-gradient(from 90deg,var(--p-energy),var(--p-sense),var(--p-service),var(--p-joy),var(--p-reliable),var(--p-energy))"></span>Дизайн · Кейс</span>
+      <span>— просмотра</span>
+    </div>
+    <h1>Как мы обновили цветок ценностей</h1>
+    <p class="lead">Цветок ценностей — визуальный символ пяти ценностей банка. Рассказываем, как из множества вариантов пришли к обновлённому знаку и как им пользоваться в своих материалах.</p>
+    <div class="ph cover"><div><span class="ph-label">Обложка: основной вид цветка</span><span class="ph-sub">Figma → кадр 134:120 (PNG/SVG)</span></div></div>
+  </header>
+</div>
+
+<div class="wrap">
+  <section>
+    <div class="use">
+      <h3>Пригодится, если вы:</h3>
+      <ul>
+        <li>готовите презентацию или плакат про ценности</li>
+        <li>проводите онбординг новых сотрудников</li>
+        <li>маркируете визуал ценностью через бейдж или пиктограмму</li>
+        <li>собираете мерч и носители к Неделе ценностей</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Что стоит за символом</h2>
+    <p class="sub">Ценности — не свод правил, а живой процесс</p>
+    <div class="prose">
+      <p>Ценности нельзя выучить — их можно только раскрыть. Как цветок: лепесток за лепестком, через поступки, а не по инструкции. Бутон уже несёт в себе все пять ценностей, а раскрываются они там, где есть доверие, культура, внимание и время.</p>
+    </div>
+    <div class="ph wide" style="margin-top:20px"><div><span class="ph-label">Концепт: Образ · Семантика · Условия</span><span class="ph-sub">Figma → 2:683 / 2:687 / 2:691</span></div></div>
+  </section>
+
+  <section>
+    <h2>Что показывает цветок</h2>
+    <p class="sub">Пять лепестков — пять ценностей, а логотип в центре держит их вместе</p>
+    <div class="cards">
+      <div class="card"><span class="cdot" style="background:var(--p-joy)"></span><b>Радость общения</b><span>открытый и искренний диалог с клиентами и коллегами</span></div>
+      <div class="card"><span class="cdot" style="background:var(--p-reliable)"></span><b>Надёжные перспективы</b><span>стабильность и рост без лишней суеты</span></div>
+      <div class="card"><span class="cdot" style="background:var(--p-service)"></span><b>Сервис на знаниях</b><span>экспертная помощь и внимание к клиенту</span></div>
+      <div class="card"><span class="cdot" style="background:var(--p-sense)"></span><b>Здравый смысл</b><span>путь к цели по логике и приоритетам</span></div>
+      <div class="card"><span class="cdot" style="background:var(--p-energy)"></span><b>Энергия созидания</b><span>идеи, которые оживают в дисциплинированной работе</span></div>
+    </div>
+    <div class="ph wide" style="margin-top:16px"><div><span class="ph-label">Основной вид + вид с названиями ценностей</span><span class="ph-sub">Figma → 134:120 / 134:151</span></div></div>
+  </section>
+
+  <section>
+    <h2>Как мы к этому пришли</h2>
+    <div class="prose">
+      <p>К нам в отдел пришла задача обновить цветок ценностей. До этого заходы уже были, но в вялотекущем режиме — ни один вариант не проходил финальный фильтр.</p>
+      <p>Параллельно коллеги из маркетинговых коммуникаций вместе с агентством тестировали разные формы символа: орбиты, атом, стилизованную инфографику. Проблема была в универсальности: графика хорошо работала в крупном масштабе, но рассыпалась в миниатюре — или наоборот.</p>
+      <p>С нашей стороны мы пробовали альтернативные заходы: концепцию отчеканенных монет, символы из плашек и десятки других вариантов.</p>
+      <p>После большого числа итераций вывод оказался простым: цветок — форма, которая уже живёт в сознании сотрудников. Её не нужно придумывать заново — нужно уточнить и сделать современнее.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Путь к решению: что пробовали</h2>
+    <p class="sub">Формы, которые не прошли главный фильтр — универсальность</p>
+
+    <div class="gal-group">
+      <h4>Заходы агентства и маркетинговых коммуникаций</h4>
+      <div class="gal">
+        <div class="ph"><div><span class="ph-label">Орбиты</span><span class="ph-sub">1–3 итерации</span></div></div>
+        <div class="ph"><div><span class="ph-label">Атом</span><span class="ph-sub">1–3 итерации</span></div></div>
+        <div class="ph"><div><span class="ph-label">Стилизованная инфографика</span><span class="ph-sub">1–3 итерации</span></div></div>
+      </div>
+    </div>
+
+    <div class="gal-group">
+      <h4>Наши альтернативные заходы</h4>
+      <div class="gal">
+        <div class="ph"><div><span class="ph-label">Отчеканенные монеты</span><span class="ph-sub">1–3 итерации</span></div></div>
+        <div class="ph"><div><span class="ph-label">Символы из плашек</span><span class="ph-sub">1–3 итерации</span></div></div>
+        <div class="ph"><div><span class="ph-label">Прочие варианты</span><span class="ph-sub">сетка миниатюр</span></div></div>
+        <div class="ph"><div><span class="ph-label">+ отклонённые концепции</span><span class="ph-sub">N штук</span></div></div>
+      </div>
+    </div>
+
+    <div class="note">Прежде чем прийти к цветку, мы проверили формы, которые не прошли главный фильтр — универсальность: символ должен одинаково читаться и на бейдже, и на плакате.</div>
+  </section>
+
+  <section>
+    <h2>Как устроен знак</h2>
+    <p class="sub">Собран с нуля и держится на пропорциях</p>
+    <ul class="plain">
+      <li>Каждый лепесток — отдельная ценность, а любую из них можно выделить, выведя её лепесток на верхнюю позицию</li>
+      <li>Логотип встроен внутрь и работает стержнем всей конструкции</li>
+      <li>Боке на лепестках — для консистентности с рефрешем банка</li>
+      <li>В основе построения — золотое сечение: размер логотипа равен одному из сечений по φ от диаметра цветка, а лепестки пересекаются между собой в сечениях по φ</li>
+    </ul>
+    <div class="ph wide" style="margin-top:18px"><div><span class="ph-label">Схема построения по φ (сетка и знак)</span><span class="ph-sub">Figma → страница ARTICLE, слайды «Сетка и знак»</span></div></div>
+  </section>
+
+  <section>
+    <h2>Система знака: как использовать</h2>
+    <p class="sub">Один символ — под любой носитель</p>
+    <div class="sys">
+      <div class="item"><div class="ph"><span class="ph-sub">2:1151…2:1333</span></div><b>Выделение ценности</b><p>выводим нужный лепесток наверх</p></div>
+      <div class="item"><div class="ph"><span class="ph-sub">133:22</span></div><b>Монохром</b><p>для внутренних коммуникаций и одноцветной печати</p></div>
+      <div class="item"><div class="ph"><span class="ph-sub">1064:938 / 971 / 957</span></div><b>Вектор и растр</b><p>вектор как основа, растр с прозрачностью и размытием для объёма</p></div>
+      <div class="item"><div class="ph"><span class="ph-sub">1067:1522</span></div><b>Favicon</b><p>маленький размер без боке и логотипа, чтобы не было шума</p></div>
+      <div class="item"><div class="ph"><span class="ph-sub">135:674 …</span></div><b>Фоны</b><p>боке в режиме Screen, прозрачность под нужный контраст</p></div>
+      <div class="item"><div class="ph"><span class="ph-sub">135:757…135:774</span></div><b>Градиенты</b><p>свой градиент закреплён за каждым направлением</p></div>
+      <div class="item"><div class="ph"><span class="ph-sub">133:13 · 1064:986</span></div><b>Бейджи</b><p>маркируют материал ценностью; дальше — только символ с подсвеченным лепестком</p></div>
+    </div>
+    <div class="cta"><a class="btn primary" href="#">Открыть гайд знака <span class="arr">→</span></a></div>
+  </section>
+
+  <section>
+    <h2>Три размера</h2>
+    <p class="sub">Один цветок — под задачу любого носителя</p>
+    <div class="sizes">
+      <div><div class="ph"><span class="ph-sub">1067:1522</span></div><b>Иконка</b><p>форма и цвета без текста — для аватара, значка, фавикона</p></div>
+      <div><div class="ph"><span class="ph-sub">134:120</span></div><b>Стандарт</b><p>цветок с названиями ценностей — для презентаций и портала</p></div>
+      <div><div class="ph"><span class="ph-sub">134:151</span></div><b>Развёрнутый</b><p>цветок с названиями и описаниями — для буклета и стенда</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Как начать работать</h2>
+    <div class="prose"><p>Берите готовый символ из гайда, а если нужен нестандартный носитель — пишите в команду ценностей.</p></div>
+    <div class="cta">
+      <a class="btn primary" href="#">Открыть гайд знака <span class="arr">→</span></a>
+      <a class="btn" href="#">Скачать символ</a>
+      <a class="btn" href="#">Написать в команду ДКЦ</a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Есть вопросы?</h2>
+    <div class="prose"><p>Если появились вопросы или предложения — напишите владельцу страницы.</p></div>
+    <div class="owner">
+      <div class="av">фото</div>
+      <div class="who"><b>Имя Фамилия</b><span>Должность — уточнить владельца страницы</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Другие материалы</h2>
+    <div class="rel">
+      <a href="#"><div class="ph"><span class="ph-sub">обложка</span></div><div class="t">Гайд по ценностям</div></a>
+      <a href="#"><div class="ph"><span class="ph-sub">обложка</span></div><div class="t">Иконки ценностей</div></a>
+      <a href="#"><div class="ph"><span class="ph-sub">обложка</span></div><div class="t">Персонажи Лиги достижений</div></a>
+    </div>
+  </section>
+
+  <footer>
+    Черновик страницы для Маркетинг Хаба · denisyudin.com/values_scb · 2026
+  </footer>
+</div>
+
+</body>
+</html>
