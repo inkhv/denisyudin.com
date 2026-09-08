@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f3ec">
+  <title>PAIR Guidebook: как проектировать AI-продукты вокруг человека — Denis Yudin</title>
+  <meta name="description" content="Практический разбор People + AI Guidebook от Google: потребности человека, доверие, управление AI и работа с ошибками. Шесть разделов и пример для дизайн-ревью.">
+  <link rel="canonical" href="https://denisyudin.com/pair/">
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Denis Yudin">
+  <meta property="og:url" content="https://denisyudin.com/pair/">
+  <meta property="og:title" content="PAIR Guidebook: AI-продукты вокруг человека">
+  <meta property="og:description" content="Как проектировать пользу, доверие и контроль в AI-продуктах. Разбор руководства Google и пример для дизайн-ревью.">
+  <meta property="og:image" content="https://denisyudin.com/pair/cover.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="PAIR Guidebook. AI-продукты вокруг человека. Статья Дениса Юдина.">
+  <meta property="article:published_time" content="2026-09-08">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="PAIR Guidebook: AI-продукты вокруг человека">
+  <meta name="twitter:description" content="Практический разбор руководства Google по проектированию AI-продуктов.">
+  <meta name="twitter:image" content="https://denisyudin.com/pair/cover.png">
+  <link rel="icon" type="image/png" href="../assets/694eb3c01c94deb52f44b88a_p10%200062_24.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="article.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "PAIR Guidebook: как проектировать AI-продукты вокруг человека",
+    "description": "Практический разбор руководства Google: потребности человека, доверие, управление AI и работа с ошибками.",
+    "inLanguage": "ru-RU",
+    "datePublished": "2026-09-08",
+    "dateModified": "2026-09-08",
+    "author": { "@type": "Person", "name": "Денис Юдин", "url": "https://denisyudin.com/" },
+    "mainEntityOfPage": "https://denisyudin.com/pair/",
+    "image": "https://denisyudin.com/pair/cover.png",
+    "isBasedOn": "https://pair.withgoogle.com/guidebook/"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#article">Перейти к статье</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="../">Denis Yudin</a>
+      <span class="header-label">Заметки о дизайне и AI</span>
+      <a class="home-link" href="../">На главную <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="reading-progress" aria-hidden="true"><span></span></div>
+  </header>
+
+  <main id="top" class="page-shell">
+    <article id="article" aria-labelledby="article-title">
+      <header class="hero">
+        <div class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Дизайн взаимодействия <span class="eyebrow-divider">/</span> Разбор руководства</div>
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="hero-kicker">People + AI</p>
+            <h1 id="article-title"><span class="title-name">PAIR Guidebook:</span> как проектировать AI‑продукты вокруг человека</h1>
+            <p class="hero-deck">Польза, понятные ожидания, доверие и контроль — четыре опоры взаимодействия с AI. Разбираемся, как руководство Google помогает превратить их в продуктовые решения.</p>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <span class="art-caption">В центре — взаимодействие</span>
+            <div class="pair-symbol">
+              <div class="symbol-person"><span>Человек</span></div>
+              <div class="symbol-ai"><span>AI</span></div>
+              <span class="symbol-plus">+</span>
+            </div>
+            <div class="art-bottom"><span>Цель и контекст</span><span>Возможности</span></div>
+          </div>
+        </div>
+        <div class="article-meta">
+          <div><a href="../">Денис Юдин</a><span class="meta-dot">·</span><time datetime="2026-09-08">8 сентября 2026</time></div>
+          <span>На основе 3-й редакции PAIR</span>
+        </div>
+      </header>
+
+      <div class="article-layout">
+        <aside class="article-sidebar">
+          <nav class="toc" aria-label="Содержание статьи">
+            <p class="toc-label">В этой статье</p>
+            <ol>
+              <li><a href="#about"><span>01</span> Что такое PAIR</a></li>
+              <li><a href="#value"><span>02</span> Начать с пользы</a></li>
+              <li><a href="#chapters"><span>03</span> Шесть разделов</a></li>
+              <li><a href="#principles"><span>04</span> Доверие и контроль</a></li>
+              <li><a href="#example"><span>05</span> Пример на практике</a></li>
+              <li><a href="#review"><span>06</span> Вопросы для ревью</a></li>
+              <li><a href="#sources"><span>↗</span> Первоисточники</a></li>
+            </ol>
+            <a class="guide-link" href="https://pair.withgoogle.com/guidebook/" target="_blank" rel="noopener noreferrer">Открыть PAIR Guidebook <span aria-hidden="true">↗</span></a>
+          </nav>
+        </aside>
+
+        <div class="article-body">
+          <section id="about" class="article-section" aria-labelledby="about-title">
+            <span class="section-number">01 / Контекст</span>
+            <h2 id="about-title">Что такое PAIR Guidebook</h2>
+            <p><a href="https://pair.withgoogle.com/guidebook/">People + AI Guidebook</a> — практическое руководство Google по проектированию AI-продуктов с фокусом на человека. Его подготовила команда <a href="https://pair.withgoogle.com/">People + AI Research</a>: исследователи, которые изучают человеческую сторону искусственного интеллекта.</p>
+            <p>Руководство помогает дизайнерам, продактам и разработчикам договориться о том, какую задачу решает AI, как человек будет с ним работать и что произойдёт, если результат окажется неверным. Внутри — подробные главы, принципы, паттерны, примеры и упражнения для команды.</p>
+            <p>Первая версия вышла в мае 2019 года. Третья редакция, обновлённая в апреле 2025 года, уделяет особое внимание генеративному AI. Это позволяет применять её к продуктам, в которых пользователь получает открытый, вариативный результат: текст, изображение, рекомендацию или план действий.</p>
+            <div class="editor-note"><span>О материале</span><p>Это авторский разбор идей руководства. Практический пример и вопросы для ревью ниже — их применение к проектной задаче. Ссылки ведут на официальные материалы Google.</p></div>
+          </section>
+
+          <section id="value" class="article-section" aria-labelledby="value-title">
+            <span class="section-number">02 / Отправная точка</span>
+            <h2 id="value-title">Начать с пользы для человека</h2>
+            <p>Первая глава PAIR предлагает связать потребности пользователей с сильными сторонами AI. Для этого нужно понять, кто пользуется продуктом, как сейчас решается задача и где возникает трудность. Затем определить, какой результат будет означать успех. <a class="source-link" href="https://pair.withgoogle.com/guidebook/chapters/user-needs-and-defining-success">User Needs + Defining Success ↗</a></p>
+            <p>Представим редактор рекламных текстов. Возможность сгенерировать двадцать заголовков сама по себе мало говорит о пользе. В проектной работе важнее выяснить, помогает ли редактор быстрее получить текст, который подходит аудитории, соответствует брифу и проходит согласование.</p>
+            <div class="pullquote"><p>Проектировать AI-продукт — значит проектировать путь человека к результату, включая проверку и исправления.</p></div>
+            <p>Для такого редактора можно измерять время до согласованного варианта, объём ручной доработки и частоту ошибок в обязательных формулировках. Это пример продуктовых критериев: они связывают работу AI с тем, ради чего человек открывает инструмент.</p>
+          </section>
+
+          <section id="chapters" class="article-section" aria-labelledby="chapters-title">
+            <span class="section-number">03 / Карта руководства</span>
+            <h2 id="chapters-title">Шесть разделов, которые стоит держать рядом</h2>
+            <p>Каждый раздел рассматривает отдельную сторону взаимодействия. Их удобно использовать по мере работы над продуктом: от постановки задачи до разбора ошибок после запуска.</p>
+            <ol class="chapter-list">
+              <li>
+                <span class="chapter-index">01</span><div><h3>Потребности и критерии успеха</h3><p>Какую проблему решает продукт? Где AI добавляет ценность? Что стоит автоматизировать, а где лучше помогать человеку действовать самостоятельно?</p><a class="chapter-source" href="https://pair.withgoogle.com/guidebook/chapters/user-needs-and-defining-success">User Needs + Defining Success <span aria-hidden="true">↗</span></a></div>
+              </li>
+              <li>
+                <span class="chapter-index">02</span><div><h3>Данные и развитие модели</h3><p>Как превратить потребности людей в требования к данным и модели? На каких примерах проверять качество? Как оценивать пользу и поведение AI до и после запуска?</p><a class="chapter-source" href="https://pair.withgoogle.com/guidebook/chapters/data-and-model-evolution">Data + Model Evolution <span aria-hidden="true">↗</span></a></div>
+              </li>
+              <li>
+                <span class="chapter-index">03</span><div><h3>Представления и ожидания</h3><p>Что человек думает о возможностях AI? Как объяснить ограничения, помочь освоиться и обновить ожидания, когда система меняется?</p><a class="chapter-source" href="https://pair.withgoogle.com/guidebook/chapters/mental-models-and-expectations">Mental Models + Expectations <span aria-hidden="true">↗</span></a></div>
+              </li>
+              <li>
+                <span class="chapter-index">04</span><div><h3>Доверие и объяснения</h3><p>Когда пользователь может опереться на результат? Каковы последствия избыточного или недостаточного доверия? Какие объяснения помогут принять решение?</p><a class="chapter-source" href="https://pair.withgoogle.com/guidebook/chapters/trust-and-explanations">Trust + Explanations <span aria-hidden="true">↗</span></a></div>
+              </li>
+              <li>
+                <span class="chapter-index">05</span><div><h3>Обратная связь и управление</h3><p>Как направлять AI, сравнивать варианты и корректировать результат? Что происходит после обратной связи и какую пользу это приносит пользователю?</p><a class="chapter-source" href="https://pair.withgoogle.com/guidebook/chapters/feedback-and-controls">Feedback + Controls <span aria-hidden="true">↗</span></a></div>
+              </li>
+              <li>
+                <span class="chapter-index">06</span><div><h3>Ошибки и восстановление</h3><p>Что считается ошибкой в данном контексте? Насколько серьёзны последствия? Как помочь человеку исправить ситуацию и продолжить работу?</p><a class="chapter-source" href="https://pair.withgoogle.com/guidebook/chapters/errors-and-graceful-failures">Errors + Graceful Failures <span aria-hidden="true">↗</span></a></div>
+              </li>
+            </ol>
+          </section>
+
+          <section id="principles" class="article-section" aria-labelledby="principles-title">
+            <span class="section-number">04 / Продуктовые решения</span>
+            <h2 id="principles-title">Доверие и контроль нужно проектировать</h2>
+            <h3>Выбирать подходящую степень автоматизации</h3>
+            <p>Готовность делегировать зависит от задачи, опыта человека и усилий, необходимых для управления AI. Пользователь может хотеть автоматизировать рутину и сохранять самостоятельность там, где важен его замысел. PAIR предлагает учитывать эти различия при выборе уровня автономии. <a class="source-link" href="https://pair.withgoogle.com/guidebook/">Принцип User Autonomy ↗</a></p>
+            <p>В редакторе это может означать разные способы работы: предложить варианты, изменить выделенный фрагмент или подготовить полный черновик. Выбор режима даёт человеку возможность соотнести помощь AI со своей задачей.</p>
+
+            <h3>Соотносить доверие с возможностями системы</h3>
+            <p>В PAIR используется идея калибровки доверия: человек должен понимать, когда результату можно довериться и когда нужна проверка. Для этого команда разбирает, как доверие формируется, что его разрушает и как объяснения помогают действовать. <a class="source-link" href="https://pair.withgoogle.com/guidebook/chapters/trust-and-explanations">Trust + Explanations ↗</a></p>
+            <p>Применительно к нашему редактору полезно отделять сведения из брифа от предложенных моделью формулировок. Если AI добавил неподтверждённое утверждение, интерфейс должен помочь его заметить и проверить. Красиво оформленный текст сам по себе не подтверждает достоверность.</p>
+
+            <h3>Давать содержательную обратную связь</h3>
+            <p>Обратная связь помогает системе улучшаться, а человеку — понимать её поведение. Важно заранее определить, какой сигнал нужен команде и что пользователь получит после своего действия. Управление может включать настройку AI, сравнение вариантов и последовательную доработку результата. <a class="source-link" href="https://pair.withgoogle.com/guidebook/chapters/feedback-and-controls">Feedback + Controls ↗</a></p>
+            <p>Например, замечания «слишком официальный тон» и «неверный факт» требуют разной реакции. В редакторе стоит разделить эти причины и объяснить, меняет ли действие текущий текст, сохраняет предпочтение или отправляет отзыв команде.</p>
+
+            <h3>Предусматривать путь после ошибки</h3>
+            <p>PAIR рассматривает ошибки системы, ошибки пользователя и несоответствия между ожиданиями человека и предположениями AI. Их последствия зависят от контекста. Поэтому восстановление нужно продумывать вместе с основным сценарием. <a class="source-link" href="https://pair.withgoogle.com/guidebook/chapters/errors-and-graceful-failures">Errors + Graceful Failures ↗</a></p>
+            <p>Если генерация не удалась, редактор может сохранить исходный бриф и последнюю версию текста, предложить уточнить запрос или продолжить вручную. Пользователь при этом сохраняет уже выполненную работу.</p>
+          </section>
+
+          <section id="example" class="article-section" aria-labelledby="example-title">
+            <span class="section-number">05 / Применение</span>
+            <h2 id="example-title">Как это выглядит в редакторе рекламных текстов</h2>
+            <p>Соберём принципы в один сценарий. Редактору нужно подготовить несколько рекламных заголовков по брифу, выбрать подходящий и согласовать результат.</p>
+            <div class="scenario">
+              <div class="scenario-heading"><span class="scenario-tag">Учебный пример</span><span>Бриф → согласованный текст</span></div>
+              <ol class="scenario-steps">
+                <li><span class="step-number">1</span><div><h3>Задать рамки</h3><p>До генерации пользователь указывает аудиторию, канал, тон и обязательные формулировки. Система показывает, какие вводные она использует.</p></div></li>
+                <li><span class="step-number">2</span><div><h3>Выбрать направление</h3><p>AI предлагает несколько вариантов с понятными различиями: прямое предложение, вопрос или акцент на выгоде. Пользователь может сравнить их по своей задаче.</p></div></li>
+                <li><span class="step-number">3</span><div><h3>Доработать точечно</h3><p>Можно сократить заголовок, изменить тон или переписать одну фразу. Удачные части сохраняются, предыдущую версию можно вернуть.</p></div></li>
+                <li><span class="step-number">4</span><div><h3>Проверить и завершить</h3><p>Перед передачей текста на согласование пользователь сверяет факты и обязательные условия. Критерий качества инструмента — время и усилия до готового результата.</p></div></li>
+              </ol>
+              <p class="scenario-note">Сценарий составлен для этой статьи. Он иллюстрирует применение принципов PAIR и не является кейсом Google или описанием готового продукта.</p>
+            </div>
+            <p>На дизайн-ревью такого инструмента можно пройти всю цепочку: от понимания брифа до исправления неудачного ответа. Так становится видно, где пользователю не хватает информации, возможностей управления или пути для продолжения работы.</p>
+          </section>
+
+          <section id="review" class="article-section" aria-labelledby="review-title">
+            <span class="section-number">06 / В работу</span>
+            <h2 id="review-title">Шесть вопросов для ближайшего дизайн-ревью</h2>
+            <p>Практический способ начать — выбрать одну AI-функцию и обсудить её на примере реальной задачи. Эти вопросы можно использовать как основу встречи:</p>
+            <ol class="review-list">
+              <li><strong>Польза.</strong> Что человек сможет сделать лучше и как мы это проверим?</li>
+              <li><strong>Данные.</strong> Похожи ли наши примеры для оценки на реальные запросы и условия работы?</li>
+              <li><strong>Ожидания.</strong> Что пользователь поймёт о возможностях и ограничениях AI при первом знакомстве?</li>
+              <li><strong>Доверие.</strong> Как он определит, что результат требует проверки?</li>
+              <li><strong>Управление.</strong> Как изменить, отменить или отклонить предложение AI?</li>
+              <li><strong>Ошибка.</strong> Как завершить задачу, если AI не справится?</li>
+            </ol>
+            <p>По итогам обсуждения полезно зафиксировать несколько конкретных решений: что изменится в сценарии, что нужно проверить с пользователями и по каким признакам команда оценит результат. Например: «добавить возврат к предыдущему варианту» или «проверить, замечают ли редакторы неподтверждённые утверждения».</p>
+            <p>С этого и удобно начинать работу с PAIR: выбрать ближайшую продуктовую проблему, открыть соответствующую главу и применить её вопросы к своему сценарию. Руководство даёт общий язык для обсуждения того, как AI помогает человеку и где эта помощь требует доработки.</p>
+          </section>
+
+          <section id="sources" class="article-section sources" aria-labelledby="sources-title">
+            <span class="section-number">Читать дальше</span>
+            <h2 id="sources-title">Первоисточники</h2>
+            <p>Материал опирается на третью редакцию People + AI Guidebook, обновлённую в апреле 2025 года. Содержание и названия разделов проверены 8 сентября 2026 года.</p>
+            <ul class="source-list">
+              <li><a href="https://pair.withgoogle.com/guidebook/"><span>People + AI Guidebook<small>Руководство, принципы и материалы для команды</small></span><span aria-hidden="true">↗</span></a></li>
+              <li><a href="https://pair.withgoogle.com/guidebook/chapters"><span>Все шесть глав<small>Подробные рекомендации, упражнения и исследования</small></span><span aria-hidden="true">↗</span></a></li>
+              <li><a href="https://pair.withgoogle.com/"><span>People + AI Research<small>Команда, исследования и инструменты Google PAIR</small></span><span aria-hidden="true">↗</span></a></li>
+            </ul>
+            <p class="source-credit">Google PAIR — автор исходного руководства. Все иллюстрации и учебный сценарий на этой странице созданы для статьи; официальные изображения Google не использованы.</p>
+          </section>
+        </div>
+      </div>
+    </article>
+    <footer class="page-footer"><a href="../">Denis Yudin</a><span>Дизайн начинается с человека.</span><a href="#top">Наверх <span aria-hidden="true">↑</span></a></footer>
+  </main>
+</body>
+</html>
