@@ -51,6 +51,7 @@
     }
     @media(prefers-reduced-motion:reduce){.hint,.brush-cursor{transition:none}}
   </style>
+<script type="module" src="/tools/menu.mjs"></script>
 </head>
 <body>
   <main class="app-shell">
@@ -64,7 +65,7 @@
         </div>
         <button type="button" id="undo" aria-label="Отменить последний штрих">Отменить</button>
         <button type="button" id="clear">Очистить</button>
-        <a class="home-link" href="../" aria-label="На главную denisyudin.com">↗</a>
+        <dy-tool-menu theme="dark" compact><a href="/tools/">Инструменты</a></dy-tool-menu>
       </header>
       <div class="stage" id="stage">
         <canvas id="canvas" aria-label="Интерактивный холст с жидкой светящейся кистью"></canvas>

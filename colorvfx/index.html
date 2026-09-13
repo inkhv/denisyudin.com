@@ -54,9 +54,11 @@
       border-color: rgba(255, 255, 255, 0.2);
     }
   </style>
+<script type="module" src="/tools/menu.mjs"></script>
 </head>
 <body>
-  <nav class="page-nav" aria-label="Версии страницы">
+  <nav class="page-nav" aria-label="Версии страницы" style="display:flex;align-items:center;gap:16px;justify-content:space-between;max-width:calc(100vw - 24px)">
+    <dy-tool-menu theme="dark"><a href="/tools/">Инструменты</a></dy-tool-menu>
     <a href="index2.html">Версия 2 — наш VFX + загрузка фото</a>
   </nav>
 

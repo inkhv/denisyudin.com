@@ -140,6 +140,7 @@
       border-color: rgba(255, 255, 255, 0.2);
     }
   </style>
+<script type="module" src="/tools/menu.mjs"></script>
 </head>
 <body>
   <div class="toolbar" role="region" aria-label="Управление VFX">
@@ -148,7 +149,7 @@
     </p>
     <label class="file-btn" for="img-input">Загрузить изображение</label>
     <input id="img-input" type="file" accept="image/*">
-    <a class="ghost" href="index.html">Оригинал (embed)</a>
+    <dy-tool-menu theme="dark"><a href="/tools/">Инструменты</a></dy-tool-menu>
   </div>
 
   <nav class="page-nav" aria-label="Версии страницы">

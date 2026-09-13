@@ -12,12 +12,13 @@
   <meta property="og:type" content="website">
   <link rel="stylesheet" href="styles.css">
   <script type="module" src="app.mjs"></script>
+<script type="module" src="/tools/menu.mjs"></script>
 </head>
 <body>
   <main class="app">
     <section class="workspace" aria-label="Редактор формы">
       <header class="toolbar">
-        <div class="identity"><a href="/" aria-label="На главную">DY</a><h1>Hofmann</h1><span>контуры по сетке</span></div>
+        <div class="identity"><dy-tool-menu theme="dark" compact><a href="/tools/">Инструменты</a></dy-tool-menu><h1>Hofmann</h1><span>контуры по сетке</span></div>
         <div class="toolbar-actions">
           <button id="undo" class="icon-button" title="Отменить · ⌘Z" aria-label="Отменить" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 4 10l5 5M4 10h10a6 6 0 0 1 0 12" transform="translate(0 -2)"/></svg></button>
           <button id="redo" class="icon-button" title="Повторить · ⇧⌘Z" aria-label="Повторить" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5 5 5-5 5m5-5H10a6 6 0 0 0 0 12" transform="translate(0 -2)"/></svg></button>
