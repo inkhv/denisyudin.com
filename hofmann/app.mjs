@@ -1,5 +1,5 @@
 import { clamp, fmt, gridGeometry, shapeGeometry, exampleNodes, EXAMPLES } from './geometry.mjs';
-import {moveRouteNode, reverseRoute, canContinueRoute, continueRoute} from './route.mjs';
+import {moveRouteNode, reverseRoute} from './route.mjs?v=20260914-order2';
 
 const $ = id => document.getElementById(id);
 const STORAGE = 'denisyudin.hofmann.v1';
@@ -216,16 +216,11 @@ function render() {
   if (document.activeElement !== $('nodeOrder')) $('nodeOrder').value = node ? selectedNode + 1 : '';
   $('nodeTotal').textContent = `из ${shape.nodes.length}`;
   $('reverseRoute').disabled = shape.nodes.length < 2;
-  $('continueFrom').disabled = !canContinueRoute(shape, selectedNode);
   $('nodeLabel').textContent = node ? `${selectedNode + 1}` : '';
   $('nodeTurn').value = node ? node.turn : 0;
-  $('nodeHint').textContent = !node ? 'Выбери точку маршрута на холсте. Номер задаёт её место в контуре.'
-    : shape.closed ? '«Продолжить отсюда» разомкнёт контур после этой точки и сделает её последней.'
-    : selectedNode === 0 && shape.nodes.length > 1 ? '«Продолжить отсюда» развернёт порядок: первая точка станет последней, без замыкания.'
-    : selectedNode === shape.nodes.length - 1 ? 'Можно добавлять новые круги. Контур продолжится от этой точки.'
-    : 'Продолжить можно от первой или последней точки. Номер меняет порядок обхода.';
+  $('nodeHint').textContent = node ? 'Номер меняет место точки в маршруте. «Развернуть порядок» меняет направление обхода.' : 'Выбери точку маршрута на холсте. Номер задаёт её место в контуре.';
   $('pathInfo').textContent = !shape.nodes.length ? 'Выбери первый круг на холсте.' : shape.closed ? 'Замкнутая форма. Выбери круг, чтобы изменить обход.' : `Открытый маршрут · ${shape.nodes.length} точек.${state.mode !== 'outline' ? ' Замкни для заливки.' : ''}`;
-  $('stageHint').textContent = preview ? 'Просмотр без направляющих. Нажми «Редактировать», чтобы продолжить.' : shape.closed ? 'Выбери точку → «Продолжить отсюда», чтобы разомкнуть контур.' : 'Новые круги — в конец. От первой точки — «Продолжить отсюда».';
+  $('stageHint').textContent = preview ? 'Просмотр без направляющих. Нажми «Редактировать», чтобы продолжить.' : shape.closed ? 'Выбери точку, чтобы изменить номер или сторону обхода.' : 'Новые круги добавляются в конец. Замкнуть — кнопкой или Enter.';
   renderShapeList(); fitFrame(); renderCanvas();
 }
 function fitFrame() {
@@ -337,14 +332,6 @@ $('reverseRoute').addEventListener('click', () => {
     reverseRoute(activeShape(), gridGeometry(state));
     if (selectedNode >= 0) selectedNode = activeShape().nodes.length - 1 - selectedNode;
   });
-});
-$('continueFrom').addEventListener('click', () => {
-  if (!canContinueRoute(activeShape(), selectedNode)) return;
-  mutate(() => { selectedNode = continueRoute(activeShape(), selectedNode, gridGeometry(state)); preview = false; });
-  const node = activeShape().nodes[selectedNode];
-  keyboardPin = {c:node.c, r:node.r};
-  $('artboard').focus({preventScroll:true});
-  toast('Выбирай новые круги — контур продолжится от выбранной точки.');
 });
 $('flipTurn').addEventListener('click', () => flipNode());
 $('deleteNode').addEventListener('click', () => deleteNode());
