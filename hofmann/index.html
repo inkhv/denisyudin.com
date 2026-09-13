@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1a1c">
+  <title>Hofmann — контуры по сетке · Denis Yudin</title>
+  <meta name="description" content="Рисуйте формы из дуг и касательных на сетке кругов. Настройки точек и фрейма, контур и заливка, экспорт SVG и PNG.">
+  <link rel="canonical" href="https://denisyudin.com/hofmann/">
+  <meta property="og:title" content="Hofmann · контуры по сетке">
+  <meta property="og:description" content="От круга к форме: векторный редактор по мотивам упражнений Армина Хофмана.">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.mjs"></script>
+</head>
+<body>
+  <main class="app">
+    <section class="workspace" aria-label="Редактор формы">
+      <header class="toolbar">
+        <div class="identity"><a href="/" aria-label="На главную">DY</a><h1>Hofmann</h1><span>контуры по сетке</span></div>
+        <div class="toolbar-actions">
+          <button id="undo" class="icon-button" title="Отменить · ⌘Z" aria-label="Отменить" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 4 10l5 5M4 10h10a6 6 0 0 1 0 12" transform="translate(0 -2)"/></svg></button>
+          <button id="redo" class="icon-button" title="Повторить · ⇧⌘Z" aria-label="Повторить" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5 5 5-5 5m5-5H10a6 6 0 0 0 0 12" transform="translate(0 -2)"/></svg></button>
+          <button id="preview" aria-pressed="false">Просмотр</button>
+        </div>
+      </header>
+      <div id="stage" class="stage">
+        <div id="frameWrap"><svg id="artboard" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" aria-label="Холст. Выберите круги в порядке обхода." tabindex="0"></svg></div>
+      </div>
+      <footer class="workspace-footer"><p id="stageHint">Выбирай круги по порядку. Клик по первому — замкнуть.</p><span id="frameInfo">1080 × 1080 px</span></footer>
+    </section>
+
+    <aside id="panel" class="panel" aria-label="Настройки Hofmann">
+      <section class="control-section">
+        <h2>Формы</h2>
+        <div id="shapeList" class="shape-list"></div>
+        <button id="addShape" class="full">Новая форма</button>
+        <div class="two-buttons"><button id="closeShape">Замкнуть</button><button id="removeLast">Убрать точку</button></div>
+        <p id="pathInfo" class="hint" aria-live="polite"></p>
+      </section>
+
+      <section class="control-section">
+        <h2>Отображение</h2>
+        <div class="segments" id="viewModes" role="group" aria-label="Отображение формы">
+          <button data-mode="outline" aria-pressed="true">Контур</button><button data-mode="fill" aria-pressed="false">Заливка</button><button data-mode="both" aria-pressed="false">Оба</button>
+        </div>
+        <label class="range-control" for="strokeWidth"><span>Толщина контура</span><output id="strokeValue">6 px</output><input id="strokeWidth" type="range" min="1" max="40" step="0.5" value="6"></label>
+        <div class="colors"><label>Контур<input type="color" id="strokeColor" value="#111111"></label><label>Заливка<input type="color" id="fillColor" value="#111111"></label><label>Фон<input type="color" id="background" value="#ffffff"></label></div>
+      </section>
+
+      <section class="control-section">
+        <h2>Сетка кругов</h2>
+        <div class="number-pair"><label for="cols">Колонки<input id="cols" type="number" min="1" max="24" value="4" inputmode="numeric"></label><span>×</span><label for="rows">Ряды<input id="rows" type="number" min="1" max="24" value="4" inputmode="numeric"></label></div>
+        <label class="range-control" for="diameter"><span>Диаметр / шаг</span><output id="diameterValue">88%</output><input id="diameter" type="range" min="5" max="99.5" step="0.5" value="88"></label>
+        <p id="gridInfo" class="hint"></p>
+        <label class="range-control" for="margin"><span>Поля фрейма</span><output id="marginValue">8%</output><input id="margin" type="range" min="2" max="30" step="1" value="8"></label>
+        <label class="select-row" for="guides"><span>Показывать</span><select id="guides"><option value="circles">Окружности</option><option value="dots">Точки</option><option value="none">Без сетки</option></select></label>
+      </section>
+
+      <section class="control-section" id="nodeSection">
+        <h2>Обход круга <span id="nodeLabel"></span></h2>
+        <select id="nodeTurn" aria-label="Сторона обхода выбранного круга"><option value="0">Автоматически</option><option value="1">По часовой стрелке</option><option value="-1">Против часовой стрелки</option></select>
+        <div class="two-buttons"><button id="flipTurn">Другая сторона</button><button id="deleteNode">Удалить точку</button></div>
+        <p class="hint">Выбери круг маршрута, чтобы изменить дугу. Shift + клик — сменить сторону.</p>
+      </section>
+
+      <section class="control-section">
+        <h2>Фрейм</h2>
+        <select id="format" aria-label="Формат фрейма"><option value="1080x1080">Квадрат · 1:1</option><option value="1920x1080">Горизонтальный · 16:9</option><option value="1080x1350">Пост · 4:5</option><option value="1080x1920">Вертикальный · 9:16</option><option value="custom">Свой размер</option></select>
+        <div class="number-pair"><label for="width">Ширина, px<input id="width" type="number" min="200" max="4096" value="1080" inputmode="numeric"></label><span>×</span><label for="height">Высота, px<input id="height" type="number" min="200" max="4096" value="1080" inputmode="numeric"></label></div>
+      </section>
+
+      <section class="control-section">
+        <h2>Попробовать форму</h2>
+        <div id="examples" class="examples" role="group" aria-label="Примеры на сетке 4 на 4"></div>
+        <p class="hint">Пример заменяет активную форму и возвращает сетку 4 × 4. Отмена доступна.</p>
+      </section>
+
+      <section class="control-section">
+        <h2>Экспорт</h2>
+        <label class="check-row"><input id="exportGrid" type="checkbox">Сетка в экспорте</label>
+        <label class="check-row"><input id="transparent" type="checkbox">Прозрачный фон</label>
+        <div class="two-buttons"><button id="downloadSVG" class="primary">Скачать SVG</button><button id="downloadPNG">PNG 2×</button></div>
+        <button id="copySVG" class="full">Копировать SVG для Figma</button>
+        <p id="saveStatus" class="hint">Работа сохраняется в этом браузере.</p>
+      </section>
+      <details class="help"><summary>Как рисовать</summary><p>Нажми «Новая форма» и выбирай круги по порядку — кликами или движением с зажатой кнопкой. Контур огибает выбранные круги дугами и соединяет их касательными.</p><p>Клик по первому кругу или Enter замыкает форму. Для заливки нужен замкнутый контур. Повторный клик по другому выбранному кругу открывает настройки его обхода.</p><p>Backspace — убрать последнюю точку, Shift + клик — сменить сторону обхода, Alt + клик — удалить выбранную точку. На холсте также работают стрелки и пробел.</p></details>
+      <p class="credits">По мотивам упражнений <a href="https://niggli.ch/en/products/methodik-der-form-und-bildgestaltung" target="_blank" rel="noopener">Армина Хофмана</a>.<br>На основе <a href="/metaball_next/">Metaball Next</a> · Denis Yudin</p>
+    </aside>
+  </main>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <noscript>Для работы редактора включите JavaScript в браузере.</noscript>
+</body>
+</html>
