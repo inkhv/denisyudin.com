@@ -10,8 +10,8 @@
   <meta property="og:title" content="Hofmann · контуры по сетке">
   <meta property="og:description" content="От круга к форме: векторный редактор по мотивам упражнений Армина Хофмана.">
   <meta property="og:type" content="website">
-  <link rel="stylesheet" href="styles.css">
-  <script type="module" src="app.mjs"></script>
+  <link rel="stylesheet" href="styles.css?v=20260914-order">
+  <script type="module" src="app.mjs?v=20260914-order"></script>
 <script type="module" src="/tools/menu.mjs"></script>
 </head>
 <body>
@@ -28,7 +28,7 @@
       <div id="stage" class="stage">
         <div id="frameWrap"><svg id="artboard" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" aria-label="Холст. Выберите круги в порядке обхода." tabindex="0"></svg></div>
       </div>
-      <footer class="workspace-footer"><p id="stageHint">Выбирай круги по порядку. Клик по первому — замкнуть.</p><span id="frameInfo">1080 × 1080 px</span></footer>
+      <footer class="workspace-footer"><p id="stageHint">Выбирай круги по порядку. Замкнуть — кнопкой или Enter.</p><span id="frameInfo">1080 × 1080 px</span></footer>
     </section>
 
     <aside id="panel" class="panel" aria-label="Настройки Hofmann">
@@ -38,6 +38,16 @@
         <button id="addShape" class="full">Новая форма</button>
         <div class="two-buttons"><button id="closeShape">Замкнуть</button><button id="removeLast">Убрать точку</button></div>
         <p id="pathInfo" class="hint" aria-live="polite"></p>
+      </section>
+
+      <section class="control-section" id="nodeSection">
+        <h2>Точка маршрута <span id="nodeLabel"></span></h2>
+        <div class="node-order-row"><label for="nodeOrder">Порядковый номер</label><input id="nodeOrder" type="number" min="1" max="1" step="1" inputmode="numeric" disabled><span id="nodeTotal">из 0</span></div>
+        <button id="continueFrom" class="full" disabled>Продолжить отсюда</button>
+        <p id="nodeHint" class="hint" aria-live="polite">Выбери точку маршрута на холсте. Номер задаёт её место в контуре.</p>
+        <button id="reverseRoute" class="full">Развернуть порядок</button>
+        <select id="nodeTurn" aria-label="Сторона обхода выбранного круга"><option value="0">Автоматически</option><option value="1">По часовой стрелке</option><option value="-1">Против часовой стрелки</option></select>
+        <div class="two-buttons"><button id="flipTurn">Другая сторона</button><button id="deleteNode">Удалить точку</button></div>
       </section>
 
       <section class="control-section">
@@ -58,12 +68,7 @@
         <label class="select-row" for="guides"><span>Показывать</span><select id="guides"><option value="circles">Окружности</option><option value="dots">Точки</option><option value="none">Без сетки</option></select></label>
       </section>
 
-      <section class="control-section" id="nodeSection">
-        <h2>Обход круга <span id="nodeLabel"></span></h2>
-        <select id="nodeTurn" aria-label="Сторона обхода выбранного круга"><option value="0">Автоматически</option><option value="1">По часовой стрелке</option><option value="-1">Против часовой стрелки</option></select>
-        <div class="two-buttons"><button id="flipTurn">Другая сторона</button><button id="deleteNode">Удалить точку</button></div>
-        <p class="hint">Выбери круг маршрута, чтобы изменить дугу. Shift + клик — сменить сторону.</p>
-      </section>
+
 
       <section class="control-section">
         <h2>Фрейм</h2>
@@ -85,7 +90,7 @@
         <button id="copySVG" class="full">Копировать SVG для Figma</button>
         <p id="saveStatus" class="hint">Работа сохраняется в этом браузере.</p>
       </section>
-      <details class="help"><summary>Как рисовать</summary><p>Нажми «Новая форма» и выбирай круги по порядку — кликами или движением с зажатой кнопкой. Контур огибает выбранные круги дугами и соединяет их касательными.</p><p>Клик по первому кругу или Enter замыкает форму. Для заливки нужен замкнутый контур. Повторный клик по другому выбранному кругу открывает настройки его обхода.</p><p>Backspace — убрать последнюю точку, Shift + клик — сменить сторону обхода, Alt + клик — удалить выбранную точку. На холсте также работают стрелки и пробел.</p></details>
+      <details class="help"><summary>Как рисовать</summary><p>Нажми «Новая форма» и выбирай круги по порядку — кликами или движением с зажатой кнопкой. Контур огибает выбранные круги дугами и соединяет их касательными.</p><p>Клик по уже выбранному кругу открывает его настройки, в том числе для точки № 1. Меняй порядковый номер, чтобы переставить точку в маршруте. «Развернуть порядок» меняет направление обхода, сохраняя рисунок.</p><p>Чтобы дорисовать контур от первой точки, выбери её и нажми «Продолжить отсюда». Маршрут развернётся, первая точка станет последней. У замкнутой формы эта команда убирает соединение после выбранной точки. Замыкание — только кнопкой «Замкнуть» или Enter на холсте; оно нужно для заливки.</p><p>Backspace — убрать последнюю точку, Shift + клик — сменить сторону обхода, Alt + клик — удалить выбранную точку. На холсте также работают стрелки и пробел.</p></details>
       <p class="credits">По мотивам упражнений <a href="https://niggli.ch/en/products/methodik-der-form-und-bildgestaltung" target="_blank" rel="noopener">Армина Хофмана</a>.<br>На основе <a href="/metaball_next/">Metaball Next</a> · Denis Yudin</p>
     </aside>
   </main>

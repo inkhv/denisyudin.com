@@ -1,4 +1,5 @@
 import { clamp, fmt, gridGeometry, shapeGeometry, exampleNodes, EXAMPLES } from './geometry.mjs';
+import {moveRouteNode, reverseRoute, canContinueRoute, continueRoute} from './route.mjs';
 
 const $ = id => document.getElementById(id);
 const STORAGE = 'denisyudin.hofmann.v1';
@@ -118,6 +119,8 @@ function deleteNode(index = selectedNode) {
 
 function usePin(c, r, { shift = false, alt = false, dragging = false } = {}) {
   if (preview) return;
+  // Commit a pending number before selecting another circle on the canvas.
+  if (document.activeElement === $('nodeOrder')) $('nodeOrder').blur();
   const shape = activeShape(), index = shape.nodes.findIndex(n => n.c === c && n.r === r);
   keyboardPin = { c, r };
   if (index >= 0) {
@@ -125,7 +128,6 @@ function usePin(c, r, { shift = false, alt = false, dragging = false } = {}) {
     selectedNode = index;
     if (alt) return deleteNode(index);
     if (shift) return flipNode(index);
-    if (index === 0 && !shape.closed && shape.nodes.length >= 2) return toggleClosed();
     render(); return;
   }
   mutate(() => { shape.nodes.push({ c, r, turn: 0 }); selectedNode = shape.nodes.length - 1; }, dragging ? 'draw' : null);
@@ -209,10 +211,21 @@ function render() {
   $('viewModes').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === state.mode));
   const node = shape.nodes[selectedNode];
   $('nodeTurn').disabled = !node; $('flipTurn').disabled = !node; $('deleteNode').disabled = !node;
+  $('nodeOrder').disabled = !node;
+  $('nodeOrder').max = Math.max(1, shape.nodes.length);
+  if (document.activeElement !== $('nodeOrder')) $('nodeOrder').value = node ? selectedNode + 1 : '';
+  $('nodeTotal').textContent = `из ${shape.nodes.length}`;
+  $('reverseRoute').disabled = shape.nodes.length < 2;
+  $('continueFrom').disabled = !canContinueRoute(shape, selectedNode);
   $('nodeLabel').textContent = node ? `${selectedNode + 1}` : '';
   $('nodeTurn').value = node ? node.turn : 0;
+  $('nodeHint').textContent = !node ? 'Выбери точку маршрута на холсте. Номер задаёт её место в контуре.'
+    : shape.closed ? '«Продолжить отсюда» разомкнёт контур после этой точки и сделает её последней.'
+    : selectedNode === 0 && shape.nodes.length > 1 ? '«Продолжить отсюда» развернёт порядок: первая точка станет последней, без замыкания.'
+    : selectedNode === shape.nodes.length - 1 ? 'Можно добавлять новые круги. Контур продолжится от этой точки.'
+    : 'Продолжить можно от первой или последней точки. Номер меняет порядок обхода.';
   $('pathInfo').textContent = !shape.nodes.length ? 'Выбери первый круг на холсте.' : shape.closed ? 'Замкнутая форма. Выбери круг, чтобы изменить обход.' : `Открытый маршрут · ${shape.nodes.length} точек.${state.mode !== 'outline' ? ' Замкни для заливки.' : ''}`;
-  $('stageHint').textContent = preview ? 'Просмотр без направляющих. Нажми «Редактировать», чтобы продолжить.' : shape.closed ? 'Новая форма — начать маршрут · клик по кругу — изменить дугу' : 'Выбирай круги по порядку. Клик по первому — замкнуть.';
+  $('stageHint').textContent = preview ? 'Просмотр без направляющих. Нажми «Редактировать», чтобы продолжить.' : shape.closed ? 'Выбери точку → «Продолжить отсюда», чтобы разомкнуть контур.' : 'Новые круги — в конец. От первой точки — «Продолжить отсюда».';
   renderShapeList(); fitFrame(); renderCanvas();
 }
 function fitFrame() {
@@ -303,6 +316,36 @@ $('format').addEventListener('change', e => {
 });
 $('viewModes').addEventListener('click', e => { const mode = e.target.closest('[data-mode]')?.dataset.mode; if (mode) mutate(() => { state.mode = mode; }); });
 $('nodeTurn').addEventListener('change', e => { if (activeShape().nodes[selectedNode]) mutate(() => { activeShape().nodes[selectedNode].turn = +e.target.value; }); });
+function applyNodeOrder(value) {
+  if (!activeShape().nodes[selectedNode]) return;
+  mutate(() => { selectedNode = moveRouteNode(activeShape(), selectedNode, value - 1); }, 'node-order');
+}
+$('nodeOrder').addEventListener('input', e => {
+  const value = Number(e.target.value);
+  if (e.target.value !== '' && Number.isInteger(value) && value >= 1 && value <= activeShape().nodes.length) applyNodeOrder(value);
+});
+function commitNodeOrder() {
+  if (!activeShape().nodes[selectedNode]) return;
+  const value = $('nodeOrder').value === '' ? selectedNode + 1 : numeric($('nodeOrder').value, 1, activeShape().nodes.length, selectedNode + 1, true);
+  $('nodeOrder').value = value; applyNodeOrder(value); inputGroup = null;
+}
+$('nodeOrder').addEventListener('change', commitNodeOrder);
+$('nodeOrder').addEventListener('blur', commitNodeOrder);
+$('nodeOrder').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); commitNodeOrder(); } });
+$('reverseRoute').addEventListener('click', () => {
+  mutate(() => {
+    reverseRoute(activeShape(), gridGeometry(state));
+    if (selectedNode >= 0) selectedNode = activeShape().nodes.length - 1 - selectedNode;
+  });
+});
+$('continueFrom').addEventListener('click', () => {
+  if (!canContinueRoute(activeShape(), selectedNode)) return;
+  mutate(() => { selectedNode = continueRoute(activeShape(), selectedNode, gridGeometry(state)); preview = false; });
+  const node = activeShape().nodes[selectedNode];
+  keyboardPin = {c:node.c, r:node.r};
+  $('artboard').focus({preventScroll:true});
+  toast('Выбирай новые круги — контур продолжится от выбранной точки.');
+});
 $('flipTurn').addEventListener('click', () => flipNode());
 $('deleteNode').addEventListener('click', () => deleteNode());
 $('addShape').addEventListener('click', addShape);
