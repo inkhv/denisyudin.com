@@ -6,7 +6,7 @@ A focused derivative of the site's Metaball Next workspace. Select circles in or
 
 ## Controls
 
-- Create, edit and delete multiple shapes. Use the explicit Close button or press Enter on the canvas to close the route. Clicking an existing circle, including the first, only selects it.
+- Create, edit and delete multiple shapes. Return to the first circle of an open route with at least two points to close it, by clicking, drawing through it, or selecting it with Space. Closing finishes the current drawing gesture. The Close/Open button and Enter on the canvas remain available. On an already closed shape, clicking the first circle only selects it; Shift/Alt retain their editing actions.
 - Edit the selected circle's ordinal number to move it within the route; the remaining circles are renumbered automatically. Reverse order changes traversal direction while preserving the existing geometry.
 - Set 1–24 columns and rows, a circle diameter of 5–99.5% of the grid pitch, frame dimensions of 200–4096 px, and margins.
 - Switch between outline, fill, or both; set stroke width, stroke/fill/background colors.

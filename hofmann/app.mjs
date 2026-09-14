@@ -124,6 +124,10 @@ function usePin(c, r, { shift = false, alt = false, dragging = false } = {}) {
   const shape = activeShape(), index = shape.nodes.findIndex(n => n.c === c && n.r === r);
   keyboardPin = { c, r };
   if (index >= 0) {
+    if (!shift && !alt && index === 0 && !shape.closed && shape.nodes.length >= 2) {
+      mutate(() => { shape.closed = true; selectedNode = 0; }, dragging ? 'draw' : null);
+      return 'closed';
+    }
     if (dragging) return;
     selectedNode = index;
     if (alt) return deleteNode(index);
@@ -220,7 +224,7 @@ function render() {
   $('nodeTurn').value = node ? node.turn : 0;
   $('nodeHint').textContent = node ? 'Номер меняет место точки в маршруте. «Развернуть порядок» меняет направление обхода.' : 'Выбери точку маршрута на холсте. Номер задаёт её место в контуре.';
   $('pathInfo').textContent = !shape.nodes.length ? 'Выбери первый круг на холсте.' : shape.closed ? 'Замкнутая форма. Выбери круг, чтобы изменить обход.' : `Открытый маршрут · ${shape.nodes.length} точек.${state.mode !== 'outline' ? ' Замкни для заливки.' : ''}`;
-  $('stageHint').textContent = preview ? 'Просмотр без направляющих. Нажми «Редактировать», чтобы продолжить.' : shape.closed ? 'Выбери точку, чтобы изменить номер или сторону обхода.' : 'Новые круги добавляются в конец. Замкнуть — кнопкой или Enter.';
+  $('stageHint').textContent = preview ? 'Просмотр без направляющих. Нажми «Редактировать», чтобы продолжить.' : shape.closed ? 'Выбери точку для правки. «Разомкнуть» — открыть контур.' : 'Вернись к точке № 1, чтобы замкнуть контур. Кнопка и Enter тоже работают.';
   renderShapeList(); fitFrame(); renderCanvas();
 }
 function fitFrame() {
@@ -375,14 +379,18 @@ $('artboard').addEventListener('pointerdown', e => {
   const pin = pointerPin(e); if (!pin) return;
   e.preventDefault(); drawing = true; lastPin = `${pin.c},${pin.r}`; inputGroup = null;
   $('artboard').setPointerCapture(e.pointerId);
-  usePin(pin.c, pin.r, { shift: e.shiftKey, alt: e.altKey });
+  if (usePin(pin.c, pin.r, { shift: e.shiftKey, alt: e.altKey }) === 'closed') drawing = false;
   $('artboard').focus({ preventScroll: true });
 });
 $('artboard').addEventListener('pointermove', e => {
   if (!drawing || e.shiftKey || e.altKey) return;
   const pin = pointerPin(e); if (!pin) return;
   const key = `${pin.c},${pin.r}`; if (key === lastPin) return;
-  lastPin = key; usePin(pin.c, pin.r, { dragging: true });
+  lastPin = key;
+  if (usePin(pin.c, pin.r, { dragging: true }) === 'closed') {
+    // Returning to the first point finishes this gesture; moving on must not add a tail.
+    drawing = false; inputGroup = null; lastPin = null;
+  }
 });
 for (const event of ['pointerup', 'pointercancel', 'lostpointercapture']) $('artboard').addEventListener(event, () => { drawing = false; inputGroup = null; lastPin = null; });
 // Native keyboard activation and SVG button activation share the same route action.
