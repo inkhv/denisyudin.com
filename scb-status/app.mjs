@@ -29,7 +29,8 @@ function chart(tasks, title){
   const counts=[tasks.filter(t=>!needsCheck(t)&&t.mode==='work').length,tasks.filter(t=>!needsCheck(t)&&t.mode==='waiting').length,tasks.filter(needsCheck).length];
   const total=counts.reduce((a,b)=>a+b,0);let x=0;
   const rects=counts.map((count,i)=>{const width=total?count/total*100:0;const rect=`<rect x="${x}" width="${width}" height="8" class="${['work','waiting','verify'][i]}"/>`;x+=width;return rect;}).join('');
-  return `<svg class="count-chart" role="img" aria-label="${esc(title)}: в работе ${counts[0]}, ждём ${counts[1]}, на сверку ${counts[2]}" viewBox="0 0 100 8" preserveAspectRatio="none">${rects}</svg>`;
+  const labels=['В работе','Ждём','На сверку'];
+  return `<span class="team-chart"><span class="chart-heading">Состояния задач <span>${total} открытых</span></span><svg class="count-chart" role="img" aria-label="${esc(title)}: в работе ${counts[0]}, ждём ${counts[1]}, на сверку ${counts[2]}" viewBox="0 0 100 8" preserveAspectRatio="none">${rects}</svg><span class="chart-breakdown">${counts.map((count,i)=>`<span class="chart-value"><span class="chart-key"><i class="${['work','waiting','verify'][i]}" aria-hidden="true"></i>${labels[i]}</span><strong>${count}</strong></span>`).join('')}</span></span>`;
 }
 function datedTasks(tasks){
   const groups = new Map();
@@ -41,8 +42,7 @@ function renderOverview(){
   $('#edition').textContent=manifest.mode==='preview'?'Локальный предпросмотр':'Закрытый рабочий статус';
   $('#teams').innerHTML=data.teams.map(team=>{
     const tasks=data.tasks.filter(task=>task.lane===team.lane&&!isBackground(task));
-    const checks=tasks.filter(needsCheck).length;
-    return `<button class="team team-${esc(team.lane)}" data-lane="${esc(team.lane)}" aria-label="Открыть все незакрытые задачи: ${esc(laneName(team.lane))}"><span class="team-top"><strong>${esc(laneName(team.lane))}</strong><span class="signal ${esc(team.status)}">${{yellow:'Есть вопросы',red:'Требует решения',green:'Без рисков'}[team.status]} · ${date(team.date)}</span></span><span class="team-summary">${esc(team.summary)}</span><span class="team-data"><span><strong>${tasks.length}</strong> открытых задач</span><span><strong>${checks}</strong> на сверку</span></span>${chart(tasks,laneName(team.lane))}<span class="team-action">Все задачи по датам ${externalIcon}</span></button>`;
+    return `<button class="team team-${esc(team.lane)}" data-lane="${esc(team.lane)}" aria-label="Открыть все незакрытые задачи: ${esc(laneName(team.lane))}" aria-describedby="team-summary-${esc(team.lane)}"><span class="team-top"><strong>${esc(laneName(team.lane))}</strong><span class="signal ${esc(team.status)}">Связка: ${{yellow:'есть вопросы',red:'требует решения',green:'без рисков'}[team.status]} · ${date(team.date)}</span></span><span class="team-summary" id="team-summary-${esc(team.lane)}">${esc(team.summary)}</span>${chart(tasks,laneName(team.lane))}<span class="team-action">Все задачи по датам ${externalIcon}</span></button>`;
   }).join('');
   $('#focus').innerHTML=sortTasks(data.tasks.filter(task=>task.priority==='focus')).map(task=>taskButton(task,true)).join('');
   $('#deferred').innerHTML=data.tasks.filter(task=>task.priority==='deferred').map(task=>taskButton(task,true)).join('');
