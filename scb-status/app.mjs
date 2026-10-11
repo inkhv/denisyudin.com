@@ -5,6 +5,7 @@ let data, manifest, envelope, view='board', mode='current', lane='all', query=''
 const phone = matchMedia('(max-width:560px)');
 const externalIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>';
 const date = value => value ? new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'short'}).format(new Date(value+'T00:00:00')) : 'Без даты';
+const fullDate = value => value ? new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long',year:'numeric'}).format(new Date(value+'T00:00:00')) : 'Дата не указана';
 const laneName = id => data.lanes.find(item=>item.id===id)?.title || id;
 const isBackground = task => ['backlog','paused','reference'].includes(task.mode);
 const needsCheck = task => !isBackground(task) && (task.mode==='verify' || task.stale);
@@ -12,6 +13,7 @@ const matches = (item, fields) => (!query || fields.map(key=>item[key] || '').jo
 const sortTasks = tasks => [...tasks].sort((a,b)=>(b.confirmed || '').localeCompare(a.confirmed || '') || (a.due || '9999').localeCompare(b.due || '9999') || a.title.localeCompare(b.title,'ru'));
 function modeMatch(task, selected=mode){
   if(selected==='all') return true;
+  if(selected==='active') return !isBackground(task);
   if(selected==='current') return !task.stale && ['work','waiting'].includes(task.mode);
   if(selected==='verify') return needsCheck(task);
   if(selected==='backlog') return isBackground(task);
@@ -29,21 +31,22 @@ function chart(tasks, title){
   const rects=counts.map((count,i)=>{const width=total?count/total*100:0;const rect=`<rect x="${x}" width="${width}" height="8" class="${['work','waiting','verify'][i]}"/>`;x+=width;return rect;}).join('');
   return `<svg class="count-chart" role="img" aria-label="${esc(title)}: в работе ${counts[0]}, ждём ${counts[1]}, на сверку ${counts[2]}" viewBox="0 0 100 8" preserveAspectRatio="none">${rects}</svg>`;
 }
+function datedTasks(tasks){
+  const groups = new Map();
+  for(const task of tasks){const key=task.confirmed || '';if(!groups.has(key))groups.set(key,[]);groups.get(key).push(task);}
+  return [...groups].map(([confirmed,items])=>`<section class="task-date-group"><h4>${confirmed?`<time datetime="${esc(confirmed)}">${fullDate(confirmed)}</time>`:'Дата не указана'}<span>${items.length} записей</span></h4><div class="dated-tasks">${items.map(task=>taskButton(task)).join('')}</div></section>`).join('');
+}
 function renderOverview(){
   $('#updated').textContent=`Обновлено ${date(data.updated)} ${data.updated.slice(0,4)} · Свежие подтверждения первыми`;
   $('#edition').textContent=manifest.mode==='preview'?'Локальный предпросмотр':'Закрытый рабочий статус';
   $('#teams').innerHTML=data.teams.map(team=>{
     const tasks=data.tasks.filter(task=>task.lane===team.lane&&!isBackground(task));
-    const current=tasks.filter(task=>modeMatch(task,'current')).length;
     const checks=tasks.filter(needsCheck).length;
-    return `<article class="team"><div class="team-top"><button data-lane="${esc(team.lane)}">${esc(laneName(team.lane))}</button><span class="signal ${esc(team.status)}">${{yellow:'Есть вопросы',red:'Требует решения',green:'Без рисков'}[team.status]} · ${date(team.date)}</span></div><p class="team-summary">${esc(team.summary)}</p><div class="team-data"><span><strong>${current}</strong> актуальных</span><span><strong>${checks}</strong> на сверку</span></div>${chart(tasks,laneName(team.lane))}</article>`;
+    return `<button class="team team-${esc(team.lane)}" data-lane="${esc(team.lane)}" aria-label="Открыть все незакрытые задачи: ${esc(laneName(team.lane))}"><span class="team-top"><strong>${esc(laneName(team.lane))}</strong><span class="signal ${esc(team.status)}">${{yellow:'Есть вопросы',red:'Требует решения',green:'Без рисков'}[team.status]} · ${date(team.date)}</span></span><span class="team-summary">${esc(team.summary)}</span><span class="team-data"><span><strong>${tasks.length}</strong> открытых задач</span><span><strong>${checks}</strong> на сверку</span></span>${chart(tasks,laneName(team.lane))}<span class="team-action">Все задачи по датам ${externalIcon}</span></button>`;
   }).join('');
   $('#focus').innerHTML=sortTasks(data.tasks.filter(task=>task.priority==='focus')).map(task=>taskButton(task,true)).join('');
   $('#deferred').innerHTML=data.tasks.filter(task=>task.priority==='deferred').map(task=>taskButton(task,true)).join('');
-  $('#ai-current').textContent=data.ai.current;
-  $('#milestone-count').textContent=data.ai.milestones.length;
-  $('#ai-milestones').innerHTML=data.ai.milestones.map(text=>`<li>${esc(text)}</li>`).join('');
-  $('#ai-links').innerHTML=referenceLinks(data.ai.references);
+  $('#ai-branches').innerHTML=sortTasks(data.ai.branches).map(branch=>`<article class="ai-branch"><div class="branch-heading"><h3><button data-open="${esc(branch.id)}" class="text-link">${esc(branch.title)} ${externalIcon}</button></h3><time datetime="${esc(branch.confirmed)}">${date(branch.confirmed)}</time></div><ol class="branch-milestones">${branch.milestones.map(text=>`<li>${esc(text)}</li>`).join('')}</ol><p class="branch-next"><strong>Далее</strong>${esc(branch.current)}</p><div class="reference-links">${referenceLinks(branch.references)}</div></article>`).join('');
   $('#total-count').textContent=`${data.tasks.length} записей · AI Stream отдельно`;
   $('#lane').innerHTML='<option value="all">Все направления</option>'+data.lanes.map(item=>`<option value="${esc(item.id)}">${esc(item.title)}</option>`).join('');
 }
@@ -54,14 +57,15 @@ function render(){
   $('#lane').value=lane;
   for(const button of document.querySelectorAll('[data-view]')) button.setAttribute('aria-pressed',String(button.dataset.view===view));
   $('#modes').hidden=view!=='board';
+  $('#workspace-title').textContent=view==='board'&&lane!=='all'?`${laneName(lane)} · задачи`:'Рабочая доска';
   if(view==='board'){
     const pool=candidates();
-    $('#modes').innerHTML=[['current','Актуальное'],['waiting','Ждём'],['verify','На сверку'],['backlog','Бэклог'],['all','Все']].map(([id,title])=>`<button data-mode="${id}" aria-pressed="${mode===id}">${title}<span class="count">${pool.filter(task=>modeMatch(task,id)).length}</span></button>`).join('');
+    $('#modes').innerHTML=[['current','Свежие'],['active','Все открытые'],['waiting','Ждём'],['verify','На сверку'],['backlog','Бэклог'],['all','Все записи']].map(([id,title])=>`<button data-mode="${id}" aria-pressed="${mode===id}">${title}<span class="count">${pool.filter(task=>modeMatch(task,id)).length}</span></button>`).join('');
     const tasks=sortTasks(pool.filter(task=>modeMatch(task)));
     const lanes=data.lanes.filter(item=>lane==='all'?item.id!=='ai':item.id===lane);
-    const notes={current:'Подтверждено в последние 21 день. Более старые и недатированные обязательства доступны в «На сверку».',waiting:'Все ожидания ответа, ревью или решения. Более старые подтверждения помечены «На сверку».',verify:'Нет подтверждения за последние 21 день либо прямо требуется сверка. Это не означает, что работа остановлена.',backlog:'Отложенные задачи, паузы и справочные треки. Приоритетные отложенные инициативы также показаны выше.',all:'Весь открытый список. AI Stream показан отдельным блоком; выберите его в направлениях для полного списка.'};
+    const notes={current:'Подтверждено в последние 21 день. Более старые и недатированные обязательства доступны в «На сверку».',active:'Все незакрытые задачи, сначала свежие подтверждения. Старые записи помечены «На сверку»; бэклог доступен отдельно.',waiting:'Все ожидания ответа, ревью или решения. Более старые подтверждения помечены «На сверку».',verify:'Нет подтверждения за последние 21 день либо прямо требуется сверка. Это не означает, что работа остановлена.',backlog:'Отложенные задачи, паузы и справочные треки. Приоритетные отложенные инициативы также показаны выше.',all:'Все записи, включая бэклог. AI Stream показан отдельным блоком; выберите его в направлениях для полного списка.'};
     $('#view-note').textContent=`${tasks.length} записей. ${notes[mode]}`;
-    $('#content').innerHTML=tasks.length?`<div class="board ${lanes.length===1?'single':''}">${lanes.map(item=>{const group=tasks.filter(task=>task.lane===item.id);return `<section class="lane lane-${esc(item.id)}" aria-label="${esc(item.title)}"><div class="lane-head"><h3>${esc(item.title)}</h3><span>${group.length}</span></div><div class="lane-tasks">${group.length?group.map(task=>taskButton(task)).join(''):'<p class="lane-empty">В этом срезе записей нет.<br>Посмотрите другие режимы.</p>'}</div></section>`;}).join('')}</div>`:empty('Задачи не найдены','Измените поиск или выберите другой режим.');
+    $('#content').innerHTML=tasks.length?`<div class="board ${lanes.length===1?'single':''}">${lanes.map(item=>{const group=tasks.filter(task=>task.lane===item.id);return `<section class="lane lane-${esc(item.id)}" aria-label="${esc(item.title)}"><div class="lane-head"><h3>${esc(item.title)}</h3><span>${group.length}</span></div><div class="lane-tasks">${group.length?(lanes.length===1?datedTasks(group):group.map(task=>taskButton(task)).join('')):'<p class="lane-empty">В этом срезе записей нет.<br>Посмотрите другие режимы.</p>'}</div></section>`;}).join('')}</div>`:empty('Задачи не найдены','Измените поиск или выберите другой режим.');
   }else if(view==='results'){
     const items=data.results.filter(item=>(lane==='all'||item.lane===lane)&&matches(item,['id','title','outcome','remaining']));
     $('#view-note').textContent=`${items.length} результатов и этапов. Сначала свежие срезы; дата отчёта не всегда совпадает с днём завершения.`;
@@ -112,7 +116,7 @@ $('#unlock').addEventListener('submit',async event=>{
 });
 $('#lock').addEventListener('click',()=>{
   closeDetail();data=null;$('#dashboard').hidden=true;$('#lock').hidden=true;$('#access').hidden=false;
-  for(const selector of ['#teams','#focus','#deferred','#ai-current','#ai-links','#ai-milestones','#content','#task-detail','#task-title','#task-id'])$(selector).replaceChildren();
+  for(const selector of ['#teams','#focus','#deferred','#ai-branches','#content','#task-detail','#task-title','#task-id'])$(selector).replaceChildren();
   query='';$('#search').value='';view='board';mode='current';lane='all';limit=30;$('#password').focus();
 });
 document.addEventListener('click',event=>{
@@ -120,10 +124,11 @@ document.addEventListener('click',event=>{
   if(button.dataset.open){event.preventDefault();openTask(button.dataset.open);return;}
   if(button.dataset.mode)mode=button.dataset.mode;
   if(button.dataset.view){view=button.dataset.view;limit=30;}
-  if(button.dataset.lane){lane=button.dataset.lane;view='board';mode='current';$('#workspace').scrollIntoView();}
+  if(button.dataset.lane){lane=button.dataset.lane;view='board';mode='active';query='';$('#search').value='';limit=30;}
   if(button.hasAttribute('data-more'))limit+=30;
   if(button.hasAttribute('data-reset')){query='';$('#search').value='';lane='all';mode='current';}
   render();
+  if(button.dataset.lane){$('#workspace-title').tabIndex=-1;$('#workspace-title').focus({preventScroll:true});$('#workspace').scrollIntoView();}
 });
 $('#lane').addEventListener('change',event=>{lane=event.target.value;limit=30;render();});
 $('#search').addEventListener('input',event=>{query=event.target.value.trim().toLocaleLowerCase('ru');limit=30;render();});

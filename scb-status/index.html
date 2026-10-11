@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css">
-  <script type="module" src="./app.mjs"></script>
+  <link rel="stylesheet" href="./styles.css?v=20261012-2">
+  <script type="module" src="./app.mjs?v=20261012-2"></script>
 </head>
 <body>
   <a class="skip" href="#main">К содержимому</a>
@@ -28,7 +28,7 @@
       <div class="page-title"><div><h1>Статус работы</h1><p id="updated"></p></div><a href="#workspace" class="text-link">К задачам <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></a></div>
       <section aria-labelledby="team-title"><div class="section-heading"><h2 id="team-title">Связки</h2><span>Подтверждённый недельный срез</span></div><div id="teams" class="team-grid"></div><p class="chart-note">Полосы показывают количество записей по режимам, а не процент выполнения. <span class="legend"><i class="work"></i>В работе <i class="waiting"></i>Ждём <i class="verify"></i>На сверку</span></p></section>
       <section class="focus-section" aria-labelledby="focus-title"><h2 id="focus-title">Требует внимания</h2><div id="focus" class="focus-list"></div></section>
-      <section class="ai-section" aria-labelledby="ai-title"><div class="ai-intro"><div class="section-heading"><h2 id="ai-title">AI Stream</h2><button data-open="P05" class="text-link">Открыть проект <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></button></div><p id="ai-current"></p><div id="ai-links" class="reference-links"></div></div><details class="milestones"><summary><span id="milestone-count"></span> подтверждённых этапов</summary><ol id="ai-milestones"></ol></details></section>
+      <section class="ai-section" aria-labelledby="ai-title"><div class="section-heading"><h2 id="ai-title">AI Stream</h2><span>Два направления разработки</span></div><div id="ai-branches" class="ai-branches"></div></section>
       <section class="deferred-section" aria-labelledby="deferred-title"><div><h2 id="deferred-title">Важно, но отложено</h2><p>Сохраняем в поле зрения. Новые сроки не назначены.</p></div><div id="deferred" class="deferred-list"></div></section>
       <section id="workspace" aria-labelledby="workspace-title">
         <div class="section-heading"><h2 id="workspace-title">Рабочая доска</h2><span id="total-count"></span></div>
