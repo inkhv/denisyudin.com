@@ -1,6 +1,6 @@
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-const modes = {work:'В работе',waiting:'Ждём',verify:'На сверку',backlog:'Бэклог',paused:'Пауза',reference:'Справка'};
+const modes = {work:'В работе',waiting:'Ждём',approval:'На согласовании',verify:'На сверку',backlog:'Бэклог',paused:'Пауза',reference:'Справка'};
 let data, manifest, envelope, view='board', mode='current', lane='all', query='', limit=30, opened;
 const phone = matchMedia('(max-width:560px)');
 const externalIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>';
@@ -9,6 +9,15 @@ const fullDate = value => value ? new Intl.DateTimeFormat('ru-RU',{day:'numeric'
 const laneName = id => data.lanes.find(item=>item.id===id)?.title || id;
 const isBackground = task => ['backlog','paused','reference'].includes(task.mode);
 const needsCheck = task => !isBackground(task) && (task.mode==='verify' || task.stale);
+// Only an explicit, current review state counts as approval. Mixed-branch notes
+// and an unconfirmed handoff remain waiting; dated-out records remain verification.
+function onApproval(task){
+  if(task.mode!=='waiting'||needsCheck(task))return false;
+  const status=task.status.replace(/^[🟡🟢🔴]\s*;?\s*/u,'').trim();
+  return !/[;—]|(?:^|\s)не(?:\s|$)|переда[её]тся/iu.test(status) && /(?:^|\s)(?:на (?:внешнем )?ревью|внешнее ревью|на согласовании)$/iu.test(status);
+}
+const shownMode = task => needsCheck(task)?'verify':onApproval(task)?'approval':task.mode;
+
 const matches = (item, fields) => (!query || fields.map(key=>item[key] || '').join(' ').toLocaleLowerCase('ru').includes(query));
 const sortTasks = tasks => [...tasks].sort((a,b)=>(b.confirmed || '').localeCompare(a.confirmed || '') || (a.due || '9999').localeCompare(b.due || '9999') || a.title.localeCompare(b.title,'ru'));
 function modeMatch(task, selected=mode){
@@ -16,21 +25,23 @@ function modeMatch(task, selected=mode){
   if(selected==='active') return !isBackground(task);
   if(selected==='current') return !task.stale && ['work','waiting'].includes(task.mode);
   if(selected==='verify') return needsCheck(task);
+  if(selected==='approval'||selected==='waiting') return shownMode(task)===selected;
   if(selected==='backlog') return isBackground(task);
   return task.mode===selected;
 }
 function candidates(){return data.tasks.filter(task=>lane==='all' ? task.lane!=='ai' : task.lane===lane).filter(task=>matches(task,['id','title','status','action','owner']));}
 function taskButton(task, compact=false){
   if(compact) return `<button data-open="${esc(task.id)}"><span class="id">${esc(task.id)}</span><span>${esc(task.title)}</span></button>`;
-  const shownMode=needsCheck(task)?'verify':task.mode;
-  return `<button class="task" data-open="${esc(task.id)}" aria-label="${esc(task.id+' · '+task.title)}"><div class="task-meta"><span class="id">${esc(task.id)}</span><span class="mode-label ${esc(shownMode)}">${esc(modes[shownMode])}</span></div><h3>${esc(task.title)}</h3><p>${esc(task.action)}</p>${task.due?`<span class="due-label">${date(task.due)} · ${esc(task.dueLabel)}</span>`:''}<div class="task-bottom"><span>${esc(task.owner || 'Участники не указаны')}</span><time datetime="${esc(task.confirmed || '')}" title="Дата подтверждения">${date(task.confirmed)}</time></div></button>`;
+  const displayMode=shownMode(task);
+  return `<button class="task" data-open="${esc(task.id)}" aria-label="${esc(task.id+' · '+task.title)}"><div class="task-meta"><span class="id">${esc(task.id)}</span><span class="mode-label ${esc(displayMode)}">${esc(modes[displayMode])}</span></div><h3>${esc(task.title)}</h3><p>${esc(task.action)}</p>${task.due?`<span class="due-label">${date(task.due)} · ${esc(task.dueLabel)}</span>`:''}<div class="task-bottom"><span>${esc(task.owner || 'Участники не указаны')}</span><time datetime="${esc(task.confirmed || '')}" title="Дата подтверждения">${date(task.confirmed)}</time></div></button>`;
 }
 function chart(tasks, title){
-  const counts=[tasks.filter(t=>!needsCheck(t)&&t.mode==='work').length,tasks.filter(t=>!needsCheck(t)&&t.mode==='waiting').length,tasks.filter(needsCheck).length];
+  const states=['work','waiting','approval','verify'];
+  const counts=states.map(state=>tasks.filter(task=>shownMode(task)===state).length);
   const total=counts.reduce((a,b)=>a+b,0);let x=0;
-  const rects=counts.map((count,i)=>{const width=total?count/total*100:0;const rect=`<rect x="${x}" width="${width}" height="8" class="${['work','waiting','verify'][i]}"/>`;x+=width;return rect;}).join('');
-  const labels=['В работе','Ждём','На сверку'];
-  return `<span class="team-chart"><span class="chart-heading">Состояния задач <span>${total} открытых</span></span><svg class="count-chart" role="img" aria-label="${esc(title)}: в работе ${counts[0]}, ждём ${counts[1]}, на сверку ${counts[2]}" viewBox="0 0 100 8" preserveAspectRatio="none">${rects}</svg><span class="chart-breakdown">${counts.map((count,i)=>`<span class="chart-value"><span class="chart-key"><i class="${['work','waiting','verify'][i]}" aria-hidden="true"></i>${labels[i]}</span><strong>${count}</strong></span>`).join('')}</span></span>`;
+  const rects=counts.map((count,i)=>{const width=total?count/total*100:0;const rect=`<rect x="${x}" width="${width}" height="8" class="${states[i]}"/>`;x+=width;return rect;}).join('');
+  const labels=['В работе','Ждём','Согласование','На сверку'];
+  return `<span class="team-chart"><span class="chart-heading">Состояния задач <span>${total} открытых</span></span><svg class="count-chart" role="img" aria-label="${esc(title)}: в работе ${counts[0]}, ждём ${counts[1]}, на согласовании ${counts[2]}, на сверку ${counts[3]}" viewBox="0 0 100 8" preserveAspectRatio="none">${rects}</svg><span class="chart-breakdown">${counts.map((count,i)=>`<span class="chart-value"><span class="chart-key"><i class="${states[i]}" aria-hidden="true"></i>${labels[i]}</span><strong>${count}</strong></span>`).join('')}</span></span>`;
 }
 function datedTasks(tasks){
   const groups = new Map();
@@ -60,10 +71,10 @@ function render(){
   $('#workspace-title').textContent=view==='board'&&lane!=='all'?`${laneName(lane)} · задачи`:'Рабочая доска';
   if(view==='board'){
     const pool=candidates();
-    $('#modes').innerHTML=[['current','Свежие'],['active','Все открытые'],['waiting','Ждём'],['verify','На сверку'],['backlog','Бэклог'],['all','Все записи']].map(([id,title])=>`<button data-mode="${id}" aria-pressed="${mode===id}">${title}<span class="count">${pool.filter(task=>modeMatch(task,id)).length}</span></button>`).join('');
+    $('#modes').innerHTML=[['current','Свежие'],['active','Все открытые'],['waiting','Ждём'],['approval','Согласование'],['verify','На сверку'],['backlog','Бэклог'],['all','Все записи']].map(([id,title])=>`<button data-mode="${id}" aria-pressed="${mode===id}">${title}<span class="count">${pool.filter(task=>modeMatch(task,id)).length}</span></button>`).join('');
     const tasks=sortTasks(pool.filter(task=>modeMatch(task)));
     const lanes=data.lanes.filter(item=>lane==='all'?item.id!=='ai':item.id===lane);
-    const notes={current:'Подтверждено в последние 21 день. Более старые и недатированные обязательства доступны в «На сверку».',active:'Все незакрытые задачи, сначала свежие подтверждения. Старые записи помечены «На сверку»; бэклог доступен отдельно.',waiting:'Все ожидания ответа, ревью или решения. Более старые подтверждения помечены «На сверку».',verify:'Нет подтверждения за последние 21 день либо прямо требуется сверка. Это не означает, что работа остановлена.',backlog:'Отложенные задачи, паузы и справочные треки. Приоритетные отложенные инициативы также показаны выше.',all:'Все записи, включая бэклог. AI Stream показан отдельным блоком; выберите его в направлениях для полного списка.'};
+    const notes={current:'Подтверждено в последние 21 день. Более старые и недатированные обязательства доступны в «На сверку».',active:'Все незакрытые задачи, сначала свежие подтверждения. Старые записи помечены «На сверку»; бэклог доступен отдельно.',waiting:'Ожидаем ответ, следующие шаги или подтверждение передачи. Задачи на ревью показаны в «Согласование», старые обязательства — в «На сверку».',approval:'Задачи с прямым актуальным подтверждением внешнего ревью или согласования. Неподтверждённая передача и смешанные статусы остаются в «Ждём».',verify:'Нет подтверждения за последние 21 день либо прямо требуется сверка. Это не означает, что работа остановлена.',backlog:'Отложенные задачи, паузы и справочные треки. Приоритетные отложенные инициативы также показаны выше.',all:'Все записи, включая бэклог. AI Stream показан отдельным блоком; выберите его в направлениях для полного списка.'};
     $('#view-note').textContent=`${tasks.length} записей. ${notes[mode]}`;
     $('#content').innerHTML=tasks.length?`<div class="board ${lanes.length===1?'single':''}">${lanes.map(item=>{const group=tasks.filter(task=>task.lane===item.id);return `<section class="lane lane-${esc(item.id)}" aria-label="${esc(item.title)}"><div class="lane-head"><h3>${esc(item.title)}</h3><span>${group.length}</span></div><div class="lane-tasks">${group.length?(lanes.length===1?datedTasks(group):group.map(task=>taskButton(task)).join('')):'<p class="lane-empty">В этом срезе записей нет.<br>Посмотрите другие режимы.</p>'}</div></section>`;}).join('')}</div>`:empty('Задачи не найдены','Измените поиск или выберите другой режим.');
   }else if(view==='results'){
