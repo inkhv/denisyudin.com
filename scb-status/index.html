@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=20261016-completed">
-  <script type="module" src="./app.mjs?v=20261016-completed"></script>
+  <link rel="stylesheet" href="./styles.css?v=20261017-pyrus">
+  <script type="module" src="./app.mjs?v=20261017-pyrus"></script>
 </head>
 <body>
   <a class="skip" href="#main">К содержимому</a>
@@ -28,7 +28,7 @@
       <div class="page-title"><div><h1 id="today-title">Сегодня</h1><p id="today-date"></p><p id="updated"></p></div><a href="#workspace" class="text-link">К задачам <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></a></div>
       <section class="today-section" aria-labelledby="todo-title">
         <div class="section-heading"><h2 id="todo-title">План дня</h2><span id="todo-count"></span></div>
-        <div class="sync-bar"><span id="sync-status" role="status">Сохранённый снимок</span><button id="connect-sync">Подключить Mac</button><a href="http://127.0.0.1:8846/scb-status/" target="_blank" rel="noopener">Открыть локально</a></div>
+        <div class="sync-bar"><span id="sync-status" role="status">Сохранённый снимок</span><button id="pyrus-sync" class="primary">Обновить из Pyrus</button><button id="connect-sync">Подключить Mac</button><a href="http://127.0.0.1:8846/scb-status/" target="_blank" rel="noopener">Открыть локально</a></div>
         <details id="add-todo" class="add-todo">
           <summary>Добавить задачу</summary>
           <form id="add-todo-form">
@@ -45,6 +45,17 @@
         <details id="carry-wrap" hidden><summary id="carry-title">Не закрыто ранее</summary><div id="carry-list"></div></details>
         <div id="upcoming-list"></div>
         <details id="completed-wrap" hidden><summary id="completed-title">Завершённые</summary><p class="completed-note">Закрытые пункты переходят сюда на следующий день по Москве. Их можно вернуть в план.</p><div id="completed-list"></div></details>
+      </section>
+      <section class="pyrus-section" aria-labelledby="pyrus-title">
+        <div class="section-heading"><h2 id="pyrus-title">Pyrus</h2><span id="pyrus-updated">Ещё не обновляли</span></div>
+        <p id="pyrus-status" role="status" aria-live="polite"></p>
+        <p class="pyrus-note">Связанные карточки получают свежие данные Pyrus. Новые задачи сначала появляются во входящих — выберите для них проект или создайте карточку.</p>
+        <p id="pyrus-action-status" role="status"></p>
+        <details id="pyrus-inbox"><summary id="pyrus-count">Входящие из Pyrus</summary>
+          <div class="pyrus-tools"><label>Найти во входящих<input id="pyrus-search" type="search" placeholder="Название или номер задачи" autocomplete="off"></label><label class="pyrus-hidden-toggle"><input id="pyrus-show-hidden" type="checkbox"> Показать скрытые</label></div>
+          <div id="pyrus-list"></div><button id="pyrus-more" hidden>Показать ещё</button>
+        </details>
+        <details class="pyrus-agent"><summary>Разобрать изменения с агентом</summary><p>После обновления на Mac готов пакет задач и последних комментариев. Агент с доступом к рабочей папке может разобрать изменения, предложить связи и обновить контекст проектов.</p><p>Кнопка ниже копирует задание для агента. Анализ моделью запускается в его чате.</p><button id="pyrus-agent-copy">Скопировать задание</button><p id="pyrus-agent-status" role="status"></p></details>
       </section>
       <section aria-labelledby="team-title"><div class="section-heading"><h2 id="team-title">Связки</h2><span>Подтверждённый недельный срез</span></div><div id="teams" class="team-grid"></div><p class="chart-note">Диаграммы показывают число задач по состояниям. Общий статус связки — в бейдже сверху.</p></section>
       <section class="focus-section" aria-labelledby="focus-title"><h2 id="focus-title">Требует внимания</h2><div id="focus" class="focus-list"></div></section>

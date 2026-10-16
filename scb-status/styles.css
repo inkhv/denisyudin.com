@@ -259,3 +259,42 @@ dialog .reference-links {margin:8px 0 24px}
 #add-todo-status{color:var(--ink);margin-top:12px;overflow-wrap:anywhere}#add-todo-status:empty{display:none}
 @media(max-width:850px){.add-todo-fields{grid-template-columns:1fr 1fr}.add-todo-fields .new-title{grid-column:1/-1}}
 @media(max-width:560px){.add-todo-fields{grid-template-columns:1fr}.add-todo-bottom{align-items:flex-start;flex-direction:column;gap:12px}}
+
+/* Pyrus: a flat intake list, with explicit source facts in existing cards. */
+.pyrus-section { margin-bottom:28px; padding-block:20px; border-block:1px solid var(--line); }
+.pyrus-section .section-heading { margin-bottom:12px; }
+.pyrus-note, #pyrus-updated, .pyrus-row small, .pyrus-row-body > p, .pyrus-agent p { color:var(--muted); }
+.pyrus-note, .pyrus-agent p { max-width:75ch; }
+#pyrus-status { margin:0 0 8px; }
+.pyrus-section summary { cursor:pointer; padding-block:16px; font-weight:600; }
+.pyrus-tools { display:flex; gap:24px; align-items:end; padding-bottom:16px; flex-wrap:wrap; }
+.pyrus-tools label { display:grid; gap:6px; }
+.pyrus-tools .pyrus-hidden-toggle { display:flex; gap:8px; align-items:center; min-height:44px; }
+.pyrus-tools input[type=search] { font:inherit; font-size:16px; padding:10px 12px; border:1px solid var(--control-line); border-radius:8px; max-width:100%; }
+.pyrus-row { border-top:1px solid var(--line); }
+.pyrus-row > summary { display:list-item; font-size:16px; overflow-wrap:anywhere; }
+.pyrus-row small { display:block; font-size:12px; font-weight:400; margin-top:5px; }
+.pyrus-row-body { padding:0 0 20px; }
+.pyrus-row-body > a { display:inline-flex; align-items:center; gap:8px; text-decoration:underline; text-underline-offset:3px; }
+.pyrus-row-body > a svg, .pyrus-detail svg { width:16px; height:16px; }
+.pyrus-decisions { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:20px; }
+.pyrus-decisions > div { min-width:0; }
+.pyrus-decisions label { display:grid; gap:8px; }
+.pyrus-decisions select { min-width:0; width:100%; font:inherit; font-size:16px; padding:12px; border:1px solid var(--control-line); border-radius:8px; background:var(--paper); }
+.pyrus-section button { min-height:44px; padding:10px 14px; margin-top:8px; border:1px solid var(--control-line); border-radius:8px; }
+.pyrus-section button.primary { background:#000; color:#fff; border-color:#000; }
+.pyrus-section button:hover:not(:disabled) { text-decoration:underline; text-underline-offset:3px; }
+.pyrus-section button:disabled { opacity:.5; cursor:not-allowed; }
+.pyrus-agent { border-top:1px solid var(--line); margin-top:12px; }
+.pyrus-empty { color:var(--muted); padding:12px 0; }
+.pyrus-card-state { display:block; color:var(--ink); font-size:12px; line-height:1.5; margin:8px 0; }
+.pyrus-detail { border-top:1px solid var(--line); margin-top:24px; padding-top:20px; }
+.pyrus-detail h3 { font-size:18px; margin:0 0 12px; }
+.pyrus-detail p { overflow-wrap:anywhere; }
+#pyrus-agent-status { overflow-wrap:anywhere; }
+@media(max-width:560px){ .pyrus-decisions { grid-template-columns:1fr; } .pyrus-tools { display:grid; gap:10px; } .pyrus-tools label { min-width:0; } .pyrus-section .section-heading { align-items:start; flex-direction:column; gap:8px; } }
+
+.sync-bar button.primary { color:var(--white); min-height:44px; }
+.pyrus-tools > label:first-child { width:min(100%,360px); }
+.pyrus-tools input[type=search] { width:100%; box-sizing:border-box; }
+.pyrus-section .section-heading > span { max-width:none; text-align:left; }
