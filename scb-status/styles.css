@@ -48,7 +48,10 @@ h3 {font-size:15px;font-weight:600;line-height:1.45}
 .section-heading {display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:18px}
 .section-heading>span {font-size:12px;color:var(--muted);line-height:1.5}
 .team-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.team {--team-inset:24px;padding:24px var(--team-inset) 20px;text-align:left;border:0;border-radius:var(--radius);display:flex;flex-direction:column;align-items:stretch;font-weight:400;overflow:hidden}
+/* Figma SCB 1362:2, 2026-10-16: contextual work color and inverse arrows. */
+.team {--team-inset:24px;--team-surface:var(--b2b);--team-work:var(--ink);--team-action-fill:var(--ink);--team-action-ink:var(--white);padding:24px var(--team-inset) 20px;text-align:left;border:0;border-radius:var(--radius);display:flex;flex-direction:column;align-items:stretch;font-weight:400;overflow:hidden}
+.team-branding {--team-surface:var(--branding);--team-work:var(--white);--team-action-fill:var(--white);--team-action-ink:var(--ink)}
+.team-dkc {--team-surface:var(--dkc)}
 .team-branding,.team-branding:hover {background:var(--branding);color:var(--white)}
 .team-dkc,.team-dkc:hover {background:var(--dkc);color:var(--ink)}
 .team-b2b,.team-b2b:hover {background:var(--b2b);color:var(--ink)}
@@ -60,16 +63,18 @@ h3 {font-size:15px;font-weight:600;line-height:1.45}
 .signal.yellow:before {background:var(--risk-warning)}
 .signal.red {color:#9f240c}
 .signal.red:before {background:#b62b11}
-.team-summary {display:block;font-size:13px;line-height:1.6;min-height:48px;max-width:50ch}
+.team-summary {display:block;font-size:13px;line-height:1.6;min-height:48px}
+.team-b2b .team-summary {max-width:50ch}
 .team-action {display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;font-weight:600;margin-top:18px}
-.team-action svg {width:24px;height:24px;padding:4px;border-radius:50%;background:var(--accent);color:var(--ink);transition:transform 160ms ease-out}
+.team-action svg {width:24px;height:24px;padding:4px;border-radius:50%;background:var(--team-action-fill);color:var(--team-action-ink);flex-shrink:0;transition:transform 160ms ease-out}
 .team:hover .team-action svg {transform:translate(2px,-2px)}
 .team-chart {display:block;color:inherit;background:transparent;margin:24px 0 0;padding:0}
 .chart-heading {display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:600;margin-bottom:12px}
 .chart-heading>span {color:inherit;font-weight:400;font-variant-numeric:tabular-nums}
 .count-chart {width:100%;height:10px;display:block;border-radius:2px;overflow:hidden;background:transparent;stroke:none}
-.count-chart rect {stroke:currentColor;stroke-width:1px;vector-effect:non-scaling-stroke}
+.count-chart rect {stroke:var(--team-surface);stroke-width:.5px;vector-effect:non-scaling-stroke}
 .work {fill:var(--work);background:var(--work)}
+.team .work {fill:var(--team-work);background:var(--team-work)}
 .waiting {fill:var(--waiting);background:var(--waiting)}
 .approval {fill:var(--approval);background:var(--approval)}
 .verify {fill:var(--verify);background:var(--verify)}
@@ -77,7 +82,7 @@ h3 {font-size:15px;font-weight:600;line-height:1.45}
 .chart-value {display:flex;flex-direction:column;align-items:flex-start;gap:5px;font-size:12px;line-height:1.5}
 .chart-value strong {font-size:20px;font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 .chart-key {display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
-.chart-key i {width:8px;height:8px;border:1px solid currentColor;border-radius:1px;flex-shrink:0}
+.chart-key i {width:8px;height:8px;border-radius:1px;flex-shrink:0}
 .chart-note {font-size:12px;color:var(--muted);margin:14px 0 28px;line-height:1.7}
 .focus-section {background:rgb(255 47 0 / 50%);border-radius:var(--radius);display:grid;grid-template-columns:180px 1fr;gap:20px;padding:22px 24px;border:0}
 .focus-section h2 {font-size:16px;padding-top:7px;letter-spacing:-.02em}
