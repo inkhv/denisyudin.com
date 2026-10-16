@@ -1,6 +1,7 @@
+import {todayInMoscow, isClosed, dailyItems} from './daily.mjs?v=20261016-1';
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-const modes = {work:'В работе',waiting:'Ждём',approval:'На согласовании',verify:'На сверку',backlog:'Бэклог',paused:'Пауза',reference:'Справка'};
+const modes = {work:'В работе',waiting:'Ждём',approval:'На согласовании',verify:'На сверку',backlog:'Бэклог',paused:'Пауза',reference:'Справка',closed:'Выполнено',cancelled:'Не актуально'};
 let data, manifest, envelope, view='board', mode='current', lane='all', query='', limit=30, opened;
 const phone = matchMedia('(max-width:560px)');
 const externalIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>';
@@ -8,7 +9,7 @@ const date = value => value ? new Intl.DateTimeFormat('ru-RU',{day:'numeric',mon
 const fullDate = value => value ? new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long',year:'numeric'}).format(new Date(value+'T00:00:00')) : 'Дата не указана';
 const laneName = id => data.lanes.find(item=>item.id===id)?.title || id;
 const isBackground = task => ['backlog','paused','reference'].includes(task.mode);
-const needsCheck = task => !isBackground(task) && (task.mode==='verify' || task.stale);
+const needsCheck = task => !isClosed(task) && !isBackground(task) && (task.mode==='verify' || task.stale);
 // Only an explicit, current review state counts as approval. Mixed-branch notes
 // and an unconfirmed handoff remain waiting; dated-out records remain verification.
 function onApproval(task){
@@ -21,6 +22,8 @@ const shownMode = task => needsCheck(task)?'verify':onApproval(task)?'approval':
 const matches = (item, fields) => (!query || fields.map(key=>item[key] || '').join(' ').toLocaleLowerCase('ru').includes(query));
 const sortTasks = tasks => [...tasks].sort((a,b)=>(b.confirmed || '').localeCompare(a.confirmed || '') || (a.due || '9999').localeCompare(b.due || '9999') || a.title.localeCompare(b.title,'ru'));
 function modeMatch(task, selected=mode){
+  if(selected==='closed') return isClosed(task);
+  if(isClosed(task)) return false;
   if(selected==='all') return true;
   if(selected==='active') return !isBackground(task);
   if(selected==='current') return !task.stale && ['work','waiting'].includes(task.mode);
@@ -52,11 +55,11 @@ function renderOverview(){
   $('#updated').textContent=`Обновлено ${date(data.updated)} ${data.updated.slice(0,4)} · Свежие подтверждения первыми`;
   $('#edition').textContent=manifest.mode==='preview'?'Локальный предпросмотр':'Закрытый рабочий статус';
   $('#teams').innerHTML=data.teams.map(team=>{
-    const tasks=data.tasks.filter(task=>task.lane===team.lane&&!isBackground(task));
+    const tasks=data.tasks.filter(task=>task.lane===team.lane&&!isBackground(task)&&!isClosed(task));
     return `<button class="team team-${esc(team.lane)}" data-lane="${esc(team.lane)}" aria-label="Открыть все незакрытые задачи: ${esc(laneName(team.lane))}" aria-describedby="team-summary-${esc(team.lane)}"><span class="team-top"><strong>${esc(laneName(team.lane))}</strong><span class="signal ${esc(team.status)}">Связка: ${{yellow:'есть вопросы',red:'требует решения',green:'без рисков'}[team.status]} · ${date(team.date)}</span></span><span class="team-summary" id="team-summary-${esc(team.lane)}">${esc(team.summary)}</span>${chart(tasks,laneName(team.lane))}<span class="team-action">Все задачи по датам ${externalIcon}</span></button>`;
   }).join('');
-  $('#focus').innerHTML=sortTasks(data.tasks.filter(task=>task.priority==='focus')).map(task=>taskButton(task,true)).join('');
-  $('#deferred').innerHTML=data.tasks.filter(task=>task.priority==='deferred').map(task=>taskButton(task,true)).join('');
+  $('#focus').innerHTML=sortTasks(data.tasks.filter(task=>task.priority==='focus'&&!isClosed(task))).map(task=>taskButton(task,true)).join('');
+  $('#deferred').innerHTML=data.tasks.filter(task=>task.priority==='deferred'&&!isClosed(task)).map(task=>taskButton(task,true)).join('');
   $('#ai-branches').innerHTML=sortTasks(data.ai.branches).map(branch=>`<article class="ai-branch"><div class="branch-heading"><h3><button data-open="${esc(branch.id)}" class="text-link">${esc(branch.title)} ${externalIcon}</button></h3><time datetime="${esc(branch.confirmed)}">${date(branch.confirmed)}</time></div><ol class="branch-milestones">${branch.milestones.map(text=>`<li>${esc(text)}</li>`).join('')}</ol><p class="branch-next"><strong>Далее</strong>${esc(branch.current)}</p><div class="reference-links">${referenceLinks(branch.references)}</div></article>`).join('');
   $('#total-count').textContent=`${data.tasks.length} записей · AI Stream отдельно`;
   $('#lane').innerHTML='<option value="all">Все направления</option>'+data.lanes.map(item=>`<option value="${esc(item.id)}">${esc(item.title)}</option>`).join('');
@@ -71,10 +74,10 @@ function render(){
   $('#workspace-title').textContent=view==='board'&&lane!=='all'?`${laneName(lane)} · задачи`:'Рабочая доска';
   if(view==='board'){
     const pool=candidates();
-    $('#modes').innerHTML=[['current','Свежие'],['active','Все открытые'],['waiting','Ждём'],['approval','Согласование'],['verify','На сверку'],['backlog','Бэклог'],['all','Все записи']].map(([id,title])=>`<button data-mode="${id}" aria-pressed="${mode===id}">${title}<span class="count">${pool.filter(task=>modeMatch(task,id)).length}</span></button>`).join('');
+    $('#modes').innerHTML=[['current','Свежие'],['active','Все открытые'],['waiting','Ждём'],['approval','Согласование'],['verify','На сверку'],['backlog','Бэклог'],['all','Все записи'],['closed','Закрытые']].map(([id,title])=>`<button data-mode="${id}" aria-pressed="${mode===id}">${title}<span class="count">${pool.filter(task=>modeMatch(task,id)).length}</span></button>`).join('');
     const tasks=sortTasks(pool.filter(task=>modeMatch(task)));
     const lanes=data.lanes.filter(item=>lane==='all'?item.id!=='ai':item.id===lane);
-    const notes={current:'Подтверждено в последние 21 день. Более старые и недатированные обязательства доступны в «На сверку».',active:'Все незакрытые задачи, сначала свежие подтверждения. Старые записи помечены «На сверку»; бэклог доступен отдельно.',waiting:'Ожидаем ответ, следующие шаги или подтверждение передачи. Задачи на ревью показаны в «Согласование», старые обязательства — в «На сверку».',approval:'Задачи с прямым актуальным подтверждением внешнего ревью или согласования. Неподтверждённая передача и смешанные статусы остаются в «Ждём».',verify:'Нет подтверждения за последние 21 день либо прямо требуется сверка. Это не означает, что работа остановлена.',backlog:'Отложенные задачи, паузы и справочные треки. Приоритетные отложенные инициативы также показаны выше.',all:'Все записи, включая бэклог. AI Stream показан отдельным блоком; выберите его в направлениях для полного списка.'};
+    const notes={closed:'Выполненные и неактуальные задачи. При необходимости можно вернуть в работу.',current:'Подтверждено в последние 21 день. Более старые и недатированные обязательства доступны в «На сверку».',active:'Все незакрытые задачи, сначала свежие подтверждения. Старые записи помечены «На сверку»; бэклог доступен отдельно.',waiting:'Ожидаем ответ, следующие шаги или подтверждение передачи. Задачи на ревью показаны в «Согласование», старые обязательства — в «На сверку».',approval:'Задачи с прямым актуальным подтверждением внешнего ревью или согласования. Неподтверждённая передача и смешанные статусы остаются в «Ждём».',verify:'Нет подтверждения за последние 21 день либо прямо требуется сверка. Это не означает, что работа остановлена.',backlog:'Отложенные задачи, паузы и справочные треки. Приоритетные отложенные инициативы также показаны выше.',all:'Все записи, включая бэклог. AI Stream показан отдельным блоком; выберите его в направлениях для полного списка.'};
     $('#view-note').textContent=`${tasks.length} записей. ${notes[mode]}`;
     $('#content').innerHTML=tasks.length?`<div class="board ${lanes.length===1?'single':''}">${lanes.map(item=>{const group=tasks.filter(task=>task.lane===item.id);return `<section class="lane lane-${esc(item.id)}" aria-label="${esc(item.title)}"><div class="lane-head"><h3>${esc(item.title)}</h3><span>${group.length}</span></div><div class="lane-tasks">${group.length?(lanes.length===1?datedTasks(group):group.map(task=>taskButton(task)).join('')):'<p class="lane-empty">В этом срезе записей нет.<br>Посмотрите другие режимы.</p>'}</div></section>`;}).join('')}</div>`:empty('Задачи не найдены','Измените поиск или выберите другой режим.');
   }else if(view==='results'){
@@ -93,6 +96,7 @@ function openTask(id){
   const task=data?.tasks.find(item=>item.id===id);if(!task)return;
   opened=id;$('#task-id').textContent=`${task.id} · ${laneName(task.lane)}`;$('#task-title').textContent=task.title;
   $('#task-detail').innerHTML=`<dl><dt>Статус</dt><dd>${esc(task.status)}</dd><dt>Следующее действие</dt><dd>${esc(task.action)}</dd><dt>Участники</dt><dd>${esc(task.owner || 'Не указаны')}</dd>${task.due?`<dt>Ориентир</dt><dd>${date(task.due)} · ${esc(task.dueLabel)}</dd>`:''}<dt>Последнее подтверждение</dt><dd>${date(task.confirmed)}${task.stale?' · требуется сверка':''}</dd><dt>Источник</dt><dd>${esc(task.source)}</dd></dl>${task.references.length?`<div class="reference-links">${referenceLinks(task.references)}</div>`:''}`;
+  renderTaskActions(task);
   $('#copy-status').textContent='';
   if(!$('#task-dialog').open)$('#task-dialog').showModal();
   history.replaceState(null,'',`#${id}`);
@@ -110,7 +114,7 @@ async function start(){
 }
 function show(){
   $('#loading').hidden=true;$('#access').hidden=true;$('#dashboard').hidden=false;$('#lock').hidden=manifest.mode!=='encrypted';
-  renderOverview();render();if(location.hash)openTask(location.hash.slice(1));
+  renderOverview();render();renderToday();if(location.hash)openTask(location.hash.slice(1));
 }
 async function decrypt(password){
   const decode=value=>Uint8Array.from(atob(value),char=>char.charCodeAt(0));
@@ -121,13 +125,13 @@ async function decrypt(password){
 }
 $('#unlock').addEventListener('submit',async event=>{
   event.preventDefault();const button=event.submitter;button.disabled=true;button.textContent='Открываем…';$('#access-error').textContent='';
-  try{if(!crypto.subtle)throw new Error('Для открытия нужна защищённая страница HTTPS.');data=await decrypt($('#password').value);$('#password').value='';show();}
+  try{if(!crypto.subtle)throw new Error('Для открытия нужна защищённая страница HTTPS.');data=await decrypt($('#password').value);syncPassword=$('#password').value;$('#password').value='';show();if(location.hostname==='127.0.0.1')connectSync();}
   catch(error){$('#access-error').textContent=error.name==='OperationError'?'Пароль не подошёл. Проверьте его и попробуйте снова.':error.message;$('#password').focus();}
   finally{button.disabled=false;button.textContent='Открыть статус';}
 });
 $('#lock').addEventListener('click',()=>{
-  closeDetail();data=null;$('#dashboard').hidden=true;$('#lock').hidden=true;$('#access').hidden=false;
-  for(const selector of ['#teams','#focus','#deferred','#ai-branches','#content','#task-detail','#task-title','#task-id'])$(selector).replaceChildren();
+  closeDetail();syncPassword='';connected=false;syncEpoch++;data=null;$('#dashboard').hidden=true;$('#lock').hidden=true;$('#access').hidden=false;
+  for(const selector of ['#teams','#focus','#deferred','#ai-branches','#content','#task-detail','#task-title','#task-id','#today-list','#carry-list','#upcoming-list','#task-actions','#action-status','#task-action-status','#todo-count','#today-date','#updated','#total-count','#sync-status'])$(selector).replaceChildren();
   query='';$('#search').value='';view='board';mode='current';lane='all';limit=30;$('#password').focus();
 });
 document.addEventListener('click',event=>{
@@ -150,4 +154,65 @@ $('#copy-link').addEventListener('click',async()=>{try{await navigator.clipboard
 $('#retry').addEventListener('click',()=>location.reload());
 window.addEventListener('hashchange',()=>{if(data&&location.hash)openTask(location.hash.slice(1));});
 phone.addEventListener('change',()=>{if(data)render();});
+let syncPassword='', connected=false, busy=false, syncEpoch=0, polling=false, agendaKey='', taskActionsKey='';
+const apiBase=location.hostname==='127.0.0.1'?location.origin:'http://127.0.0.1:8846';
+async function api(route, body){
+  const response=await fetch(apiBase+route,{method:body?'POST':'GET',headers:{Authorization:'Bearer '+syncPassword,...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),cache:'no-store',signal:AbortSignal.timeout(10000),targetAddressSpace:'loopback'});
+  const result=await response.json();if(!response.ok)throw new Error(result.error||'Не удалось сохранить изменение.');return result;
+}
+function syncLabel(sync){
+  return sync.local==='error'?'Ошибка локальной сборки. Изменения недоступны.':sync.publish==='published'?'Mac и сайт синхронизированы':sync.publish==='error'?'На Mac сохранено · публикация отложена':sync.publish==='deploying'?'На Mac сохранено · сайт обновляется':'Mac подключён · изменения сохраняются локально';
+}
+function acceptSnapshot(result){
+  const changed=data?.revision!==result.data.revision;
+  data=result.data;connected=result.sync.local!=='error';$('#sync-status').textContent=syncLabel(result.sync);$('#connect-sync').textContent=connected?'Обновить':'Подключить Mac';
+  if(changed){renderOverview();render();if(opened)openTask(opened);}
+  renderToday();if(opened)renderTaskActions(data.tasks.find(t=>t.id===opened));
+}
+async function connectSync(){
+  if(!syncPassword||polling)return;const epoch=syncEpoch;polling=true;$('#connect-sync').disabled=true;
+  try{const result=await api('/api/snapshot');if(epoch===syncEpoch&&data)acceptSnapshot(result);}
+  catch(error){if(epoch!==syncEpoch||!data)return;connected=false;$('#connect-sync').textContent='Подключить Mac';$('#sync-status').textContent='Mac не подключён. Разрешите локальный доступ или откройте локальную версию.';renderToday();if(opened)renderTaskActions(data.tasks.find(t=>t.id===opened));}
+  finally{polling=false;$('#connect-sync').disabled=false;}
+}
+function actionButtons(kind,item){
+  const closed=kind==='task'?isClosed(item):item.state!=='open';
+  const attrs=`data-change-kind="${kind}" data-change-id="${esc(item.id)}"`;
+  const disabled=(!connected||busy)?'disabled':'';
+  return closed?`<button ${attrs} data-change-state="open" ${disabled}>Вернуть</button>`:`<button ${attrs} data-change-state="done" ${disabled}>Выполнено</button><button ${attrs} data-change-state="cancelled" ${disabled}>Не актуально</button>`;
+}
+function renderTaskActions(task){
+  if(!task)return;const key=[task.id,task.revision,connected,busy].join(':');
+  if(key===taskActionsKey&&$('#task-actions').childElementCount)return;taskActionsKey=key;$('#task-actions').innerHTML=actionButtons('task',task);
+  $('#task-action-status').textContent=connected?(isClosed(task)?'Задача закрыта. История сохранена.':'Действие закроет всю задачу. Для отдельной встречи используйте план дня.'):'Для изменения задачи подключите Mac в блоке «План дня».';
+}
+function todoRow(item,carry=false){
+  const closed=item.state!=='open';
+  return `<article class="todo-row ${closed?'todo-closed':''}"><div class="todo-time">${esc(item.time||(item.kind==='evening'?'Вечером':'В течение дня'))}${carry?`<small>${fullDate(item.date)}</small>`:''}</div><div class="todo-copy"><h3>${esc(item.title)}</h3>${item.detail?`<p>${esc(item.detail)}</p>`:''}${item.taskId?`<button class="todo-project" data-open="${esc(item.taskId)}">Открыть ${esc(item.taskId)}</button>`:''}${closed?`<span class="todo-state">${item.state==='done'?'Выполнено':'Не актуально'}</span>`:''}</div><div class="todo-actions">${item.derived?`<button data-open="${esc(item.taskId)}">Открыть задачу</button>`:actionButtons('todo',item)}</div></article>`;
+}
+function renderToday(){
+  if(!data)return;const today=todayInMoscow();
+  const key=[data.revision,today,connected,busy].join(':');if(key===agendaKey&&$('#today-list').childElementCount)return;agendaKey=key;
+  $('#today-date').textContent=new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date())+' · Москва';
+  const agenda=dailyItems(data,today),done=agenda.today.filter(i=>i.state==='done').length;
+  $('#todo-count').textContent=agenda.today.length?`${done} из ${agenda.today.length} выполнено`:'Без назначенных действий';
+  $('#today-list').innerHTML=agenda.today.length?agenda.today.map(i=>todoRow(i)).join(''):'<p class="today-empty">На сегодня действий не назначено. Задачи с сегодняшним ориентиром появятся здесь автоматически.</p>';
+  $('#carry-wrap').hidden=!agenda.carry.length;$('#carry-title').textContent=`Не закрыто ранее · ${agenda.carry.length}`;$('#carry-list').innerHTML=agenda.carry.map(i=>todoRow(i,true)).join('');
+  $('#upcoming-list').innerHTML=agenda.upcoming.length?'<h3>Далее</h3>'+agenda.upcoming.map(i=>todoRow(i,true)).join(''):'';
+}
+$('#connect-sync').addEventListener('click',connectSync);
+document.addEventListener('click',async event=>{
+  const button=event.target.closest('[data-change-kind]');if(!button||!data||busy||!connected)return;
+  const kind=button.dataset.changeKind,id=button.dataset.changeId,state=button.dataset.changeState;
+  const item=(kind==='task'?data.tasks:data.plan.items).find(i=>i.id===id);if(!item)return;
+  const epoch=syncEpoch;busy=true;renderToday();if(opened)renderTaskActions(data.tasks.find(t=>t.id===opened));
+  const message=kind==='task'?$('#task-action-status'):$('#action-status');message.textContent='Сохраняем…';
+  try{
+    const result=await api('/api/change',{eventId:crypto.randomUUID(),kind,id,state,revision:item.revision});
+    if(epoch!==syncEpoch||!data)return;acceptSnapshot(result);message.textContent=state==='open'?'Возвращено.':kind==='todo'?'Сохранено. Связанный проект остаётся открытым.':'Сохранено. Задача доступна в «Закрытых».';
+  }catch(error){if(epoch!==syncEpoch||!data)return;message.textContent=error.message+' Обновите данные перед повторной попыткой.';connected=false;$('#sync-status').textContent='Связь с Mac требует проверки. Обновите данные перед следующим изменением.';$('#connect-sync').textContent='Подключить Mac';}
+  finally{busy=false;if(epoch===syncEpoch&&data){renderToday();if(opened){$('#task-actions').innerHTML=actionButtons('task',data.tasks.find(t=>t.id===opened));taskActionsKey='';}const target=document.querySelector(`[data-change-kind="${kind}"][data-change-id="${CSS.escape(id)}"]:not(:disabled)`);target?.focus({preventScroll:true});}}
+});
+setInterval(()=>{if(data){renderToday();if(connected&&!busy)connectSync();}},15000);
+window.addEventListener('focus',()=>{if(data){renderToday();if(connected)connectSync();}});
 start();

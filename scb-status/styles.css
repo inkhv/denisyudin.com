@@ -212,3 +212,30 @@ dialog .reference-links {margin:8px 0 24px}
   dialog {padding:24px}dialog h2 {font-size:24px}
 }
 @media(prefers-reduced-motion:reduce) {html {scroll-behavior:auto}* {transition:none!important}}
+
+/* Daily work extends the existing SCB type, controls and flat surfaces. */
+#today-date{font-size:20px;color:var(--ink,#000);margin:12px 0 6px}
+#updated{font-size:12px}
+.today-section{margin-bottom:40px;padding-bottom:28px;border-bottom:1px solid #d5d5d5}
+.sync-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:12px;color:#666;margin-bottom:20px}
+.sync-bar button,.sync-bar a{font-size:12px;color:#000}
+#action-status:empty{display:none}
+#action-status,#task-action-status{font-size:13px;line-height:1.6}
+.todo-row{display:grid;grid-template-columns:130px minmax(0,1fr) auto;gap:24px;padding:20px 0;border-top:1px solid #d5d5d5;align-items:start}
+.todo-time{font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.5}
+.todo-time small{display:block;font-size:12px;font-weight:400;color:#666;margin-top:6px}
+.todo-copy h3{font-size:17px;line-height:1.45;font-weight:600;margin:0;overflow-wrap:anywhere}
+.todo-copy p{font-size:13px;line-height:1.65;margin:6px 0;max-width:70ch}
+.todo-project{font-size:12px;margin-top:8px}
+.todo-actions,.task-actions{display:flex;gap:8px;flex-wrap:wrap}
+.todo-actions button,.task-actions button{font-size:12px;min-height:40px}
+.todo-actions button[data-change-state="done"],.task-actions button[data-change-state="done"]{background:#000;color:#fff;border-color:#000}
+.todo-actions button:disabled,.task-actions button:disabled{opacity:.55;cursor:not-allowed}
+.todo-closed .todo-copy h3{text-decoration:line-through;color:#626262}
+.todo-state{display:inline-block;margin:8px 12px;font-size:12px}
+.task-actions{margin:20px 0 8px}
+.mode-label.closed,.mode-label.cancelled{color:#444}
+#carry-wrap{margin-top:24px}#carry-wrap summary{cursor:pointer;padding:12px 0;font-weight:600}
+#upcoming-list:empty{display:none}.today-empty{font-size:14px;line-height:1.6;padding:12px 0}
+@media(max-width:850px){.todo-row{grid-template-columns:100px minmax(0,1fr);gap:12px 20px}.todo-actions{grid-column:2}}
+@media(max-width:560px){#today-date{font-size:16px}.todo-row{grid-template-columns:1fr;gap:8px}.todo-actions{grid-column:1}.todo-time{font-size:13px}.todo-copy h3{font-size:16px}.sync-bar{gap:12px}.today-section{margin-bottom:28px}}
