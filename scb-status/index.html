@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=20261016-1">
-  <script type="module" src="./app.mjs?v=20261016-1"></script>
+  <link rel="stylesheet" href="./styles.css?v=20261016-add">
+  <script type="module" src="./app.mjs?v=20261016-add"></script>
 </head>
 <body>
   <a class="skip" href="#main">К содержимому</a>
@@ -29,6 +29,18 @@
       <section class="today-section" aria-labelledby="todo-title">
         <div class="section-heading"><h2 id="todo-title">План дня</h2><span id="todo-count"></span></div>
         <div class="sync-bar"><span id="sync-status" role="status">Сохранённый снимок</span><button id="connect-sync">Подключить Mac</button><a href="http://127.0.0.1:8846/scb-status/" target="_blank" rel="noopener">Открыть локально</a></div>
+        <details id="add-todo" class="add-todo">
+          <summary>Добавить задачу</summary>
+          <form id="add-todo-form">
+            <div class="add-todo-fields">
+              <label class="new-title">Задача<input id="new-todo-title" name="title" type="text" maxlength="240" required placeholder="Например, встретиться с B2B-командой" autocomplete="off"></label>
+              <label>Дата<input id="new-todo-date" name="date" type="date" min="2000-01-01" max="2099-12-31" required></label>
+              <label>Время (необязательно)<input id="new-todo-time" name="time" type="time"></label>
+            </div>
+            <div class="add-todo-bottom"><button id="add-todo-submit" type="submit" class="primary" disabled>Добавить</button><p id="add-todo-hint">Подключите Mac, чтобы сохранить задачу.</p></div>
+            <p id="add-todo-status" role="status" aria-live="polite"></p>
+          </form>
+        </details>
         <p id="action-status" role="status"></p><div id="today-list"></div>
         <details id="carry-wrap" hidden><summary id="carry-title">Не закрыто ранее</summary><div id="carry-list"></div></details>
         <div id="upcoming-list"></div>

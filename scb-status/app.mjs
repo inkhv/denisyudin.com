@@ -1,4 +1,4 @@
-import {todayInMoscow, isClosed, dailyItems} from './daily.mjs?v=20261016-1';
+import {todayInMoscow, isClosed, dailyItems} from './daily.mjs?v=20261016-add';
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const modes = {work:'В работе',waiting:'Ждём',approval:'На согласовании',verify:'На сверку',backlog:'Бэклог',paused:'Пауза',reference:'Справка',closed:'Выполнено',cancelled:'Не актуально'};
@@ -130,7 +130,7 @@ $('#unlock').addEventListener('submit',async event=>{
   finally{button.disabled=false;button.textContent='Открыть статус';}
 });
 $('#lock').addEventListener('click',()=>{
-  closeDetail();syncPassword='';connected=false;syncEpoch++;data=null;$('#dashboard').hidden=true;$('#lock').hidden=true;$('#access').hidden=false;
+  closeDetail();syncPassword='';connected=false;syncEpoch++;data=null;createAttempt=null;$('#add-todo-form').reset();$('#add-todo-status').textContent='';$('#add-todo').open=false;$('#dashboard').hidden=true;$('#lock').hidden=true;$('#access').hidden=false;
   for(const selector of ['#teams','#focus','#deferred','#ai-branches','#content','#task-detail','#task-title','#task-id','#today-list','#carry-list','#upcoming-list','#task-actions','#action-status','#task-action-status','#todo-count','#today-date','#updated','#total-count','#sync-status'])$(selector).replaceChildren();
   query='';$('#search').value='';view='board';mode='current';lane='all';limit=30;$('#password').focus();
 });
@@ -154,11 +154,11 @@ $('#copy-link').addEventListener('click',async()=>{try{await navigator.clipboard
 $('#retry').addEventListener('click',()=>location.reload());
 window.addEventListener('hashchange',()=>{if(data&&location.hash)openTask(location.hash.slice(1));});
 phone.addEventListener('change',()=>{if(data)render();});
-let syncPassword='', connected=false, busy=false, syncEpoch=0, polling=false, agendaKey='', taskActionsKey='';
+let syncPassword='', connected=false, busy=false, syncEpoch=0, polling=false, agendaKey='', taskActionsKey='', createAttempt=null;
 const apiBase=location.hostname==='127.0.0.1'?location.origin:'http://127.0.0.1:8846';
 async function api(route, body){
   const response=await fetch(apiBase+route,{method:body?'POST':'GET',headers:{Authorization:'Bearer '+syncPassword,...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),cache:'no-store',signal:AbortSignal.timeout(10000),targetAddressSpace:'loopback'});
-  const result=await response.json();if(!response.ok)throw new Error(result.error||'Не удалось сохранить изменение.');return result;
+  const result=await response.json();if(!response.ok)throw Object.assign(new Error(result.error||'Не удалось сохранить изменение.'),{status:response.status});return result;
 }
 function syncLabel(sync){
   return sync.local==='error'?'Ошибка локальной сборки. Изменения недоступны.':sync.publish==='published'?'Mac и сайт синхронизированы':sync.publish==='error'?'На Mac сохранено · публикация отложена':sync.publish==='deploying'?'На Mac сохранено · сайт обновляется':'Mac подключён · изменения сохраняются локально';
@@ -191,7 +191,7 @@ function todoRow(item,carry=false){
   return `<article class="todo-row ${closed?'todo-closed':''}"><div class="todo-time">${esc(item.time||(item.kind==='evening'?'Вечером':'В течение дня'))}${carry?`<small>${fullDate(item.date)}</small>`:''}</div><div class="todo-copy"><h3>${esc(item.title)}</h3>${item.detail?`<p>${esc(item.detail)}</p>`:''}${item.taskId?`<button class="todo-project" data-open="${esc(item.taskId)}">Открыть ${esc(item.taskId)}</button>`:''}${closed?`<span class="todo-state">${item.state==='done'?'Выполнено':'Не актуально'}</span>`:''}</div><div class="todo-actions">${item.derived?`<button data-open="${esc(item.taskId)}">Открыть задачу</button>`:actionButtons('todo',item)}</div></article>`;
 }
 function renderToday(){
-  if(!data)return;const today=todayInMoscow();
+  if(!data)return;renderAddTodo();const today=todayInMoscow();
   const key=[data.revision,today,connected,busy].join(':');if(key===agendaKey&&$('#today-list').childElementCount)return;agendaKey=key;
   $('#today-date').textContent=new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date())+' · Москва';
   const agenda=dailyItems(data,today),done=agenda.today.filter(i=>i.state==='done').length;
@@ -200,6 +200,37 @@ function renderToday(){
   $('#carry-wrap').hidden=!agenda.carry.length;$('#carry-title').textContent=`Не закрыто ранее · ${agenda.carry.length}`;$('#carry-list').innerHTML=agenda.carry.map(i=>todoRow(i,true)).join('');
   $('#upcoming-list').innerHTML=agenda.upcoming.length?'<h3>Далее</h3>'+agenda.upcoming.map(i=>todoRow(i,true)).join(''):'';
 }
+function renderAddTodo(){
+  $('#add-todo-submit').disabled=!connected||busy;
+  $('#add-todo-submit').textContent=busy?'Сохраняем…':'Добавить';
+  for(const input of $('#add-todo-form').querySelectorAll('input'))input.disabled=busy;
+  $('#add-todo-hint').textContent=connected?'Без времени — задача на весь день.':'Подключите Mac, чтобы сохранить задачу. Черновик можно заполнить сейчас.';
+  if(!$('#new-todo-date').value)$('#new-todo-date').value=todayInMoscow();
+}
+$('#add-todo').addEventListener('toggle',()=>{
+  if($('#add-todo').open){renderAddTodo();$('#new-todo-title').focus();}
+});
+$('#add-todo-form').addEventListener('submit',async event=>{
+  event.preventDefault();if(!data||!connected||busy)return;
+  const title=$('#new-todo-title').value.trim().replace(/\s+/g,' ');
+  if(!title){$('#add-todo-status').textContent='Введите название задачи.';$('#new-todo-title').focus();return;}
+  const item={title,date:$('#new-todo-date').value,time:$('#new-todo-time').value};
+  const signature=JSON.stringify(item);
+  if(!createAttempt||createAttempt.signature!==signature)createAttempt={signature,event:{eventId:crypto.randomUUID(),kind:'todo',state:'create',item}};
+  const epoch=syncEpoch;busy=true;renderToday();if(opened)renderTaskActions(data.tasks.find(t=>t.id===opened));$('#add-todo-status').textContent='Сохраняем…';
+  try{
+    const result=await api('/api/change',createAttempt.event);
+    if(epoch!==syncEpoch||!data)return;
+    acceptSnapshot(result);createAttempt=null;$('#new-todo-title').value='';$('#new-todo-time').value='';
+    $('#add-todo-status').textContent=(result.duplicate?'Такая задача уже есть в плане.':`Добавлено: «${title}».`)+(item.date>todayInMoscow()?' Смотрите в блоке «Далее».':item.date<todayInMoscow()?' Смотрите в «Не закрыто ранее».':'');
+  }catch(error){
+    if(epoch!==syncEpoch||!data)return;
+    $('#add-todo-status').textContent=error.message+' Введённые данные сохранены в форме.';
+    if(!error.status||error.status>=500||error.status===401){connected=false;$('#sync-status').textContent='Связь с Mac требует проверки. Подключитесь и повторите сохранение.';$('#connect-sync').textContent='Подключить Mac';}
+  }finally{
+    busy=false;if(epoch===syncEpoch&&data){renderToday();if(opened)renderTaskActions(data.tasks.find(t=>t.id===opened));$('#new-todo-title').focus({preventScroll:true});}
+  }
+});
 $('#connect-sync').addEventListener('click',connectSync);
 document.addEventListener('click',async event=>{
   const button=event.target.closest('[data-change-kind]');if(!button||!data||busy||!connected)return;

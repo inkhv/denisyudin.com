@@ -239,3 +239,17 @@ dialog .reference-links {margin:8px 0 24px}
 #upcoming-list:empty{display:none}.today-empty{font-size:14px;line-height:1.6;padding:12px 0}
 @media(max-width:850px){.todo-row{grid-template-columns:100px minmax(0,1fr);gap:12px 20px}.todo-actions{grid-column:2}}
 @media(max-width:560px){#today-date{font-size:16px}.todo-row{grid-template-columns:1fr;gap:8px}.todo-actions{grid-column:1}.todo-time{font-size:13px}.todo-copy h3{font-size:16px}.sync-bar{gap:12px}.today-section{margin-bottom:28px}}
+
+.add-todo{margin:0 0 20px}
+.add-todo summary{display:list-item;width:fit-content;cursor:pointer;font-size:14px;font-weight:600;padding:10px 0}
+.add-todo form{padding:16px 0 0}
+.add-todo-fields{display:grid;grid-template-columns:minmax(0,1fr) 180px 180px;gap:16px}
+.add-todo-fields label{display:flex;flex-direction:column;gap:8px;font-size:13px;min-width:0}
+.add-todo-fields label span{font-size:12px;color:var(--muted);display:inline}
+.add-todo-fields input{width:100%;min-width:0;border:1px solid var(--control-line);border-radius:8px;background:var(--paper);color:var(--ink);padding:12px;font-size:16px;min-height:46px}
+.add-todo-fields input::placeholder{color:var(--muted)}
+.add-todo-bottom{display:flex;align-items:center;gap:16px;margin-top:16px}
+#add-todo-hint,#add-todo-status{font-size:13px;line-height:1.6;margin:0;color:var(--muted)}
+#add-todo-status{color:var(--ink);margin-top:12px;overflow-wrap:anywhere}#add-todo-status:empty{display:none}
+@media(max-width:850px){.add-todo-fields{grid-template-columns:1fr 1fr}.add-todo-fields .new-title{grid-column:1/-1}}
+@media(max-width:560px){.add-todo-fields{grid-template-columns:1fr}.add-todo-bottom{align-items:flex-start;flex-direction:column;gap:12px}}
