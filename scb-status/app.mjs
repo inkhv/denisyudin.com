@@ -125,12 +125,12 @@ async function decrypt(password){
 }
 $('#unlock').addEventListener('submit',async event=>{
   event.preventDefault();const button=event.submitter;button.disabled=true;button.textContent='Открываем…';$('#access-error').textContent='';
-  try{if(!crypto.subtle)throw new Error('Для открытия нужна защищённая страница HTTPS.');data=await decrypt($('#password').value);syncPassword=$('#password').value;$('#password').value='';show();if(location.hostname==='127.0.0.1')connectSync();}
+  try{if(!crypto.subtle)throw new Error('Для открытия нужна защищённая страница HTTPS.');data=await decrypt($('#password').value);syncPassword=$('#password').value;$('#password').value='';show();if(location.hostname==='127.0.0.1'){syncWanted=true;connectSync();}}
   catch(error){$('#access-error').textContent=error.name==='OperationError'?'Пароль не подошёл. Проверьте его и попробуйте снова.':error.message;$('#password').focus();}
   finally{button.disabled=false;button.textContent='Открыть статус';}
 });
 $('#lock').addEventListener('click',()=>{
-  closeDetail();syncPassword='';connected=false;syncEpoch++;data=null;createAttempt=null;$('#add-todo-form').reset();$('#add-todo-status').textContent='';$('#add-todo').open=false;$('#dashboard').hidden=true;$('#lock').hidden=true;$('#access').hidden=false;
+  closeDetail();syncEpoch++;sessionAbort.abort();sessionAbort=new AbortController();syncRequest=null;syncWanted=false;retryCount=0;nextSyncAt=0;busy=false;syncPassword='';connected=false;data=null;createAttempt=null;$('#add-todo-form').reset();$('#add-todo-status').textContent='';$('#add-todo').open=false;$('#dashboard').hidden=true;$('#lock').hidden=true;$('#access').hidden=false;
   for(const selector of ['#teams','#focus','#deferred','#ai-branches','#content','#task-detail','#task-title','#task-id','#today-list','#carry-list','#upcoming-list','#task-actions','#action-status','#task-action-status','#todo-count','#today-date','#updated','#total-count','#sync-status'])$(selector).replaceChildren();
   query='';$('#search').value='';view='board';mode='current';lane='all';limit=30;$('#password').focus();
 });
@@ -154,10 +154,11 @@ $('#copy-link').addEventListener('click',async()=>{try{await navigator.clipboard
 $('#retry').addEventListener('click',()=>location.reload());
 window.addEventListener('hashchange',()=>{if(data&&location.hash)openTask(location.hash.slice(1));});
 phone.addEventListener('change',()=>{if(data)render();});
-let syncPassword='', connected=false, busy=false, syncEpoch=0, polling=false, agendaKey='', taskActionsKey='', createAttempt=null;
+let syncPassword='', connected=false, busy=false, syncEpoch=0, agendaKey='', taskActionsKey='', createAttempt=null;
+let syncWanted=false, syncRequest=null, syncVersion=0, retryCount=0, nextSyncAt=0, sessionAbort=new AbortController();
 const apiBase=location.hostname==='127.0.0.1'?location.origin:'http://127.0.0.1:8846';
-async function api(route, body){
-  const response=await fetch(apiBase+route,{method:body?'POST':'GET',headers:{Authorization:'Bearer '+syncPassword,...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),cache:'no-store',signal:AbortSignal.timeout(10000),targetAddressSpace:'loopback'});
+async function api(route, body, signal){
+  const response=await fetch(apiBase+route,{method:body?'POST':'GET',headers:{Authorization:'Bearer '+syncPassword,...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),cache:'no-store',signal:AbortSignal.any([sessionAbort.signal,AbortSignal.timeout(10000),...(signal?[signal]:[])]),targetAddressSpace:'loopback'});
   const result=await response.json();if(!response.ok)throw Object.assign(new Error(result.error||'Не удалось сохранить изменение.'),{status:response.status});return result;
 }
 function syncLabel(sync){
@@ -165,15 +166,28 @@ function syncLabel(sync){
 }
 function acceptSnapshot(result){
   const changed=data?.revision!==result.data.revision;
+  retryCount=0;nextSyncAt=Date.now()+15000;
   data=result.data;connected=result.sync.local!=='error';$('#sync-status').textContent=syncLabel(result.sync);$('#connect-sync').textContent=connected?'Обновить':'Подключить Mac';
   if(changed){renderOverview();render();if(opened)openTask(opened);}
   renderToday();if(opened)renderTaskActions(data.tasks.find(t=>t.id===opened));
 }
 async function connectSync(){
-  if(!syncPassword||polling)return;const epoch=syncEpoch;polling=true;$('#connect-sync').disabled=true;
-  try{const result=await api('/api/snapshot');if(epoch===syncEpoch&&data)acceptSnapshot(result);}
-  catch(error){if(epoch!==syncEpoch||!data)return;connected=false;$('#connect-sync').textContent='Подключить Mac';$('#sync-status').textContent='Mac не подключён. Разрешите локальный доступ или откройте локальную версию.';renderToday();if(opened)renderTaskActions(data.tasks.find(t=>t.id===opened));}
-  finally{polling=false;$('#connect-sync').disabled=false;}
+  if(!syncPassword||!syncWanted||syncRequest||busy)return;
+  const epoch=syncEpoch,version=syncVersion,request=new AbortController();syncRequest=request;$('#connect-sync').disabled=true;
+  try{const result=await api('/api/snapshot',null,request.signal);if(epoch===syncEpoch&&version===syncVersion&&data)acceptSnapshot(result);}
+  catch(error){if(epoch!==syncEpoch||version!==syncVersion||!data)return;disconnectSync(error);}
+  finally{if(syncRequest===request){syncRequest=null;$('#connect-sync').disabled=busy;}}
+}
+function disconnectSync(error){
+  connected=false;
+  const seconds=Math.min(60,15*2**Math.min(retryCount++,2));nextSyncAt=Date.now()+seconds*1000;
+  if(error.status===401){syncWanted=false;$('#sync-status').textContent='Пароль доступа изменился. Закройте доступ, обновите страницу и войдите с актуальным паролем.';}
+  else $('#sync-status').textContent=error.status===409?'Данные изменились. Обновим список автоматически; затем повторите действие.':`Mac недоступен. Показываем последний полученный снимок. Повторяем подключение автоматически (интервал ${seconds} с).`;
+  $('#connect-sync').textContent='Подключить Mac';renderToday();if(opened)renderTaskActions(data.tasks.find(t=>t.id===opened));
+}
+function beginMutation(){
+  busy=true;syncVersion++;syncRequest?.abort();syncRequest=null;
+  renderToday();if(opened)renderTaskActions(data.tasks.find(t=>t.id===opened));
 }
 function actionButtons(kind,item){
   const closed=kind==='task'?isClosed(item):item.state!=='open';
@@ -191,7 +205,7 @@ function todoRow(item,carry=false){
   return `<article class="todo-row ${closed?'todo-closed':''}"><div class="todo-time">${esc(item.time||(item.kind==='evening'?'Вечером':'В течение дня'))}${carry?`<small>${fullDate(item.date)}</small>`:''}</div><div class="todo-copy"><h3>${esc(item.title)}</h3>${item.detail?`<p>${esc(item.detail)}</p>`:''}${item.taskId?`<button class="todo-project" data-open="${esc(item.taskId)}">Открыть ${esc(item.taskId)}</button>`:''}${closed?`<span class="todo-state">${item.state==='done'?'Выполнено':'Не актуально'}</span>`:''}</div><div class="todo-actions">${item.derived?`<button data-open="${esc(item.taskId)}">Открыть задачу</button>`:actionButtons('todo',item)}</div></article>`;
 }
 function renderToday(){
-  if(!data)return;renderAddTodo();const today=todayInMoscow();
+  if(!data)return;$('#connect-sync').disabled=busy||!!syncRequest;renderAddTodo();const today=todayInMoscow();
   const key=[data.revision,today,connected,busy].join(':');if(key===agendaKey&&$('#today-list').childElementCount)return;agendaKey=key;
   $('#today-date').textContent=new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date())+' · Москва';
   const agenda=dailyItems(data,today),done=agenda.today.filter(i=>i.state==='done').length;
@@ -217,7 +231,7 @@ $('#add-todo-form').addEventListener('submit',async event=>{
   const item={title,date:$('#new-todo-date').value,time:$('#new-todo-time').value};
   const signature=JSON.stringify(item);
   if(!createAttempt||createAttempt.signature!==signature)createAttempt={signature,event:{eventId:crypto.randomUUID(),kind:'todo',state:'create',item}};
-  const epoch=syncEpoch;busy=true;renderToday();if(opened)renderTaskActions(data.tasks.find(t=>t.id===opened));$('#add-todo-status').textContent='Сохраняем…';
+  const epoch=syncEpoch;beginMutation();$('#add-todo-status').textContent='Сохраняем…';
   try{
     const result=await api('/api/change',createAttempt.event);
     if(epoch!==syncEpoch||!data)return;
@@ -225,25 +239,28 @@ $('#add-todo-form').addEventListener('submit',async event=>{
     $('#add-todo-status').textContent=(result.duplicate?'Такая задача уже есть в плане.':`Добавлено: «${title}».`)+(item.date>todayInMoscow()?' Смотрите в блоке «Далее».':item.date<todayInMoscow()?' Смотрите в «Не закрыто ранее».':'');
   }catch(error){
     if(epoch!==syncEpoch||!data)return;
-    $('#add-todo-status').textContent=error.message+' Введённые данные сохранены в форме.';
-    if(!error.status||error.status>=500||error.status===401){connected=false;$('#sync-status').textContent='Связь с Mac требует проверки. Подключитесь и повторите сохранение.';$('#connect-sync').textContent='Подключить Mac';}
+    $('#add-todo-status').textContent=(error.status?error.message:'Ответ от Mac не получен. После восстановления связи проверьте план и повторите сохранение при необходимости.')+' Введённые данные сохранены в форме.';
+    if(!error.status||error.status>=500||error.status===401)disconnectSync(error);
   }finally{
-    busy=false;if(epoch===syncEpoch&&data){renderToday();if(opened)renderTaskActions(data.tasks.find(t=>t.id===opened));$('#new-todo-title').focus({preventScroll:true});}
+    if(epoch===syncEpoch&&data){busy=false;renderToday();if(opened)renderTaskActions(data.tasks.find(t=>t.id===opened));$('#new-todo-title').focus({preventScroll:true});}
   }
 });
-$('#connect-sync').addEventListener('click',connectSync);
+$('#connect-sync').addEventListener('click',()=>{syncWanted=true;connectSync();});
 document.addEventListener('click',async event=>{
   const button=event.target.closest('[data-change-kind]');if(!button||!data||busy||!connected)return;
   const kind=button.dataset.changeKind,id=button.dataset.changeId,state=button.dataset.changeState;
   const item=(kind==='task'?data.tasks:data.plan.items).find(i=>i.id===id);if(!item)return;
-  const epoch=syncEpoch;busy=true;renderToday();if(opened)renderTaskActions(data.tasks.find(t=>t.id===opened));
+  const epoch=syncEpoch;beginMutation();
   const message=kind==='task'?$('#task-action-status'):$('#action-status');message.textContent='Сохраняем…';
   try{
     const result=await api('/api/change',{eventId:crypto.randomUUID(),kind,id,state,revision:item.revision});
     if(epoch!==syncEpoch||!data)return;acceptSnapshot(result);message.textContent=state==='open'?'Возвращено.':kind==='todo'?'Сохранено. Связанный проект остаётся открытым.':'Сохранено. Задача доступна в «Закрытых».';
-  }catch(error){if(epoch!==syncEpoch||!data)return;message.textContent=error.message+' Обновите данные перед повторной попыткой.';connected=false;$('#sync-status').textContent='Связь с Mac требует проверки. Обновите данные перед следующим изменением.';$('#connect-sync').textContent='Подключить Mac';}
-  finally{busy=false;if(epoch===syncEpoch&&data){renderToday();if(opened){$('#task-actions').innerHTML=actionButtons('task',data.tasks.find(t=>t.id===opened));taskActionsKey='';}const target=document.querySelector(`[data-change-kind="${kind}"][data-change-id="${CSS.escape(id)}"]:not(:disabled)`);target?.focus({preventScroll:true});}}
+  }catch(error){if(epoch!==syncEpoch||!data)return;message.textContent=(error.status?error.message:'Ответ от Mac не получен. Изменение могло сохраниться.')+' Проверьте обновлённый список перед повторной попыткой.';disconnectSync(error);}
+  finally{if(epoch===syncEpoch&&data){busy=false;renderToday();if(opened){$('#task-actions').innerHTML=actionButtons('task',data.tasks.find(t=>t.id===opened));taskActionsKey='';}const target=document.querySelector(`[data-change-kind="${kind}"][data-change-id="${CSS.escape(id)}"]:not(:disabled)`);target?.focus({preventScroll:true});}}
 });
-setInterval(()=>{if(data){renderToday();if(connected&&!busy)connectSync();}},15000);
-window.addEventListener('focus',()=>{if(data){renderToday();if(connected)connectSync();}});
+setInterval(()=>{if(data){renderToday();if(syncWanted&&Date.now()>=nextSyncAt)connectSync();}},1000);
+function resumeSync(){if(data){renderToday();if(syncWanted)connectSync();}}
+window.addEventListener('focus',resumeSync);
+window.addEventListener('online',resumeSync);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)resumeSync();});
 start();
