@@ -1,4 +1,4 @@
-import {todayInMoscow, isClosed, dailyItems} from './daily.mjs?v=20261016-add';
+import {todayInMoscow, isClosed, dailyItems, completedOn} from './daily.mjs?v=20261016-completed';
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const modes = {work:'В работе',waiting:'Ждём',approval:'На согласовании',verify:'На сверку',backlog:'Бэклог',paused:'Пауза',reference:'Справка',closed:'Выполнено',cancelled:'Не актуально'};
@@ -131,7 +131,7 @@ $('#unlock').addEventListener('submit',async event=>{
 });
 $('#lock').addEventListener('click',()=>{
   closeDetail();syncEpoch++;sessionAbort.abort();sessionAbort=new AbortController();syncRequest=null;syncWanted=false;retryCount=0;nextSyncAt=0;busy=false;syncPassword='';connected=false;data=null;createAttempt=null;$('#add-todo-form').reset();$('#add-todo-status').textContent='';$('#add-todo').open=false;$('#dashboard').hidden=true;$('#lock').hidden=true;$('#access').hidden=false;
-  for(const selector of ['#teams','#focus','#deferred','#ai-branches','#content','#task-detail','#task-title','#task-id','#today-list','#carry-list','#upcoming-list','#task-actions','#action-status','#task-action-status','#todo-count','#today-date','#updated','#total-count','#sync-status'])$(selector).replaceChildren();
+  for(const selector of ['#teams','#focus','#deferred','#ai-branches','#content','#task-detail','#task-title','#task-id','#today-list','#carry-list','#upcoming-list','#completed-list','#completed-title','#task-actions','#action-status','#task-action-status','#todo-count','#today-date','#updated','#total-count','#sync-status'])$(selector).replaceChildren();
   query='';$('#search').value='';view='board';mode='current';lane='all';limit=30;$('#password').focus();
 });
 document.addEventListener('click',event=>{
@@ -200,9 +200,10 @@ function renderTaskActions(task){
   if(key===taskActionsKey&&$('#task-actions').childElementCount)return;taskActionsKey=key;$('#task-actions').innerHTML=actionButtons('task',task);
   $('#task-action-status').textContent=connected?(isClosed(task)?'Задача закрыта. История сохранена.':'Действие закроет всю задачу. Для отдельной встречи используйте план дня.'):'Для изменения задачи подключите Mac в блоке «План дня».';
 }
-function todoRow(item,carry=false){
+function todoRow(item,carry=false,archived=false){
   const closed=item.state!=='open';
-  return `<article class="todo-row ${closed?'todo-closed':''}"><div class="todo-time">${esc(item.time||(item.kind==='evening'?'Вечером':'В течение дня'))}${carry?`<small>${fullDate(item.date)}</small>`:''}</div><div class="todo-copy"><h3>${esc(item.title)}</h3>${item.detail?`<p>${esc(item.detail)}</p>`:''}${item.taskId?`<button class="todo-project" data-open="${esc(item.taskId)}">Открыть ${esc(item.taskId)}</button>`:''}${closed?`<span class="todo-state">${item.state==='done'?'Выполнено':'Не актуально'}</span>`:''}</div><div class="todo-actions">${item.derived?`<button data-open="${esc(item.taskId)}">Открыть задачу</button>`:actionButtons('todo',item)}</div></article>`;
+  const when=archived?`<time datetime="${esc(completedOn(item))}" title="${fullDate(completedOn(item))}">${date(completedOn(item))} ${completedOn(item).slice(0,4)}</time><small>${item.changedAt?'Дата завершения':'Дата плана'}</small>`:`${esc(item.time||(item.kind==='evening'?'Вечером':'В течение дня'))}${carry?`<small>${fullDate(item.date)}</small>`:''}`;
+  return `<article class="todo-row ${closed?'todo-closed':''}"><div class="todo-time">${when}</div><div class="todo-copy"><h3>${esc(item.title)}</h3>${item.detail?`<p>${esc(item.detail)}</p>`:''}${item.taskId?`<button class="todo-project" data-open="${esc(item.taskId)}">Открыть ${esc(item.taskId)}</button>`:''}${closed?`<span class="todo-state">${item.state==='done'?'Выполнено':'Не актуально'}</span>`:''}</div><div class="todo-actions">${item.derived?`<button data-open="${esc(item.taskId)}">Открыть задачу</button>`:actionButtons('todo',item)}</div></article>`;
 }
 function renderToday(){
   if(!data)return;$('#connect-sync').disabled=busy||!!syncRequest;renderAddTodo();const today=todayInMoscow();
@@ -213,6 +214,7 @@ function renderToday(){
   $('#today-list').innerHTML=agenda.today.length?agenda.today.map(i=>todoRow(i)).join(''):'<p class="today-empty">На сегодня действий не назначено. Задачи с сегодняшним ориентиром появятся здесь автоматически.</p>';
   $('#carry-wrap').hidden=!agenda.carry.length;$('#carry-title').textContent=`Не закрыто ранее · ${agenda.carry.length}`;$('#carry-list').innerHTML=agenda.carry.map(i=>todoRow(i,true)).join('');
   $('#upcoming-list').innerHTML=agenda.upcoming.length?'<h3>Далее</h3>'+agenda.upcoming.map(i=>todoRow(i,true)).join(''):'';
+  $('#completed-wrap').hidden=!agenda.completed.length;$('#completed-title').textContent=`Завершённые · ${agenda.completed.length}`;$('#completed-list').innerHTML=agenda.completed.map(i=>todoRow(i,false,true)).join('');
 }
 function renderAddTodo(){
   $('#add-todo-submit').disabled=!connected||busy;

@@ -240,7 +240,8 @@ dialog .reference-links {margin:8px 0 24px}
 .todo-state{display:inline-block;margin:8px 12px;font-size:12px}
 .task-actions{margin:20px 0 8px}
 .mode-label.closed,.mode-label.cancelled{color:#444}
-#carry-wrap{margin-top:24px}#carry-wrap summary{cursor:pointer;padding:12px 0;font-weight:600}
+#carry-wrap,#completed-wrap{margin-top:24px}#carry-wrap summary,#completed-wrap summary{cursor:pointer;padding:12px 0;font-weight:600}
+.completed-note{font-size:13px;line-height:1.6;color:var(--muted);margin-bottom:12px}
 #upcoming-list:empty{display:none}.today-empty{font-size:14px;line-height:1.6;padding:12px 0}
 @media(max-width:850px){.todo-row{grid-template-columns:100px minmax(0,1fr);gap:12px 20px}.todo-actions{grid-column:2}}
 @media(max-width:560px){#today-date{font-size:16px}.todo-row{grid-template-columns:1fr;gap:8px}.todo-actions{grid-column:1}.todo-time{font-size:13px}.todo-copy h3{font-size:16px}.sync-bar{gap:12px}.today-section{margin-bottom:28px}}

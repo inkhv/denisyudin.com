@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=20261016-figma">
-  <script type="module" src="./app.mjs?v=20261016-sync"></script>
+  <link rel="stylesheet" href="./styles.css?v=20261016-completed">
+  <script type="module" src="./app.mjs?v=20261016-completed"></script>
 </head>
 <body>
   <a class="skip" href="#main">К содержимому</a>
@@ -44,6 +44,7 @@
         <p id="action-status" role="status"></p><div id="today-list"></div>
         <details id="carry-wrap" hidden><summary id="carry-title">Не закрыто ранее</summary><div id="carry-list"></div></details>
         <div id="upcoming-list"></div>
+        <details id="completed-wrap" hidden><summary id="completed-title">Завершённые</summary><p class="completed-note">Закрытые пункты переходят сюда на следующий день по Москве. Их можно вернуть в план.</p><div id="completed-list"></div></details>
       </section>
       <section aria-labelledby="team-title"><div class="section-heading"><h2 id="team-title">Связки</h2><span>Подтверждённый недельный срез</span></div><div id="teams" class="team-grid"></div><p class="chart-note">Диаграммы показывают число задач по состояниям. Общий статус связки — в бейдже сверху.</p></section>
       <section class="focus-section" aria-labelledby="focus-title"><h2 id="focus-title">Требует внимания</h2><div id="focus" class="focus-list"></div></section>
