@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#efede8">
+  <title>Денис Юдин — резюме арт-директора</title>
+  <meta name="description" content="Арт-директор. Руковожу дизайн-направлением банка через тимлидов, ставлю стандарт качества, придумываю и супервайзю key visual, строю AI-пайплайны для продакшна.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://denisyudin.com/cv/">
+  <meta property="og:type" content="profile">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Denis Yudin">
+  <meta property="og:url" content="https://denisyudin.com/cv/">
+  <meta property="og:title" content="Денис Юдин — арт-директор">
+  <meta property="og:description" content="Руковожу дизайном так, чтобы качество держалось на системе, а не на ручной приёмке.">
+  <link rel="icon" type="image/png" href="../assets/694eb3c01c94deb52f44b88a_p10%200062_24.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme: light; --paper:#efede8; --white:#fff; --ink:#171715; --muted:#62625c; --line:#d7d5cf; --soft:#e4e1da; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 132px; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.6 "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    a { color: inherit; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+    :focus-visible { outline: 2px solid var(--ink); outline-offset: 5px; border-radius: 2px; }
+    ::selection { background: var(--ink); color: var(--paper); }
+    .skip-link { position: absolute; top: 10px; left: 20px; z-index: 200; transform: translateY(-150%); padding: 10px 14px; background: var(--white); }
+    .skip-link:focus { transform: none; }
+
+    .site-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 82px; padding: 20px 40px; border-bottom: 1px solid var(--line); }
+    .brand { text-decoration: none; font-size: 15px; font-weight: 600; white-space: nowrap; }
+    .header-label { font-size: 13px; color: var(--muted); }
+    .home-link { text-decoration: none; font-size: 13px; white-space: nowrap; }
+    .home-link:hover { text-decoration: underline; }
+
+    .shell { max-width: 1440px; margin: auto; padding: 0 40px; }
+
+    /* Hero */
+    .hero { padding: 72px 0 56px; }
+    .eyebrow { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 0 0 30px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+    .eyebrow span + span::before { content: "·"; margin-right: 14px; color: #a9a69f; }
+    h1 { margin: 0; max-width: 20ch; font-size: clamp(38px, 5.6vw, 84px); font-weight: 700; line-height: 1.02; letter-spacing: -.045em; text-wrap: balance; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(280px, 4fr); gap: 48px; align-items: end; margin-top: 40px; }
+    .deck { margin: 0; max-width: 62ch; font-size: 18px; line-height: 1.6; }
+    .deck b { font-weight: 700; }
+    .contacts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); }
+    .contacts li { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+    .contacts li span { color: var(--muted); }
+    .contacts a { text-decoration: none; font-weight: 600; }
+    .contacts a:hover { text-decoration: underline; }
+
+    /* Fit strip */
+    .fit { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 56px 0 0; }
+    .fit div { background: var(--white); border-radius: 12px; padding: 22px 22px 20px; min-height: 148px; display: flex; flex-direction: column; justify-content: space-between; gap: 18px; }
+    .fit small { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .fit p { margin: 0; font-size: 16px; font-weight: 600; line-height: 1.4; letter-spacing: -.01em; }
+
+    /* Verb index */
+    .index { position: sticky; top: 0; z-index: 20; background: rgba(239, 237, 232, .94); backdrop-filter: blur(14px); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-top: 64px; }
+    .index ol { list-style: none; margin: 0; padding: 0; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+    .index ol::-webkit-scrollbar { display: none; }
+    .index a { display: block; padding: 16px 14px; text-decoration: none; font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+    .index a:hover { color: var(--ink); }
+    .index a[aria-current="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+    .index li:first-child a { padding-left: 0; }
+
+    /* Verb sections */
+    .verb { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; padding: 88px 0 64px; border-bottom: 1px solid var(--line); scroll-margin-top: 120px; }
+    .verb-head { position: sticky; top: 92px; align-self: start; }
+    .verb-head small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 22px; }
+    .verb-head h2 { margin: 0; font-size: clamp(48px, 7.4vw, 108px); font-weight: 800; line-height: .92; letter-spacing: -.05em; }
+    .verb-head p { margin: 20px 0 0; max-width: 24ch; font-size: clamp(18px, 1.6vw, 22px); line-height: 1.35; font-weight: 500; letter-spacing: -.015em; text-wrap: balance; }
+    .facts { list-style: none; margin: 0; padding: 0; }
+    .facts li { padding: 20px 0 22px; border-top: 1px solid var(--line); font-size: 16px; line-height: 1.6; max-width: 66ch; }
+    .facts li:last-child { border-bottom: 1px solid var(--line); }
+    .facts b { font-weight: 700; }
+    .facts a { text-decoration-color: #a9a69f; }
+    .facts a:hover { text-decoration-color: var(--ink); }
+    .facts .then { margin-top: 10px; display: block; font-size: 14px; color: var(--muted); }
+
+    /* Values */
+    .values { padding: 88px 0 72px; border-bottom: 1px solid var(--line); scroll-margin-top: 120px; }
+    .values .verb-head { position: static; margin-bottom: 44px; }
+    .values-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .values-grid div { background: var(--white); border-radius: 12px; padding: 24px 24px 22px; min-height: 170px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px; }
+    .values-grid h3 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -.02em; line-height: 1.2; }
+    .values-grid p { margin: 0; font-size: 14px; line-height: 1.6; color: #3f3f3a; }
+
+    /* Experience, tools, education */
+    .plain { padding: 72px 0 56px; border-bottom: 1px solid var(--line); scroll-margin-top: 120px; }
+    .plain h2 { margin: 0 0 32px; font-size: clamp(28px, 3vw, 40px); font-weight: 700; letter-spacing: -.035em; line-height: 1.1; }
+    .timeline { list-style: none; margin: 0; padding: 0; }
+    .timeline li { display: grid; grid-template-columns: 170px minmax(0, 4fr) minmax(0, 6fr); gap: 24px; padding: 22px 0; border-top: 1px solid var(--line); font-size: 15px; }
+    .timeline li:last-child { border-bottom: 1px solid var(--line); }
+    .timeline time { font-variant-numeric: tabular-nums; color: var(--muted); }
+    .timeline h3 { margin: 0 0 4px; font-size: 17px; font-weight: 700; letter-spacing: -.015em; }
+    .timeline .org { color: var(--muted); font-size: 14px; }
+    .timeline p { margin: 0; line-height: 1.6; max-width: 60ch; }
+    .clients { margin: 28px 0 0; font-size: 14px; color: var(--muted); max-width: 70ch; }
+    .clients b { color: var(--ink); font-weight: 600; }
+    .tools { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 24px; }
+    .tools h3 { margin: 0 0 12px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tags span { border: 1px solid var(--line); border-radius: 30px; padding: 7px 13px; font-size: 13px; background: var(--white); }
+    .edu { list-style: none; margin: 0; padding: 0; max-width: 70ch; }
+    .edu li { padding: 14px 0; border-top: 1px solid var(--line); font-size: 15px; }
+    .edu li:last-child { border-bottom: 1px solid var(--line); }
+    .edu b { font-weight: 700; }
+
+    /* Footer */
+    .cta { padding: 80px 0 32px; display: grid; grid-template-columns: minmax(0, 7fr) minmax(280px, 4fr); gap: 48px; align-items: end; }
+    .cta h2 { margin: 0; font-size: clamp(32px, 4.4vw, 64px); font-weight: 700; letter-spacing: -.045em; line-height: 1.02; max-width: 18ch; text-wrap: balance; }
+    .cta .buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+    .btn { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 18px; border-radius: 30px; border: 1px solid var(--ink); text-decoration: none; font-size: 14px; font-weight: 600; background: transparent; transition: background .18s, color .18s; }
+    .btn:hover { background: var(--ink); color: var(--white); }
+    .btn.solid { background: var(--ink); color: var(--white); }
+    .btn.solid:hover { background: transparent; color: var(--ink); }
+    .site-footer { border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 26px 0 36px; font-size: 12px; color: var(--muted); }
+    .site-footer a { text-decoration: none; }
+    .site-footer a:hover { text-decoration: underline; }
+
+    /* Motion */
+    .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.is-in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .reveal { opacity: 1; transform: none; transition: none; } }
+
+    @media (max-width: 1100px) {
+      .shell, .site-header { padding-left: 32px; padding-right: 32px; }
+      .fit { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .values-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .verb { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 32px; }
+      .timeline li { grid-template-columns: 130px minmax(0, 1fr); }
+      .timeline li p { grid-column: 2; }
+      .tools { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 760px) {
+      .shell, .site-header { padding-left: 20px; padding-right: 20px; }
+      .site-header { min-height: 72px; padding-top: 16px; padding-bottom: 16px; }
+      .header-label { display: none; }
+      .hero { padding: 48px 0 40px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 32px; margin-top: 28px; }
+      .deck { font-size: 16px; }
+      .fit { grid-template-columns: 1fr; margin-top: 40px; }
+      .fit div { min-height: 0; gap: 12px; }
+      .index { margin-top: 44px; }
+      .index a { padding: 14px 10px; }
+      .verb { grid-template-columns: 1fr; gap: 28px; padding: 60px 0 44px; }
+      .verb-head { position: static; }
+      .verb-head h2 { font-size: clamp(44px, 14vw, 64px); }
+      .verb-head p { max-width: none; }
+      .facts li { font-size: 15px; }
+      .values { padding: 60px 0 48px; }
+      .values-grid { grid-template-columns: 1fr; }
+      .values-grid div { min-height: 0; gap: 12px; }
+      .plain { padding: 52px 0 40px; }
+      .timeline li { grid-template-columns: 1fr; gap: 6px; }
+      .timeline li p { grid-column: 1; }
+      .tools { grid-template-columns: 1fr; gap: 24px; }
+      .cta { grid-template-columns: 1fr; gap: 28px; padding: 56px 0 24px; }
+      .site-footer { flex-direction: column; align-items: flex-start; }
+    }
+    @media print {
+      @page { margin: 16mm; }
+      body { background: #fff; color: #000; font-size: 11pt; }
+      .site-header, .index, .cta .buttons, .site-footer, .skip-link { display: none !important; }
+      .shell { max-width: none; padding: 0; }
+      .hero { padding: 0 0 16pt; }
+      h1 { font-size: 26pt; }
+      .fit, .values-grid div { background: none; border: 1px solid #bbb; border-radius: 0; }
+      .verb, .values, .plain { padding: 18pt 0 12pt; break-inside: avoid; }
+      .verb { grid-template-columns: 1fr 2fr; gap: 16pt; }
+      .verb-head { position: static; }
+      .verb-head h2 { font-size: 28pt; }
+      .reveal { opacity: 1; transform: none; }
+      a { text-decoration: none; }
+      .cta h2 { font-size: 16pt; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">К содержанию</a>
+  <header class="site-header">
+    <a class="brand" href="../">Denis Yudin</a>
+    <span class="header-label">Резюме · арт-директор</span>
+    <a class="home-link" href="../">На главную ↗</a>
+  </header>
+
+  <main id="main" class="shell">
+    <section class="hero">
+      <p class="eyebrow"><span>Денис Юдин</span><span>Арт-директор</span><span>16+ лет в коммуникационном дизайне</span><span>Обновлено 18.10.2026</span></p>
+      <h1>Руковожу дизайном так, чтобы качество держалось на системе, а не на ручной приёмке.</h1>
+      <div class="hero-grid">
+        <p class="deck"><b>Веду дизайн-направление Совкомбанка</b> через тимлидов: ставлю стандарт качества, придумываю и супервайзю key visual, соединяю дизайн с маркетингом, продуктом и HR, строю AI-пайплайны для продакшна. Открыт к роли руководителя дизайна на стыке продукта и коммуникаций.</p>
+        <ul class="contacts">
+          <li><span>Почта</span><a href="mailto:inbox@denisyudin.com">inbox@denisyudin.com</a></li>
+          <li><span>Telegram</span><a href="https://t.me/inkhv" target="_blank" rel="noopener">@inkhv</a></li>
+          <li><span>hh.ru</span><a href="https://hh.ru/resume/bad8f991ff0e634b650039ed1f325243784a69" target="_blank" rel="noopener">Резюме на hh.ru</a></li>
+          <li><span>Встреча</span><a href="https://calendly.com/inkhv" target="_blank" rel="noopener">30 минут в Calendly</a></li>
+        </ul>
+      </div>
+      <div class="fit" aria-label="Коротко">
+        <div><small>Команда</small><p>15+ дизайнеров в четырёх связках, тимлид в каждой</p></div>
+        <div><small>Проекты</small><p>Брендбуки трёх бизнесов банка, премиальная карта, стенды ПМЭФ</p></div>
+        <div><small>Key visual</small><p>Метафора, 3D и нейро-KV, собственные пайплайны генерации</p></div>
+        <div><small>Кросс-функции</small><p>Маркетинг, HR, B2B-продукт, CRM-коммуникации, подрядчики</p></div>
+      </div>
+    </section>
+
+    <nav class="index" aria-label="Разделы">
+      <ol>
+        <li><a href="#lead">Руковожу</a></li>
+        <li><a href="#deliver">Довожу</a></li>
+        <li><a href="#kv">Придумываю</a></li>
+        <li><a href="#connect">Соединяю</a></li>
+        <li><a href="#ai">Внедряю</a></li>
+        <li><a href="#teach">Учу</a></li>
+        <li><a href="#values">Ценю</a></li>
+        <li><a href="#experience">Опыт</a></li>
+        <li><a href="#tools">Инструменты</a></li>
+      </ol>
+    </nav>
+
+    <section class="verb reveal" id="lead" aria-labelledby="lead-h">
+      <div class="verb-head">
+        <small>Команда</small>
+        <h2 id="lead-h">Руковожу</h2>
+        <p>командой дизайнеров через тимлидов, а не через микроменеджмент.</p>
+      </div>
+      <ul class="facts">
+        <li><b>Веду</b> дизайн-направление Совкомбанка: четыре связки (брендинг, корпоративные ценности, партнёрский маркетинг, B2B и FinTender), 15+ дизайнеров, тимлид в каждой.</li>
+        <li><b>Назначил</b> тимлидов и <b>написал</b> регламент: зоны ответственности, что решают сами, что эскалируют, чек-лист качества до показа мне. <a href="../teamlead-regulation/">Регламент опубликован</a>.</li>
+        <li><b>Держу</b> 1:1, грейды и оценку 360°, планы развития; <b>удерживаю</b> ключевых людей честным разговором о деньгах, роли и росте.</li>
+        <li><b>Распределяю</b> задачи по трём принципам: загрузка и сроки, ротация концепт/рутина, рост-фокусы дизайнера.</li>
+        <li><b>Описал</b>, как со мной работать, в открытом <a href="../art-director-manual/">operating manual</a>: формат коммуникации, протоколы решений, чек-лист арт-дир-ревью.</li>
+      </ul>
+    </section>
+
+    <section class="verb reveal" id="deliver" aria-labelledby="deliver-h">
+      <div class="verb-head">
+        <small>Проекты</small>
+        <h2 id="deliver-h">Довожу</h2>
+        <p>комплексные проекты от постановки задачи до внедрения.</p>
+      </div>
+      <ul class="facts">
+        <li><b>Собрал</b> брендбук Совкомбанк Страхование для трёх юрлиц: систему упростил под команду заказчика из двух дизайнеров и AI-продакшн; <b>провёл</b> воркшоп, <b>передал</b> шаблоны и доступы.</li>
+        <li><b>Выпустил</b> брендбук Совкомбанк Лизинг и брендбук корпоративно-инвестиционного бизнеса с продуктовыми карточками, сувениркой и выставочной графикой.</li>
+        <li><b>Веду</b> дизайн премиальной карты для сегмента Wealth Management: исследование рынка, пять направлений, согласование с платёжной системой.</li>
+        <li><b>Закрыл</b> ПМЭФ: стенд, видео, рекламная кампания, журналы. <b>Веду</b> ребрендинг благотворительных инициатив банка и ежегодную программу корпоративных ценностей: персонажи, мерч, видео.</li>
+        <li><b>До банка</b> работал арт-директором проектов с Designworkout: Atom (брендбук, key visual, стенд, SMM, воркшопы для команды клиента), Царицыно (визуальная система, гайд, мерч, внедрение), Wildberries (система гайдов для пунктов выдачи), Самокат (визуальная концепция для бренд-маркетинга, интерфейс CMS, шаблоны).
+          <span class="then"><a href="../portfolio.html">Кейсы на сайте</a></span></li>
+      </ul>
+    </section>
+
+    <section class="verb reveal" id="kv" aria-labelledby="kv-h">
+      <div class="verb-head">
+        <small>Key visual</small>
+        <h2 id="kv-h">Придумываю</h2>
+        <p>key visual: метафору, композицию, 3D и нейросети.</p>
+      </div>
+      <ul class="facts">
+        <li><b>Начинаю</b> с метафоры: инсайт, big idea, визуальная территория, приём. <b>Ревьюю</b> концепцию до первой генерации, а не после сотой. Для команды <b>собрал</b> курс «Метафора».</li>
+        <li><b>Поставил</b> пайплайн фирменных 3D-визуалов для Совкомбанк-бизнес: перенос композиции по стеку референсов, параллельная генерация, отбор vision-моделью, финишный проход, выдача в Figma.</li>
+        <li><b>Держу</b> 3D-канон розничной айдентики: серия продуктовых иконок, hero-изображения, рельефные фоны для тёмных носителей.</li>
+        <li><b>Супервайзю</b> key visual команд и подрядчиков для розницы, малого бизнеса и корпоративного блока. Правило для прессы и наружки: знак продукта буквальный; тест «закрой заголовок — что это?».</li>
+        <li><b>Рисую сам</b> только авторские проекты: один-два одновременно, каждый до публичного результата.</li>
+      </ul>
+    </section>
+
+    <section class="verb reveal" id="connect" aria-labelledby="connect-h">
+      <div class="verb-head">
+        <small>Кросс-функции</small>
+        <h2 id="connect-h">Соединяю</h2>
+        <p>дизайн с маркетингом, продуктом, HR и бизнесом.</p>
+      </div>
+      <ul class="facts">
+        <li><b>Работаю на равных</b> с маркетингом розницы и B2B, департаментом корпоративных ценностей, продуктовой командой FinTender и креативным директором. <b>Отстаиваю</b> позицию коммуникационного дизайна аргументами: бриф, критерии, тест на зрителе.</li>
+        <li><b>Фильтрую</b> входящее протоколом «Беру / Согласен, если / Не беру»: задача без брифа не берётся, субъективные правки снимает тимлид, сроки считаются по матрице.</li>
+        <li><b>Проектирую</b> регулярные цифровые коммуникации: бенчмарк email-рассылок 20 брендов × 10 писем как основа для CRM-писем банка; in-house SMM для B2B и для розничного канала во ВКонтакте.</li>
+        <li><b>Собрал</b> рабочий дашборд статуса направления: единый статус проектов, план дня, синхронизация с задачником. Руководство видит фокус и риски без встреч.</li>
+        <li><b>Ставлю</b> подрядчикам задачу брифом и критериями приёмки: кинетическая графика в TouchDesigner, видеопродакшн, 3D.</li>
+      </ul>
+    </section>
+
+    <section class="verb reveal" id="ai" aria-labelledby="ai-h">
+      <div class="verb-head">
+        <small>Процессы и AI</small>
+        <h2 id="ai-h">Внедряю</h2>
+        <p>нейросети как штатный инструмент команды, с замером «до / после».</p>
+      </div>
+      <ul class="facts">
+        <li><b>Ставлю цель</b>: в каждой связке минимум один AI-пайплайн, который режет рутину на 20% и больше, и карта пайплайнов с цифрами экономии.</li>
+        <li><b>Запустил</b> пайплайны: 3D key visual, видеоролики корпоративной программы, сборка презентаций из текста в Figma, мерч и мокапы, продакшн SMM.</li>
+        <li><b>Исследую</b> рынок: срез AI-инструментов для дизайнеров, сравнение Higgsfield и Magnific по обзорам, тест агрегатора моделей и Figma Weave с 16 участниками команды.</li>
+        <li><b>Пишу</b> собственные инструменты: плагин Layout Calc для Figma в Community, конструкторы графики, скиллы для Claude Code и Codex, которыми пользуется команда.</li>
+        <li><b>Делюсь</b>: выступление «Создание презентаций с ИИ», <a href="../claude-academy/">конспект курсов Anthropic</a>, <a href="../claude/">курс по Claude Code</a> на русском.</li>
+      </ul>
+    </section>
+
+    <section class="verb reveal" id="teach" aria-labelledby="teach-h">
+      <div class="verb-head">
+        <small>Обучение</small>
+        <h2 id="teach-h">Учу</h2>
+        <p>дизайнеров и команды заказчиков работать с системой.</p>
+      </div>
+      <ul class="facts">
+        <li><b>Координирую</b> образовательную программу для дизайнеров <a href="https://dw200.designworkout.com/" target="_blank" rel="noopener">DW200</a> в Designworkout.</li>
+        <li><b>Провожу</b> воркшопы для in-house команд заказчиков: как пользоваться визуальной системой, собирать макеты к печати, держать стиль в SMM.</li>
+        <li><b>Пишу</b> гайды, которые читают: регламент тимлида, гайд по фотостилю, 3D-канон, operating manual арт-директора.</li>
+        <li><b>Веду</b> людей от неуверенности к самостоятельному решению: тимлид закрывает оперативку сам, дизайнер защищает концепцию без меня.</li>
+      </ul>
+    </section>
+
+    <section class="values reveal" id="values" aria-labelledby="values-h">
+      <div class="verb-head">
+        <small>Ценности</small>
+        <h2 id="values-h">Ценю</h2>
+        <p>то, что держит качество, когда меня нет в комнате.</p>
+      </div>
+      <div class="values-grid">
+        <div><h3>Пользу и этику</h3><p>Делаем хорошо и по совести, а не быстро и лишь бы продать. Дизайн должен снижать хаос и давать опору.</p></div>
+        <div><h3>Систему вместо героизма</h3><p>Если связка горит каждую неделю, чиним связку, а не носим вёдра. Ручные подвиги заменяю повторяемыми процессами.</p></div>
+        <div><h3>Честную прямоту</h3><p>Факт, эффект, рекомендация. Без мотивационных клише и реверансов. Про деньги и рост говорю честно, без «скоро решим».</p></div>
+        <div><h3>Критерии до старта</h3><p>Стандарт качества прошит в бриф и чек-лист, а не держится на моём ревью каждой задачи. Задача без брифа не берётся.</p></div>
+        <div><h3>Автономию людей</h3><p>Тимлид решает 80% оперативки сам. Я держу стандарт, развилки, людей и авторские проекты.</p></div>
+        <div><h3>Вкус и форму</h3><p>Мне не всё равно, как это сделано, и визуально, и логически. Метафора важнее эффекта, буквальный знак важнее декорации.</p></div>
+      </div>
+    </section>
+
+    <section class="plain reveal" id="experience" aria-labelledby="experience-h">
+      <h2 id="experience-h">Опыт</h2>
+      <ol class="timeline">
+        <li>
+          <time>по настоящее время</time>
+          <div><h3>Арт-директор</h3><span class="org">Совкомбанк</span></div>
+          <p>Дизайн-направление банка: четыре связки с тимлидами, стандарт качества и арт-ревью, бренд-платформа, брендбуки дочерних бизнесов, key visual, AI-пайплайны, регламенты и система оценки команды.</p>
+        </li>
+        <li>
+          <time>2023 — 2025</time>
+          <div><h3>Арт-директор проектов, координатор DW200</h3><span class="org">Designworkout</span></div>
+          <p>Визуальные системы, брендбуки и key visual для Atom, Царицыно, Wildberries, Самокат; воркшопы и внедрение стиля в командах клиентов; образовательная программа для дизайнеров.</p>
+        </li>
+        <li>
+          <time>2023</time>
+          <div><h3>Бренд-дизайнер</h3><span class="org">Binadi, Берлин</span></div>
+          <p>Айдентика независимого ювелирного бренда, построенная на генеративных нейросетях.</p>
+        </li>
+      </ol>
+      <p class="clients"><b>Клиенты и бренды:</b> Совкомбанк, Самокат, Ozon, Яков и Партнёры, Redkeds, Forma, Atom, Царицыно, Wildberries, Binadi.</p>
+    </section>
+
+    <section class="plain reveal" id="tools" aria-labelledby="tools-h">
+      <h2 id="tools-h">Инструменты</h2>
+      <div class="tools">
+        <div><h3>Дизайн</h3><div class="tags"><span>Figma</span><span>Figma MCP и плагины</span><span>Adobe CC</span><span>Readymag</span><span>Типографика и сетки</span></div></div>
+        <div><h3>Генерация</h3><div class="tags"><span>Magnific</span><span>Higgsfield</span><span>Krea</span><span>Nano Banana / Gemini</span><span>Seedance</span><span>Vision-отбор</span></div></div>
+        <div><h3>Процесс и код</h3><div class="tags"><span>Claude Code</span><span>Codex</span><span>Pyrus</span><span>YouTrack</span><span>Markdown-регламенты</span><span>HTML / JS</span></div></div>
+      </div>
+    </section>
+
+    <section class="plain reveal" id="education" aria-labelledby="education-h">
+      <h2 id="education-h">Образование</h2>
+      <ul class="edu">
+        <li><b>Designworkout</b>, графический дизайн.</li>
+        <li><b>Anthropic Academy</b>, 24 курса по Claude и агентам, с публичным конспектом.</li>
+        <li><b>Паттерны дизайн-менеджмента</b>, курс и плейбук для тимлидов.</li>
+        <li><b>Hogan Assessments</b>, профиль HPI / HDS / MVPI как основа operating manual.</li>
+      </ul>
+    </section>
+
+    <section class="cta reveal" aria-label="Связаться">
+      <div>
+        <h2>Покажу систему и работы за 30 минут.</h2>
+        <div class="buttons">
+          <a class="btn solid" href="mailto:inbox@denisyudin.com?subject=CV">Написать</a>
+          <a class="btn" href="https://t.me/inkhv" target="_blank" rel="noopener">Telegram</a>
+          <a class="btn" href="https://calendly.com/inkhv" target="_blank" rel="noopener">Назначить встречу</a>
+        </div>
+      </div>
+      <ul class="contacts">
+        <li><span>Сайт</span><a href="../">denisyudin.com</a></li>
+        <li><span>Портфолио</span><a href="../portfolio.html">Кейсы</a></li>
+        <li><span>Регламенты</span><a href="../teamlead-regulation/">Тимлид</a></li>
+      </ul>
+    </section>
+
+    <footer class="site-footer">
+      <span>Денис Юдин · резюме · 2026</span>
+      <a href="../">denisyudin.com</a>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var reveals = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window) || reduce) {
+        reveals.forEach(function (el) { el.classList.add('is-in'); });
+      } else {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+        }, { rootMargin: '0px 0px -10% 0px' });
+        reveals.forEach(function (el) { io.observe(el); });
+      }
+      var links = document.querySelectorAll('.index a');
+      var map = {};
+      links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+      var sections = Object.keys(map).map(function (id) { return document.getElementById(id); }).filter(Boolean);
+      function setCurrent(id) {
+        links.forEach(function (a) { a.removeAttribute('aria-current'); });
+        if (map[id]) { map[id].setAttribute('aria-current', 'true'); map[id].scrollIntoView({ block: 'nearest', inline: 'nearest' }); }
+      }
+      if ('IntersectionObserver' in window) {
+        var so = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) setCurrent(e.target.id); });
+        }, { rootMargin: '-45% 0px -50% 0px' });
+        sections.forEach(function (s) { so.observe(s); });
+      }
+    })();
+  </script>
+</body>
+</html>
