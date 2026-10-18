@@ -91,7 +91,7 @@
     .panel {background:var(--surface);border-radius:var(--radius);padding:28px;margin-top:28px;color:var(--ink);scroll-margin-top:calc(var(--jump-h) + 20px)}
     .panel>.section-heading {margin-bottom:10px;align-items:flex-start}
     .panel h2 {font-size:clamp(30px,3vw,44px);font-weight:500;letter-spacing:-.04em;line-height:1.05}
-    .panel>.lead {font-size:15px;line-height:1.55;max-width:48ch;margin-bottom:26px;letter-spacing:-.01em}
+    .panel>.lead {font-size:15px;line-height:1.55;max-width:none;margin-bottom:26px;letter-spacing:-.01em;text-wrap:balance}
     .cards {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}
     .card {min-width:0;background:var(--white);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px}
     .card h3 {font-size:14px;font-weight:600;line-height:1.5;letter-spacing:-.015em;overflow-wrap:anywhere}
@@ -105,7 +105,7 @@
     /* Values = deferred (yellow) section */
     .values {background:var(--yellow);border-radius:var(--radius);margin:28px 0 0;display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start;padding:28px;scroll-margin-top:calc(var(--jump-h) + 20px)}
     .values h2 {font-size:clamp(30px,3vw,44px);font-weight:500;letter-spacing:-.04em;line-height:1.05}
-    .values>div>p {font-size:12px;color:#513c00;margin-top:12px;line-height:1.6;max-width:29ch}
+    .values>div>p {font-size:12px;color:#513c00;margin-top:12px;line-height:1.6;max-width:29ch;text-wrap:balance}
     .values-list {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 24px}
     .values-list div {padding:10px 0;min-height:50px;border-top:1px solid #d99c00}
     .values-list h3 {font-size:15px;font-weight:600;margin-bottom:6px}
@@ -235,7 +235,7 @@
 
     <section class="panel" id="lead" aria-labelledby="lead-h">
       <div class="section-heading"><h2 id="lead-h">Руковожу</h2><span>команда</span></div>
-      <p class="lead">Командой дизайнеров через тимлидов, а не через микроменеджмент.</p>
+      <p class="lead">Командой дизайнеров через тимлидов, а&nbsp;не&nbsp;через микроменеджмент.</p>
       <div class="cards">
         <article class="card"><h3>Веду дизайн-направление Совкомбанка</h3><p>С января 2026: три связки (брендинг, корпоративные ценности, B2B и FinTender), 15+ дизайнеров, тимлид в каждой.</p></article>
         <article class="card"><h3>Сформировал контур тимлидов</h3><p>Написал регламент: зоны ответственности, что решают сами, что эскалируют, чек-лист качества до показа мне.</p><div class="card-foot"><span>Публично</span><a href="../teamlead-regulation/">Регламент тимлида <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></div></article>
@@ -248,7 +248,7 @@
 
     <section class="panel" id="deliver" aria-labelledby="deliver-h">
       <div class="section-heading"><h2 id="deliver-h">Довожу</h2><span>проекты</span></div>
-      <p class="lead">Комплексные проекты от постановки задачи до внедрения в команде заказчика.</p>
+      <p class="lead">Комплексные проекты от&nbsp;постановки задачи до&nbsp;внедрения у&nbsp;заказчика.</p>
       <div class="cards">
         <article class="card"><h3>Выпустил брендбуки бизнесов банка</h3><p>Страхование, Лизинг, корпоративно-инвестиционный бизнес. Веду дизайн премиальной карты, ребрендинг «Технологии добра» и программу «Лига достижений»: персонажи, мерч, видеозаставки.</p></article>
         <article class="card"><h3>Закрыл ПМЭФ</h3><p>Стенд, видео, рекламная кампания, журналы. В течение года выставочные стенды банка на отраслевых форумах.</p></article>
@@ -262,7 +262,7 @@
 
     <section class="panel" id="kv" aria-labelledby="kv-h">
       <div class="section-heading"><h2 id="kv-h">Придумываю</h2><span>key visual</span></div>
-      <p class="lead">Key visual: метафору, композицию, 3D и нейросети.</p>
+      <p class="lead">Key visual: метафору, композицию, 3D и&nbsp;нейросети.</p>
       <div class="cards">
         <article class="card"><h3>Начинаю с метафоры</h3><p>Инсайт, big idea, визуальная территория, приём. Ревьюю концепцию до первой генерации, а не после сотой. Для команды собрал курс «Метафора».</p></article>
         <article class="card"><h3>Поставил пайплайн 3D-визуалов</h3><p>Для Совкомбанк-бизнес: перенос композиции по стеку референсов, параллельная генерация, отбор vision-моделью, финишный проход, выдача в Figma.</p></article>
@@ -275,7 +275,7 @@
 
     <section class="panel" id="connect" aria-labelledby="connect-h">
       <div class="section-heading"><h2 id="connect-h">Соединяю</h2><span>кросс-функции</span></div>
-      <p class="lead">Дизайн с маркетингом, продуктом, HR и бизнесом.</p>
+      <p class="lead">Дизайн с&nbsp;маркетингом, продуктом, HR и&nbsp;бизнесом.</p>
       <div class="cards">
         <article class="card"><h3>Работаю на равных с маркетингом, продуктом и HR</h3><p>Маркетинг розницы и B2B, департамент корпоративных ценностей, продуктовая команда FinTender, креативный директор. Отстаиваю позицию коммуникационного дизайна аргументами: бриф, критерии, тест на зрителе.</p></article>
         <article class="card"><h3>Питчу концепции топ-менеджменту</h3><p>В Wildberries так прошли входная группа, клиентская зона и панель-кронштейн ПВЗ. Презентую клиентам офлайн и довожу согласование до подписи.</p></article>
@@ -288,7 +288,7 @@
 
     <section class="panel" id="ai" aria-labelledby="ai-h">
       <div class="section-heading"><h2 id="ai-h">Внедряю</h2><span>процессы и AI</span></div>
-      <p class="lead">Нейросети как штатный инструмент команды, с замером «до / после».</p>
+      <p class="lead">Нейросети как штатный инструмент команды, с&nbsp;замером «до&nbsp;/&nbsp;после».</p>
       <div class="cards">
         <article class="card"><h3>Ставлю цель на цифрах</h3><p>В каждой связке минимум один AI-пайплайн, который режет рутину на 20% и больше. Карта пайплайнов с цифрами экономии.</p></article>
         <article class="card"><h3>Запустил пайплайны</h3><p>3D key visual, видеоролики «Лиги достижений», сборка презентаций из текста в Figma, мерч и мокапы, продакшн SMM.</p></article>
@@ -301,7 +301,7 @@
 
     <section class="panel" id="teach" aria-labelledby="teach-h">
       <div class="section-heading"><h2 id="teach-h">Учу</h2><span>обучение</span></div>
-      <p class="lead">Дизайнеров и команды заказчиков работать с системой без меня.</p>
+      <p class="lead">Дизайнеров и&nbsp;команды заказчиков работать с&nbsp;системой без&nbsp;меня.</p>
       <div class="cards">
         <article class="card"><h3>Провожу воркшопы</h3><p>Для команды и инхаус-команд заказчиков: поиск идей, композиция, типографика, макетирование, подготовка к печати, стиль в SMM.</p></article>
         <article class="card"><h3>Ревьюю инхаус-команды клиентов</h3><p>Развёрнутая обратная связь по работам: Царицыно, Атом, страховой бизнес банка.</p></article>
@@ -313,7 +313,7 @@
     </section>
 
     <section class="values" id="values" aria-labelledby="values-h">
-      <div><h2 id="values-h">Ценю</h2><p>То, что держит качество, когда меня нет в комнате.</p></div>
+      <div><h2 id="values-h">Ценю</h2><p>То, что держит качество, когда меня нет в&nbsp;комнате.</p></div>
       <div class="values-list">
         <div><h3>Пользу и этику</h3><p>Делаем хорошо и по совести, а не быстро и лишь бы продать. Дизайн должен снижать хаос и давать опору. Особенно близки проекты в культуре и образовании.</p></div>
         <div><h3>Систему вместо героизма</h3><p>Если связка горит каждую неделю, чиним связку, а не носим вёдра. Ручные подвиги заменяю повторяемыми процессами.</p></div>
