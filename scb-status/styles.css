@@ -298,3 +298,17 @@ dialog .reference-links {margin:8px 0 24px}
 .pyrus-tools > label:first-child { width:min(100%,360px); }
 .pyrus-tools input[type=search] { width:100%; box-sizing:border-box; }
 .pyrus-section .section-heading > span { max-width:none; text-align:left; }
+
+/* Личные проекты — напоминание внизу, тот же язык, что у AI Stream */
+.personal-section {border-top:1px solid var(--line);padding-top:28px;margin-top:40px}
+.personal-section>.section-heading {margin-bottom:18px}
+.personal-list {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.personal-card {background:var(--surface);border-radius:var(--radius);padding:22px 24px;font-size:13px;line-height:1.7;color:var(--ink)}
+.personal-card h3 {font-size:20px;font-weight:500;letter-spacing:-.025em;margin-bottom:10px}
+.personal-card p {max-width:75ch}
+.personal-next {border-top:1px solid #b8b8b8;margin-top:14px;padding-top:12px}
+.personal-next strong {display:block;margin-bottom:4px;font-size:12px;font-weight:600}
+.personal-check {margin-top:10px;font-size:12px;color:var(--muted)}
+.personal-check.due {color:var(--accent);font-weight:600}
+.personal-note {font-size:12px;color:var(--muted);margin-top:14px}
+@media (max-width:760px) {.personal-list {grid-template-columns:1fr}}

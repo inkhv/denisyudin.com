@@ -65,6 +65,12 @@ function renderOverview(){
   $('#total-count').textContent=`${data.tasks.length} записей · AI Stream отдельно`;
   $('#lane').innerHTML='<option value="all">Все направления</option>'+data.lanes.map(item=>`<option value="${esc(item.id)}">${esc(item.title)}</option>`).join('');
 }
+function renderPersonal(){
+  const items=data.personal||[], section=$('.personal-section');
+  section.hidden=!items.length;
+  const today=todayInMoscow();
+  $('#personal').innerHTML=items.map(item=>{const due=item.check&&item.check<=today;return `<article class="personal-card"><h3>${esc(item.title)}</h3><p>${esc(item.status)}</p><p class="personal-next"><strong>Далее</strong>${esc(item.next)}</p><p class="personal-check${due?' due':''}">${item.check?`Проверить ${fullDate(item.check)}${due?' · срок наступил':''}`:'Дата проверки не указана'}</p>${item.links?.length?`<div class="reference-links">${referenceLinks(item.links)}</div>`:''}</article>`;}).join('');
+}
 function referenceLinks(references){return references.map(item=>`<a href="${esc(item.url)}" target="_blank" rel="noopener noreferrer">${esc(item.title)} ${externalIcon}</a>`).join('');}
 function render(){
   if(phone.matches && view==='board' && lane==='all')lane='branding';
@@ -115,7 +121,7 @@ async function start(){
 }
 function show(){
   $('#loading').hidden=true;$('#access').hidden=true;$('#dashboard').hidden=false;$('#lock').hidden=manifest.mode!=='encrypted';
-  renderOverview();render();renderToday();renderPyrus();if(location.hash)openTask(location.hash.slice(1));
+  renderOverview();render();renderToday();renderPyrus();renderPersonal();if(location.hash)openTask(location.hash.slice(1));
 }
 async function decrypt(password){
   const decode=value=>Uint8Array.from(atob(value),char=>char.charCodeAt(0));
