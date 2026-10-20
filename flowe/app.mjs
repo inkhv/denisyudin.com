@@ -10,14 +10,20 @@ const palette = {
 };
 const names = ['Синий · с логотипом','Голубой','Жёлтый','Красный','Зелёный'];
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const state = {spread:0,layers:8,twist:0,light:100,material:'glass',palette:'blue',selected:0,view:'hero',spin:false,petals:Array.from({length:5},()=>({turn:0,lift:0,color:null}))};
+const state = {spread:0,layers:8,twist:0,light:100,material:'glass',palette:'blue',selected:0,view:'hero',spin:false,showLogo:true,petals:Array.from({length:5},()=>({turn:0,lift:0,color:null}))};
 const groups=[],meshes=[],bases=[],layerTargets=[];
+let logoMesh,blueWithLogoGeometry,bluePlainGeometry;
 let renderer,scene,camera,orbit,root,ground,shadow,raf,dirty=true,ready=false,toastTimer,transition=null;
 const v = (x,y,z)=>new THREE.Vector3(x,y,z);
 const invalidate = ()=>{dirty=true;};
 function toast(message){$('status').textContent=message;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('status').textContent='',4200);}
 function pressed(attr,value){document.querySelectorAll(`[${attr}]`).forEach(b=>b.setAttribute('aria-pressed',String(b.getAttribute(attr)===String(value))));}
 function controlsSync(){
+  $('show-logo').checked=state.showLogo;
+  names[0]=state.showLogo?'Синий · с логотипом':'Синий';
+  document.querySelector('[data-petal="0"]').setAttribute('aria-label',state.showLogo?'Синий лепесток с логотипом':'Синий лепесток');
+  document.querySelector('[data-view="macro"]').textContent=state.showLogo?'Логотип':'Крупно';
+  $('model-description').textContent=state.showLogo?'5 лепестков · знак заподлицо':'5 лепестков · без логотипа';
   ['spread','layers','twist','light'].forEach(key=>{ $(key).value=state[key]; $(`${key}-value`).value=state[key]+(key==='twist'?'°':'%'); });
   pressed('data-material',state.material);pressed('data-palette',state.palette);pressed('data-petal',state.selected);
   const p=state.petals[state.selected];
@@ -34,6 +40,12 @@ function updateShape(){
     g.rotation.y=THREE.MathUtils.degToRad(state.twist*(2-i)*.65+state.petals[i].turn);
   });
   dirty=true;
+}
+function updateLogo(){
+  // Swap the entire surface: hiding the inlay alone would leave its cutout in the glass.
+  meshes[0].geometry=state.showLogo?blueWithLogoGeometry:bluePlainGeometry;
+  logoMesh.visible=state.showLogo;
+  invalidate();
 }
 function updateMaterials(){
   meshes.forEach((mesh,i)=>{
@@ -69,11 +81,12 @@ function setView(view,animate=true){
   invalidate();
 }
 function reset(){
-  Object.assign(state,{spread:0,layers:8,twist:0,light:100,material:'glass',palette:'blue',selected:0});
+  Object.assign(state,{spread:0,layers:8,twist:0,light:100,material:'glass',palette:'blue',selected:0,showLogo:true});
   state.petals=Array.from({length:5},()=>({turn:0,lift:0,color:null}));root.rotation.y=0;
-  updateShape();updateMaterials();controlsSync();pressed('data-preset','flower');setView('hero');toast('Исходный цветок восстановлен');
+  updateShape();updateLogo();updateMaterials();controlsSync();pressed('data-preset','flower');setView('hero');toast('Исходный цветок восстановлен');
 }
 function initUI(){
+  $('show-logo').addEventListener('change',()=>{state.showLogo=$('show-logo').checked;updateLogo();controlsSync();});
   ['spread','layers','twist','light'].forEach(key=>$(key).addEventListener('input',()=>{
     state[key]=+$(key).value;controlsSync();if(key==='light')updateMaterials();else{updateShape();pressed('data-preset','');}
   }));
@@ -136,7 +149,7 @@ async function exportImage(){
     const format=$('format').value;
     const blob=await new Promise(resolve=>renderer.domElement.toBlob(resolve,`image/${format}`,.96));
     if(!blob)throw new Error('Image encoding failed');
-    const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=`flowe-${state.palette}-${state.material}.${format==='jpeg'?'jpg':'png'}`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
+    const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=`flowe-${state.palette}-${state.material}${state.showLogo?'':'-no-logo'}.${format==='jpeg'?'jpg':'png'}`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
     toast(`Кадр сохранён · ${width} × ${height} px`);
   }catch(error){console.error(error);toast('Не удалось сохранить кадр. Попробуйте размер 1920 px.');}
   finally{scene.background=background;ground.visible=true;shadow.visible=true;renderer.setPixelRatio(ratio);renderer.setSize(oldSize.x,oldSize.y,false);button.disabled=false;invalidate();}
@@ -206,11 +219,17 @@ async function main(){
         const group=new THREE.Group(),base=new THREE.Vector3(...part.pivot);group.position.copy(base);root.add(group);groups.push(group);bases.push(base);
         const mesh=new THREE.Mesh(geometry,makeGlassMaterial());mesh.name=part.name;group.add(mesh);meshes.push(mesh);
       }else{
-        const logo=new THREE.Mesh(geometry,new THREE.MeshPhysicalMaterial({color:'#ffffff',roughness:.25,clearcoat:.4,metalness:0}));logo.name='Original flush logo';groups[0].add(logo);
+        logoMesh=new THREE.Mesh(geometry,new THREE.MeshPhysicalMaterial({color:'#ffffff',roughness:.25,clearcoat:.4,metalness:0}));logoMesh.name='Original flush logo';groups[0].add(logoMesh);
       }
     }
-    if(groups.length!==5)throw new Error('Expected five petals');
-    initUI();updateShape();updateMaterials();controlsSync();resize();setView('hero',false);ready=true;
+    if(groups.length!==5||!logoMesh)throw new Error('Expected five petals and a logo');
+    blueWithLogoGeometry=meshes[0].geometry;
+    // All petals share the same ellipse and bevel. Align an intact petal to the blue
+    // one's radial orientation, retaining the original normals and edge profile.
+    const blueAngle=Math.atan2(-bases[0].x,-bases[0].z),cyanAngle=Math.atan2(-bases[1].x,-bases[1].z);
+    bluePlainGeometry=meshes[1].geometry.clone().rotateY(blueAngle-cyanAngle);
+    bluePlainGeometry.computeBoundingSphere();
+    initUI();updateLogo();updateShape();updateMaterials();controlsSync();resize();setView('hero',false);ready=true;
     $('controls').disabled=false;document.querySelectorAll('button:disabled').forEach(b=>b.disabled=false);$('loading').hidden=true;
     new ResizeObserver(resize).observe($('viewport'));
     renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();cancelAnimationFrame(raf);$('error').hidden=false;$('error-message').textContent='Графический контекст потерян. Обновите страницу, чтобы снова открыть цветок.';});
