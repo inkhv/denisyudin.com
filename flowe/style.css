@@ -7,3 +7,5 @@
 .mobile-reset{display:none}@media(max-width:680px){.mobile-reset{display:block;margin-top:20px}}
 
 button[aria-pressed=true]:hover:not(:disabled){background:#30302d;color:#fff}.palette-options button[aria-pressed=true]:hover{background:none;color:var(--ink)}
+
+.source-download{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px;padding:12px 0;text-decoration:none;color:var(--ink)}.source-download+.source-download{border-top:1px solid var(--line)}.source-download span{display:flex;flex-direction:column;gap:5px}.source-download strong{font-size:12px;font-weight:600;text-decoration:underline;text-underline-offset:4px}.source-download small{font-size:11px;line-height:1.5;color:var(--muted)}.source-download svg{flex:none}.source-download:hover strong{color:var(--blue)}
