@@ -1,5 +1,6 @@
 // One catalog for the directory and the navigation inside every editor.
 export const tools = [
+  {id:'flowe', name:'Flowe', href:'/flowe/', group:'form', kind:'Стеклянный цветок в 3D', description:'Вращайте цветок, раскрывайте слои и двигайте отдельные лепестки. Меняйте материал, цвет и свет, сохраняйте свой ракурс.', formats:'3D · PNG · JPEG'},
   {id:'hofmann', name:'Hofmann', href:'/hofmann/', group:'form', kind:'Контуры по сетке', description:'Выбирайте круги и стройте огибающий контур. Меняйте сетку, размер фрейма и переключайтесь между линией и заливкой.', formats:'SVG · PNG'},
   {id:'metaball-next', name:'Metaball Next', href:'/metaball_next/', group:'form', kind:'Формы и шейдеры', description:'Соединяйте точки в текучие формы. Добавляйте градиенты, свечение, размытие, фотографии и анимацию поля.', formats:'SVG · PNG'},
   {id:'organic', name:'Organic Cells', href:'/organic/', group:'form', kind:'Органические паттерны', description:'Собирайте структуру из мягких ячеек. Двигайте их центры, настраивайте размер, скругление и толщину прожилок.', formats:'SVG · PNG'},

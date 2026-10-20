@@ -16,7 +16,9 @@ const simple = `${grid('#b9b9ad')}<path d="M140 340V140H260V280H380V140H500V340"
 const brush = `<defs><linearGradient id="brush-color" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#87f6e1"/><stop offset=".3" stop-color="#d2c5ff"/><stop offset=".55" stop-color="#f7a3ef"/><stop offset=".8" stop-color="#ffdea4"/><stop offset="1" stop-color="#a2e3ff"/></linearGradient></defs><g fill="none" stroke-linecap="round"><path d="M115 320C25 60 353 80 279 248S270 475 384 228S610 195 529 351" stroke="url(#brush-color)" stroke-width="48"/><path d="M107 308C40 78 337 92 270 243S272 449 376 227S591 198 524 343" stroke="#fff" stroke-opacity=".65" stroke-width="5"/></g>`;
 const glitch = Array.from({length:75},(_,i)=>{const y=25+i*6, x=70+(Math.sin(i*3.1)*35), width=260+Math.cos(i*.65)*65; const color=['#b6d83c','#8e62e7','#e6a5ee','#d8cbee'][i%4]; return `<rect x="${x}" y="${y}" width="${width}" height="4" fill="${color}"/><rect x="${380+Math.sin(i*.8)*30}" y="${y}" width="${110+Math.sin(i)*50}" height="4" fill="${color}"/>`;}).join('');
 const vfx = id => `<defs><linearGradient id="${id}-color"><stop stop-color="#c4f54b"/><stop offset=".3" stop-color="#27d8c9"/><stop offset=".55" stop-color="#a268ed"/><stop offset=".8" stop-color="#f6a1d8"/><stop offset="1" stop-color="#f9d97c"/></linearGradient></defs>${Array.from({length:22},(_,i)=>`<path d="M${i*34-36} -20C${i*34+90} 100 ${i*34-105} 360 ${i*34+65} 500" fill="none" stroke="url(#${id}-color)" stroke-width="${id==='vfx2'?25:14}"/>`).join('')}`;
+const flower = [72,0,144,216,288].map((a,i)=>`<ellipse cx="320" cy="178" rx="75" ry="132" fill="${['#47a2cd','#344bb7','#3985da','#57a9ed','#245ccc'][i]}" stroke="#ffffff" stroke-width="1" transform="rotate(${a} 320 240)"/>`).join('');
 const previews = {
+  flowe:wrap('flowe','#e5e9ef',flower),
   hofmann:wrap('hofmann','#fafaf7',hofmann), 'metaball-next':wrap('next','#171622',next), organic:wrap('organic','#4b0429',organic),
   'signal-shredder':wrap('signal','#161517',glitch), brush:wrap('brush','#08080c',brush), 'colorvfx-2':wrap('vfx2','#102831',vfx('vfx2')),
   metaball:wrap('metaball','#f6e8e4',classic), 'metaball-simple':wrap('simple','#eeefe4',simple), colorvfx:wrap('vfx1','#402961',vfx('vfx1')),
@@ -35,7 +37,7 @@ const html = `<!doctype html>
   <title>Инструменты для дизайна — Denis Yudin</title>
   <meta name="description" content="Инструменты Дениса Юдина для формы, цвета и экспериментов: Hofmann, Metaball, Organic Cells, Signal Shredder, Liquid Light Brush и Color VFX.">
   <meta name="theme-color" content="#efede8"><link rel="canonical" href="https://denisyudin.com/tools/">
-  <meta property="og:title" content="Инструменты для дизайна — Denis Yudin"><meta property="og:description" content="Форма, цвет и эксперименты. 9 инструментов в браузере."><meta property="og:type" content="website"><meta property="og:url" content="https://denisyudin.com/tools/">
+  <meta property="og:title" content="Инструменты для дизайна — Denis Yudin"><meta property="og:description" content="Форма, цвет и эксперименты. ${tools.length} инструментов в браузере."><meta property="og:type" content="website"><meta property="og:url" content="https://denisyudin.com/tools/">
   <link rel="icon" href="/assets/694eb3c01c94deb52f44b88a_p10%200062_24.png">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">

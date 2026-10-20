@@ -1,0 +1,1 @@
+{"name":"flowe","private":true,"type":"module","scripts":{"build":"esbuild app.mjs --bundle --format=esm --minify --outfile=app.bundle.js"},"dependencies":{"three":"0.180.0"},"devDependencies":{"esbuild":"0.25.10"},"engines":{"node":">=20"}}
