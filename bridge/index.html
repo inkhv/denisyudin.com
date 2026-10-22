@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fafafa">
+  <title>DW BRIDGE — карточки курса по типографике</title>
+  <meta name="description" content="Карточки курса DW BRIDGE (DesignWorkout): одна на каждый день, от шрифта как материала до типографической вёрстки.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://denisyudin.com/bridge/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Denis Yudin">
+  <meta property="og:url" content="https://denisyudin.com/bridge/">
+  <meta property="og:title" content="DW BRIDGE — карточки курса">
+  <meta property="og:description" content="Одна карточка на каждый день курса по типографике.">
+  <meta property="og:image" content="https://denisyudin.com/bridge/cards/day01.jpg">
+  <link rel="icon" type="image/png" href="../assets/694eb3c01c94deb52f44b88a_p10%200062_24.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Grammar of /cv and /scb-status: near-white paper, black type, gray panels, 20px radius, pill controls. */
+    :root {
+      --paper:#fafafa; --white:#fff; --ink:#000; --muted:#666; --line:#d5d5d5;
+      --surface:#ededed; --accent:#ff2f00; --focus:#c62500;
+      --radius:20px; color-scheme:light; font-family:Manrope,Arial,sans-serif;
+      color:var(--ink); background:var(--paper); font-synthesis:none;
+    }
+    * {box-sizing:border-box}
+    html {scroll-behavior:smooth;scrollbar-color:#999 var(--paper)}
+    body {margin:0;-webkit-font-smoothing:antialiased}
+    a {color:inherit;text-underline-offset:4px;-webkit-tap-highlight-color:transparent}
+    a:focus-visible,button:focus-visible {outline:3px solid var(--focus);outline-offset:4px}
+    ::selection {background:var(--accent);color:var(--ink)}
+    h1,h2,p,figure {margin:0}
+    .skip {position:fixed;z-index:30;top:-100px;left:20px;padding:12px;background:var(--white)}
+    .skip:focus {top:10px}
+
+    .site-header {max-width:1760px;margin:auto;padding:24px 48px;display:flex;justify-content:space-between;align-items:center;font-size:14px}
+    .site-header>a {font-weight:800;text-decoration:none;letter-spacing:-.025em}
+    .site-header>a span {font-weight:500;color:var(--muted)}
+    .site-header>div {display:flex;align-items:center;gap:20px;font-size:12px;color:var(--muted)}
+    .site-header>div a {text-decoration:none;color:var(--ink);font-weight:600}
+    .site-header>div a:hover {text-decoration:underline}
+    main {max-width:1760px;margin:auto;padding:40px 48px 0}
+
+    h1 {font-size:clamp(44px,4.7vw,72px);letter-spacing:-.04em;font-weight:500;line-height:1.05;text-wrap:balance;max-width:22ch}
+    .page-title p {font-size:13px;color:var(--muted);margin-top:16px;line-height:1.6;max-width:78ch;text-wrap:pretty}
+    .page-title p b {color:var(--ink);font-weight:600}
+    .meta-row {display:flex;flex-wrap:wrap;gap:8px 20px;font-size:12px;color:var(--muted);margin:24px 0 44px}
+    .meta-row b {color:var(--ink);font-weight:600}
+
+    .blocks {display:flex;flex-direction:column;gap:20px}
+    .block {background:var(--surface);border-radius:var(--radius);padding:28px;display:grid;grid-template-columns:minmax(0,1fr) min(560px,46vw);gap:32px;align-items:start}
+    .block[hidden] {display:none}
+    .block-text {display:flex;flex-direction:column;min-height:100%;position:sticky;top:28px}
+    .block-top {display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:28px}
+    .num {font-size:clamp(44px,4.7vw,72px);font-weight:500;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+    .date {font-size:12px;color:var(--muted)}
+    .section {font-size:12px;color:var(--muted);margin-bottom:8px}
+    h2 {font-size:28px;font-weight:500;letter-spacing:-.035em;line-height:1.1;text-wrap:balance}
+    .block-card img {display:block;width:100%;height:auto;aspect-ratio:1;border-radius:12px;background:#000}
+    .toggle {display:none}
+
+    /* ?edit: all blocks visible, per-block toggle, bottom bar with the hidden list */
+    body.edit .block[hidden] {display:grid;opacity:.4}
+    body.edit .block[hidden] .block-card img {filter:grayscale(1)}
+    body.edit .toggle {display:inline-flex;align-items:center;justify-content:center;margin-top:24px;align-self:flex-start;min-height:40px;padding:0 18px;border:0;border-radius:24px;background:var(--ink);color:var(--white);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+    body.edit .toggle:hover {background:#333}
+    body.edit .block[hidden] .toggle {background:var(--white);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+    .editbar {display:none;position:fixed;z-index:25;left:50%;bottom:20px;transform:translateX(-50%);max-width:calc(100% - 40px);align-items:center;gap:14px;padding:12px 12px 12px 18px;background:var(--ink);color:var(--white);border-radius:30px;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    body.edit .editbar {display:flex}
+    .editbar span {white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .editbar button {min-height:36px;padding:0 14px;border:0;border-radius:24px;background:var(--white);color:var(--ink);font:inherit;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+    .editbar button.ghost {background:transparent;color:var(--white);box-shadow:inset 0 0 0 1px #555}
+    .editbar button:hover {background:#e5e5e5}
+    .editbar button.ghost:hover {background:#222}
+
+    footer {display:flex;justify-content:space-between;gap:24px;font-size:12px;line-height:1.6;color:var(--muted);border-top:1px solid var(--line);padding:28px 0;margin-top:48px}
+    footer a {text-decoration:none}
+    footer a:hover {text-decoration:underline}
+
+    @media(max-width:1100px) {
+      main {padding:32px 24px 0}.site-header {padding:20px 24px}
+      .block {grid-template-columns:minmax(0,1fr) min(440px,42vw);gap:24px;padding:24px}
+      .num {font-size:48px} h2 {font-size:24px}
+    }
+    @media(max-width:720px) {
+      .meta-row {margin-bottom:32px}
+      .block {grid-template-columns:1fr;gap:20px;padding:20px}
+      .block-text {position:static}
+      .block-top {margin-bottom:16px}
+      .block-card {order:-1}
+      body.edit .toggle {margin-top:16px}
+      .editbar {left:16px;right:16px;transform:none;max-width:none;justify-content:space-between}
+      footer {flex-direction:column;gap:8px}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">К содержимому</a>
+  <header class="site-header"><a href="../">Denis Yudin<span> / Bridge</span></a><div><span>DW BRIDGE · карточки курса · обновлено 22.10.2026</span><a href="../">На главную</a></div></header>
+
+  <main id="main">
+    <div class="page-title">
+      <h1>DW BRIDGE. Карточки курса по&nbsp;типографике, день за&nbsp;днём.</h1>
+      <p><b>Курс DesignWorkout, поток 1, с&nbsp;7 сентября по&nbsp;22 октября 2026.</b> Каждый будний день выходит одна карточка и&nbsp;одна тема: от&nbsp;шрифта как материала через знак, слово и&nbsp;строку к&nbsp;текстовому блоку и&nbsp;типографической вёрстке. Здесь собраны карточки по&nbsp;порядку.</p>
+    </div>
+    <div class="meta-row"><span><b>34</b> карточек</span><span><b>5</b> разделов</span><span>Иллюстрации — DesignWorkout</span></div>
+
+    <div class="blocks">
+    <section class="block" id="day-01" data-day="1">
+      <div class="block-text">
+        <div class="block-top"><span class="num">01</span><span class="date">7 сентября</span></div>
+        <p class="section">Шрифт как материал</p>
+        <h2>Виды шрифтов</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day01.jpg" width="800" height="800" alt="Карточка дня 1: Виды шрифтов" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-02" data-day="2">
+      <div class="block-text">
+        <div class="block-top"><span class="num">02</span><span class="date">8 сентября</span></div>
+        <p class="section">Шрифт как материал</p>
+        <h2>Строение шрифта</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day02.jpg" width="800" height="800" alt="Карточка дня 2: Строение шрифта" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-03" data-day="3">
+      <div class="block-text">
+        <div class="block-top"><span class="num">03</span><span class="date">9 сентября</span></div>
+        <p class="section">Шрифт как материал</p>
+        <h2>Характеристики шрифта</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day03.jpg" width="800" height="800" alt="Карточка дня 3: Характеристики шрифта" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-04" data-day="4">
+      <div class="block-text">
+        <div class="block-top"><span class="num">04</span><span class="date">10 сентября</span></div>
+        <p class="section">Шрифт как материал</p>
+        <h2>Начертания</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day04.jpg" width="800" height="800" alt="Карточка дня 4: Начертания" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-05" data-day="5">
+      <div class="block-text">
+        <div class="block-top"><span class="num">05</span><span class="date">11 сентября</span></div>
+        <p class="section">Шрифт как материал</p>
+        <h2>Глифы шрифта</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day05.jpg" width="800" height="800" alt="Карточка дня 5: Глифы шрифта" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-06" data-day="6">
+      <div class="block-text">
+        <div class="block-top"><span class="num">06</span><span class="date">14 сентября</span></div>
+        <p class="section">Знак и слово</p>
+        <h2>Кегль</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day06.jpg" width="800" height="800" alt="Карточка дня 6: Кегль" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-07" data-day="7">
+      <div class="block-text">
+        <div class="block-top"><span class="num">07</span><span class="date">15 сентября</span></div>
+        <p class="section">Знак и слово</p>
+        <h2>Межбуквенный пробел</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day07.jpg" width="800" height="800" alt="Карточка дня 7: Межбуквенный пробел" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-08" data-day="8">
+      <div class="block-text">
+        <div class="block-top"><span class="num">08</span><span class="date">16 сентября</span></div>
+        <p class="section">Знак и слово</p>
+        <h2>Кернинг и трекинг</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day08.jpg" width="800" height="800" alt="Карточка дня 8: Кернинг и трекинг" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-09" data-day="9">
+      <div class="block-text">
+        <div class="block-top"><span class="num">09</span><span class="date">17 сентября</span></div>
+        <p class="section">Знак и слово</p>
+        <h2>Регистр слова</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day09.jpg" width="800" height="800" alt="Карточка дня 9: Регистр слова" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-10" data-day="10">
+      <div class="block-text">
+        <div class="block-top"><span class="num">10</span><span class="date">18 сентября</span></div>
+        <p class="section">Знак и слово</p>
+        <h2>Акцентировка внутри слова</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day10.jpg" width="800" height="800" alt="Карточка дня 10: Акцентировка внутри слова" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-11" data-day="11">
+      <div class="block-text">
+        <div class="block-top"><span class="num">11</span><span class="date">21 сентября</span></div>
+        <p class="section">Знак и слово</p>
+        <h2>Макет из знаков и слов</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day11.jpg" width="800" height="800" alt="Карточка дня 11: Макет из знаков и слов" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-12" data-day="12">
+      <div class="block-text">
+        <div class="block-top"><span class="num">12</span><span class="date">22 сентября</span></div>
+        <p class="section">Строка</p>
+        <h2>Строка</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day12.jpg" width="800" height="800" alt="Карточка дня 12: Строка" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-13" data-day="13">
+      <div class="block-text">
+        <div class="block-top"><span class="num">13</span><span class="date">23 сентября</span></div>
+        <p class="section">Строка</p>
+        <h2>Межсловный пробел</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day13.jpg" width="800" height="800" alt="Карточка дня 13: Межсловный пробел" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-14" data-day="14">
+      <div class="block-text">
+        <div class="block-top"><span class="num">14</span><span class="date">24 сентября</span></div>
+        <p class="section">Строка</p>
+        <h2>Регистр строки</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day14.jpg" width="800" height="800" alt="Карточка дня 14: Регистр строки" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-15" data-day="15">
+      <div class="block-text">
+        <div class="block-top"><span class="num">15</span><span class="date">25 сентября</span></div>
+        <p class="section">Строка</p>
+        <h2>Акцентировка внутри строки</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day15.jpg" width="800" height="800" alt="Карточка дня 15: Акцентировка внутри строки" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-16" data-day="16">
+      <div class="block-text">
+        <div class="block-top"><span class="num">16</span><span class="date">28 сентября</span></div>
+        <p class="section">Строка</p>
+        <h2>Подключка</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day16.jpg" width="800" height="800" alt="Карточка дня 16: Подключка" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-17" data-day="17">
+      <div class="block-text">
+        <div class="block-top"><span class="num">17</span><span class="date">29 сентября</span></div>
+        <p class="section">Строка</p>
+        <h2>Косая строка</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day17.jpg" width="800" height="800" alt="Карточка дня 17: Косая строка" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-18" data-day="18">
+      <div class="block-text">
+        <div class="block-top"><span class="num">18</span><span class="date">30 сентября</span></div>
+        <p class="section">Текстовый блок</p>
+        <h2>Формат и длина строки</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day18.jpg" width="800" height="800" alt="Карточка дня 18: Формат и длина строки" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-19" data-day="19">
+      <div class="block-text">
+        <div class="block-top"><span class="num">19</span><span class="date">1 октября</span></div>
+        <p class="section">Текстовый блок</p>
+        <h2>Интерлиньяж</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day19.jpg" width="800" height="800" alt="Карточка дня 19: Интерлиньяж" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-20" data-day="20">
+      <div class="block-text">
+        <div class="block-top"><span class="num">20</span><span class="date">2 октября</span></div>
+        <p class="section">Текстовый блок</p>
+        <h2>Зеркало набора</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day20.jpg" width="800" height="800" alt="Карточка дня 20: Зеркало набора" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-21" data-day="21">
+      <div class="block-text">
+        <div class="block-top"><span class="num">21</span><span class="date">5 октября</span></div>
+        <p class="section">Текстовый блок</p>
+        <h2>Выключка</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day21.jpg" width="800" height="800" alt="Карточка дня 21: Выключка" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-22" data-day="22">
+      <div class="block-text">
+        <div class="block-top"><span class="num">22</span><span class="date">6 октября</span></div>
+        <p class="section">Текстовый блок</p>
+        <h2>Набор в подбор</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day22.jpg" width="800" height="800" alt="Карточка дня 22: Набор в подбор" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-23" data-day="23">
+      <div class="block-text">
+        <div class="block-top"><span class="num">23</span><span class="date">7 октября</span></div>
+        <p class="section">Текстовый блок</p>
+        <h2>Межбуквенные и межсловные пробелы в текстовом блоке</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day23.jpg" width="800" height="800" alt="Карточка дня 23: Межбуквенные и межсловные пробелы в текстовом блоке" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-24" data-day="24">
+      <div class="block-text">
+        <div class="block-top"><span class="num">24</span><span class="date">8 октября</span></div>
+        <p class="section">Текстовый блок</p>
+        <h2>Обтекание текста и текст в фигуре</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day24.jpg" width="800" height="800" alt="Карточка дня 24: Обтекание текста и текст в фигуре" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-25" data-day="25">
+      <div class="block-text">
+        <div class="block-top"><span class="num">25</span><span class="date">9 октября</span></div>
+        <p class="section">Текстовый блок</p>
+        <h2>Акцентировка в текстовом блоке</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day25.jpg" width="800" height="800" alt="Карточка дня 25: Акцентировка в текстовом блоке" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-26" data-day="26">
+      <div class="block-text">
+        <div class="block-top"><span class="num">26</span><span class="date">12 октября</span></div>
+        <p class="section">Текстовый блок</p>
+        <h2>Акцентировка в текстовом блоке</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day26.jpg" width="800" height="800" alt="Карточка дня 26: Акцентировка в текстовом блоке" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-27" data-day="27">
+      <div class="block-text">
+        <div class="block-top"><span class="num">27</span><span class="date">13 октября</span></div>
+        <p class="section">Текстовый блок</p>
+        <h2>Абзац</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day27.jpg" width="800" height="800" alt="Карточка дня 27: Абзац" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-28" data-day="28">
+      <div class="block-text">
+        <div class="block-top"><span class="num">28</span><span class="date">14 октября</span></div>
+        <p class="section">Текстовый блок</p>
+        <h2>Новострочие</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day28.jpg" width="800" height="800" alt="Карточка дня 28: Новострочие" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-29" data-day="29">
+      <div class="block-text">
+        <div class="block-top"><span class="num">29</span><span class="date">15 октября</span></div>
+        <p class="section">Текстовый блок</p>
+        <h2>Втяжка</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day29.jpg" width="800" height="800" alt="Карточка дня 29: Втяжка" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-30" data-day="30">
+      <div class="block-text">
+        <div class="block-top"><span class="num">30</span><span class="date">16 октября</span></div>
+        <p class="section">Текстовый блок</p>
+        <h2>Пробельная строка</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day30.jpg" width="800" height="800" alt="Карточка дня 30: Пробельная строка" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-31" data-day="31">
+      <div class="block-text">
+        <div class="block-top"><span class="num">31</span><span class="date">19 октября</span></div>
+        <p class="section">Типографическая вёрстка</p>
+        <h2>Типографические стили</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day31.jpg" width="800" height="800" alt="Карточка дня 31: Типографические стили" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-32" data-day="32">
+      <div class="block-text">
+        <div class="block-top"><span class="num">32</span><span class="date">20 октября</span></div>
+        <p class="section">Типографическая вёрстка</p>
+        <h2>Цитата</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day32.jpg" width="800" height="800" alt="Карточка дня 32: Цитата" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-33" data-day="33">
+      <div class="block-text">
+        <div class="block-top"><span class="num">33</span><span class="date">21 октября</span></div>
+        <p class="section">Типографическая вёрстка</p>
+        <h2>Бокс/карточка</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day33.jpg" width="800" height="800" alt="Карточка дня 33: Бокс/карточка" loading="lazy" decoding="async"></figure>
+    </section>
+    <section class="block" id="day-34" data-day="34">
+      <div class="block-text">
+        <div class="block-top"><span class="num">34</span><span class="date">22 октября</span></div>
+        <p class="section">Типографическая вёрстка</p>
+        <h2>Список</h2>
+        <button type="button" class="toggle" aria-pressed="false">Скрыть</button>
+      </div>
+      <figure class="block-card"><img src="cards/day34.jpg" width="800" height="800" alt="Карточка дня 34: Список" loading="lazy" decoding="async"></figure>
+    </section>
+    </div>
+
+    <footer><span>Денис Юдин · DW BRIDGE · 2026</span><a href="../">denisyudin.com</a></footer>
+  </main>
+
+  <div class="editbar" role="region" aria-label="Режим редактирования"><span id="editinfo">Скрытых нет</span><button type="button" id="copy">Скопировать список</button><button type="button" id="reset" class="ghost">Сбросить</button></div>
+
+  <script>
+    (function () {
+      var qs = new URLSearchParams(location.search);
+      if (!qs.has('edit')) return;
+      document.body.classList.add('edit');
+      var KEY = 'bridge-hidden';
+      var blocks = Array.prototype.slice.call(document.querySelectorAll('.block'));
+      var published = blocks.filter(function (b) { return b.hasAttribute('hidden'); }).map(function (b) { return +b.dataset.day; });
+      var hidden;
+      try { hidden = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { hidden = null; }
+      if (!Array.isArray(hidden)) hidden = published.slice();
+      function save() { try { localStorage.setItem(KEY, JSON.stringify(hidden)); } catch (e) {} }
+      function render() {
+        blocks.forEach(function (b) {
+          var n = +b.dataset.day, off = hidden.indexOf(n) !== -1, btn = b.querySelector('.toggle');
+          if (off) b.setAttribute('hidden', ''); else b.removeAttribute('hidden');
+          btn.textContent = off ? 'Показать' : 'Скрыть';
+          btn.setAttribute('aria-pressed', off ? 'true' : 'false');
+        });
+        var list = hidden.slice().sort(function (a, b) { return a - b; });
+        document.getElementById('editinfo').textContent = list.length ? 'Скрыто ' + list.length + ': ' + list.join(', ') : 'Скрытых нет — видны все ' + blocks.length;
+      }
+      blocks.forEach(function (b) {
+        b.querySelector('.toggle').addEventListener('click', function () {
+          var n = +b.dataset.day, i = hidden.indexOf(n);
+          if (i === -1) hidden.push(n); else hidden.splice(i, 1);
+          save(); render();
+        });
+      });
+      document.getElementById('copy').addEventListener('click', function () {
+        var list = hidden.slice().sort(function (a, b) { return a - b; });
+        var text = list.length ? 'Скрыть дни: ' + list.join(', ') : 'Показать все дни';
+        var btn = this;
+        function done() { btn.textContent = 'Скопировано'; setTimeout(function () { btn.textContent = 'Скопировать список'; }, 1500); }
+        if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, function () { prompt('Список:', text); });
+        else prompt('Список:', text);
+      });
+      document.getElementById('reset').addEventListener('click', function () { hidden = published.slice(); save(); render(); });
+      render();
+    })();
+  </script>
+</body>
+</html>
