@@ -1,410 +1,172 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#fafafa">
-  <title>Денис Юдин — резюме арт-директора</title>
-  <meta name="description" content="Арт-директор. Руковожу дизайн-направлением банка через тимлидов, ставлю стандарт качества, придумываю и супервайзю key visual, строю AI-пайплайны для продакшна.">
-  <meta name="robots" content="noindex, nofollow">
-  <link rel="canonical" href="https://denisyudin.com/cv/">
-  <meta property="og:type" content="profile">
-  <meta property="og:locale" content="ru_RU">
-  <meta property="og:site_name" content="Denis Yudin">
-  <meta property="og:url" content="https://denisyudin.com/cv/">
-  <meta property="og:title" content="Денис Юдин — арт-директор">
-  <meta property="og:description" content="Руковожу дизайном так, чтобы качество держалось на системе, а не на ручной приёмке.">
-  <link rel="icon" type="image/png" href="../assets/694eb3c01c94deb52f44b88a_p10%200062_24.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    /* Grammar of /scb-status (DESIGN.md, Pangram reference, 12.10.2026): near-white paper, black type, gray panels, red-orange accent, yellow field, 20px panels, pill controls. */
-    :root {
-      --paper:#fafafa; --white:#fff; --ink:#000; --muted:#666; --line:#d5d5d5;
-      --surface:#ededed; --accent:#ff2f00; --yellow:#ffb700; --control-line:#858585; --focus:#c62500;
-      --branding:#000; --dkc:#ffb700; --b2b:#ededed;
-      --radius:20px; --jump-h:64px; color-scheme:light; font-family:Manrope,Arial,sans-serif;
-      color:var(--ink); background:var(--paper); font-synthesis:none;
-    }
-    * {box-sizing:border-box}
-    html {scroll-behavior:smooth;scroll-padding-top:calc(var(--jump-h) + 20px);scrollbar-color:#999 var(--paper)}
-    body {margin:0;-webkit-font-smoothing:antialiased}
-    a {color:inherit;text-underline-offset:4px;-webkit-tap-highlight-color:transparent}
-    a:focus-visible {outline:3px solid var(--focus);outline-offset:4px}
-    ::selection {background:var(--accent);color:var(--ink)}
-    svg {width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-    h1,h2,h3,h4,p {margin:0}
-    .skip {position:fixed;z-index:30;top:-100px;left:20px;padding:12px;background:var(--white)}
-    .skip:focus {top:10px}
-
-    .site-header {max-width:1760px;margin:auto;padding:24px 48px;display:flex;justify-content:space-between;align-items:center;font-size:14px}
-    .site-header>a {font-weight:800;text-decoration:none;letter-spacing:-.025em}
-    .site-header>a span {font-weight:500;color:var(--muted)}
-    .site-header>div {display:flex;align-items:center;gap:20px;font-size:12px;color:var(--muted)}
-    .site-header>div a {text-decoration:none;color:var(--ink);font-weight:600}
-    .site-header>div a:hover {text-decoration:underline}
-    main {max-width:1760px;margin:auto;padding:40px 48px 0}
-
-    h1 {font-size:clamp(44px,4.7vw,72px);letter-spacing:-.04em;font-weight:500;line-height:1.05;text-wrap:balance;max-width:22ch}
-    .page-title {display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:28px}
-    .page-title>div {min-width:0;flex:1}
-    .page-title p {font-size:13px;color:var(--muted);margin-top:16px;line-height:1.6;max-width:78ch;text-wrap:pretty}
-    .page-title p b {color:var(--ink);font-weight:600}
-    .text-link {background:none;border:0;padding:4px 0;min-height:32px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
-    .text-link:hover {text-decoration:underline}
-    .page-title>.text-link {flex-shrink:0;background:var(--ink);border-radius:24px;padding:12px 18px;color:var(--white)}
-    .page-title>.text-link:hover {background:#333;text-decoration:none}
-    .meta-row {display:flex;flex-wrap:wrap;gap:8px 20px;font-size:12px;color:var(--muted);margin-bottom:44px}
-    .meta-row a {display:inline-flex;align-items:center;gap:5px;font-weight:600;color:var(--ink);text-decoration:none}
-    .meta-row a:hover {text-decoration:underline}
-    .meta-row svg {width:14px;height:14px}
-
-    .section-heading {display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:18px}
-    .section-heading>span {font-size:12px;color:var(--muted);line-height:1.5;text-align:right}
-    h2 {font-size:22px;font-weight:600;letter-spacing:-.03em;line-height:1.2}
-    h3 {font-size:15px;font-weight:600;line-height:1.45}
-
-    /* Fit cards = team cards */
-    .team-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
-    .team {--team-inset:24px;--team-action-fill:var(--ink);--team-action-ink:var(--white);padding:24px var(--team-inset) 20px;text-align:left;border:0;border-radius:var(--radius);display:flex;flex-direction:column;align-items:stretch;overflow:hidden;text-decoration:none;background:var(--b2b);color:var(--ink);min-width:0}
-    .team-branding {--team-action-fill:var(--white);--team-action-ink:var(--ink);background:var(--branding);color:var(--white)}
-    .team-dkc {background:var(--dkc)}
-    .team-plain {background:var(--white);box-shadow:inset 0 0 0 1px var(--line)}
-    .team-top {display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
-    .team-top>strong {font-size:28px;font-weight:500;letter-spacing:-.035em;line-height:1.1}
-    .team-summary {display:block;font-size:13px;line-height:1.6;min-height:48px;text-wrap:pretty}
-    .team-action {display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;font-weight:600;margin-top:18px}
-    .team-action svg {width:24px;height:24px;padding:4px;border-radius:50%;background:var(--team-action-fill);color:var(--team-action-ink);flex-shrink:0;transition:transform 160ms ease-out}
-    .team:hover .team-action svg {transform:translate(2px,-2px)}
-
-    /* Jump bar = mode pills, sticky */
-    .jump {position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line);margin:40px -48px 0;padding:0 48px}
-    .jump-inner {max-width:1664px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:var(--jump-h)}
-    .mode-tabs {position:relative;display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:6px 0;margin:0 -6px;-webkit-overflow-scrolling:touch}
-    .mode-tabs::-webkit-scrollbar {display:none}
-    .mode-tabs a {border:1px solid transparent;background:none;border-radius:24px;font-size:12px;font-weight:500;min-height:36px;padding:7px 12px;display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;transition:background 160ms ease-out,color 160ms ease-out}
-    .mode-tabs a[aria-current="true"] {background:var(--ink);color:var(--white)}
-    .mode-tabs a:hover:not([aria-current="true"]) {background:var(--surface)}
-
-    /* Verb panels = ai-section */
-    .panel {background:var(--surface);border-radius:var(--radius);padding:28px;margin-top:28px;color:var(--ink);scroll-margin-top:calc(var(--jump-h) + 20px)}
-    .panel>.section-heading {margin-bottom:10px;align-items:flex-start}
-    .panel h2 {font-size:clamp(30px,3vw,44px);font-weight:500;letter-spacing:-.04em;line-height:1.05}
-    .panel>.lead {font-size:15px;line-height:1.55;max-width:none;margin-bottom:26px;letter-spacing:-.01em;text-wrap:balance}
-    .cards {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}
-    .card {min-width:0;background:var(--white);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px}
-    .card h3 {font-size:14px;font-weight:600;line-height:1.5;letter-spacing:-.015em;overflow-wrap:anywhere;text-wrap:pretty}
-    .card p {font-size:13px;line-height:1.65;color:var(--muted);text-wrap:pretty}
-    .card p a {color:var(--ink);font-weight:600}
-    .card-foot {margin-top:auto;border-top:1px solid #d0d0d0;padding-top:12px;font-size:12px;line-height:1.5;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
-    .card-foot a {display:inline-flex;align-items:center;gap:5px;text-decoration:none;color:var(--ink);font-weight:600}
-    .card-foot a:hover {text-decoration:underline}
-    .card-foot svg {width:14px;height:14px}
-
-    /* Values = deferred (yellow) section */
-    .values {background:var(--yellow);border-radius:var(--radius);margin:28px 0 0;display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start;padding:28px;scroll-margin-top:calc(var(--jump-h) + 20px)}
-    .values h2 {font-size:clamp(30px,3vw,44px);font-weight:500;letter-spacing:-.04em;line-height:1.05}
-    .values>div>p {font-size:12px;color:#513c00;margin-top:12px;line-height:1.6;max-width:29ch;text-wrap:balance}
-    .values-list {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 24px}
-    .values-list div {padding:10px 0;min-height:50px;border-top:1px solid #d99c00}
-    .values-list h3 {font-size:15px;font-weight:600;margin-bottom:6px}
-    .values-list p {font-size:12px;line-height:1.65;color:#513c00;text-wrap:pretty}
-
-    /* Experience, education = log */
-    .plain {margin-top:48px;border-top:1px solid var(--line);padding-top:28px;scroll-margin-top:calc(var(--jump-h) + 20px)}
-    .plain>.section-heading h2 {font-size:28px;font-weight:500;letter-spacing:-.035em}
-    .log {background:var(--surface);border-radius:var(--radius);padding:0 28px}
-    .log-item {display:grid;grid-template-columns:180px 1fr;gap:28px;padding:24px 0}
-    .log-item+.log-item {border-top:1px solid var(--line)}
-    .log-date {font-size:12px;color:var(--muted);line-height:1.7;font-variant-numeric:tabular-nums}
-    .log-item h3 {font-size:15px;margin-bottom:2px}
-    .log-item .org {display:block;font-size:12px;color:var(--muted);margin-bottom:10px}
-    .log-item p {font-size:13px;line-height:1.7;max-width:75ch;color:var(--muted);text-wrap:pretty}
-    .log-item p b {color:var(--ink);font-weight:600}
-    .chart-note {font-size:12px;color:var(--muted);margin:14px 0 0;line-height:1.7}
-    .chart-note b {color:var(--ink);font-weight:600}
-
-    /* Tools = pills */
-    .tools {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
-    .tools h3 {font-size:12px;font-weight:600;color:var(--muted);margin-bottom:12px}
-    .tags {display:flex;flex-wrap:wrap;gap:6px}
-    .tags span {border:1px solid var(--control-line);border-radius:24px;padding:9px 16px;font-size:13px;font-weight:500;min-height:40px;display:inline-flex;align-items:center}
-
-    /* Closing */
-    .closing {display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-top:56px;padding-top:28px;border-top:1px solid var(--line)}
-    .closing h2 {font-size:clamp(28px,3vw,40px);font-weight:500;letter-spacing:-.04em;line-height:1.1;max-width:20ch;text-wrap:balance}
-    .closing p {font-size:13px;color:var(--muted);margin-top:14px;line-height:1.6;max-width:50ch}
-    .buttons {display:flex;flex-wrap:wrap;gap:8px;flex-shrink:0}
-    .buttons a {display:inline-flex;align-items:center;gap:8px;border:1px solid var(--control-line);border-radius:24px;padding:9px 16px;font-size:13px;font-weight:500;min-height:40px;text-decoration:none;transition:background 160ms ease-out,color 160ms ease-out}
-    .buttons a:hover {background:var(--surface)}
-    .buttons a.primary {background:var(--ink);color:var(--white);border-color:var(--ink)}
-    .buttons a.primary:hover {background:#333}
-    footer {display:flex;justify-content:space-between;gap:24px;font-size:12px;line-height:1.6;color:var(--muted);border-top:1px solid var(--line);padding:28px 0;margin-top:48px}
-    footer a {text-decoration:none}
-    footer a:hover {text-decoration:underline}
-
-    @media(min-width:1500px) { .cards {grid-template-columns:repeat(3,minmax(0,1fr))} }
-    @media(max-width:1250px) { .cards {grid-template-columns:repeat(2,minmax(0,1fr))} }
-    @media(max-width:1100px) {
-      main {padding:32px 24px 0}.site-header {padding:20px 24px}
-      .jump {margin:32px -24px 0;padding:0 24px}
-      .team-grid {grid-template-columns:repeat(2,minmax(0,1fr))}.team {--team-inset:20px;padding:22px 20px 18px}.team-top>strong {font-size:26px}
-      .values {grid-template-columns:210px 1fr}.values-list {grid-template-columns:repeat(2,minmax(0,1fr))}
-      .log-item {grid-template-columns:140px 1fr;gap:20px}
-      .tools {grid-template-columns:repeat(2,minmax(0,1fr))}
-    }
-    @media(max-width:850px) {
-      :root {--jump-h:56px}
-      .page-title {flex-direction:column;align-items:flex-start}.page-title>.text-link {display:none}
-      .meta-row {margin-bottom:32px}
-      .team-grid {grid-template-columns:1fr}.team-summary {min-height:0}
-      .panel {padding:22px 20px;margin-top:20px}.panel>.lead {font-size:14px;margin-bottom:20px}
-      .cards {grid-template-columns:1fr;gap:12px}
-      .values {grid-template-columns:1fr;padding:22px 20px;gap:16px}.values-list {grid-template-columns:1fr;gap:4px}.values>div>p {max-width:none}
-      .plain {margin-top:36px}
-      .log {padding:0 20px}.log-item {grid-template-columns:1fr;gap:6px;padding:20px 0}
-      .tools {grid-template-columns:1fr;gap:20px}
-      .closing {flex-direction:column;align-items:flex-start}
-      footer {flex-direction:column;gap:8px}
-    }
-    @media(prefers-reduced-motion:reduce) { html {scroll-behavior:auto} * {transition:none!important} }
-    @media print {
-      @page {margin:14mm}
-      :root {--paper:#fff}
-      body {font-size:11pt}
-      .site-header,.jump,.skip,.page-title>.text-link,.team-action,.buttons,footer {display:none!important}
-      main {padding:0;max-width:none}
-      h1 {font-size:24pt}
-      .team,.panel,.values,.log,.card {break-inside:avoid;border-radius:0}
-      .team-branding {background:#fff!important;color:#000!important;box-shadow:inset 0 0 0 1px #999}
-      .team-dkc,.values {background:#fff!important;box-shadow:inset 0 0 0 1px #999}
-      .panel,.log {background:#fff!important;box-shadow:inset 0 0 0 1px #bbb}
-      .card {box-shadow:inset 0 0 0 1px #ddd}
-      .cards {grid-template-columns:repeat(2,minmax(0,1fr))}
-      a {text-decoration:none}
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Денис Юдин — арт-директор</title>
+<meta name="description" content="Арт-директор. Руковожу дизайн-направлением банка через тимлидов, ставлю стандарт качества, придумываю и супервайзю key visual, строю AI-пайплайны для продакшна.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://denisyudin.com/cv/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Денис Юдин — арт-директор">
+<meta property="og:description" content="Арт-директор. Руковожу дизайн-направлением банка через тимлидов, ставлю стандарт качества, придумываю и супервайзю key visual, строю AI-пайплайны для продакшна.">
+<meta property="og:image" content="https://denisyudin.com/assets/6658880dd42bd34056d2fda1_Cover_DY-preview.png">
+<meta property="og:url" content="https://denisyudin.com/cv/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Денис Юдин — арт-директор">
+<meta name="twitter:description" content="Арт-директор. Руковожу дизайн-направлением банка через тимлидов, ставлю стандарт качества, придумываю и супервайзю key visual, строю AI-пайплайны для продакшна.">
+<meta name="twitter:image" content="https://denisyudin.com/assets/6658880dd42bd34056d2fda1_Cover_DY-preview.png">
+<link rel="shortcut icon" href="/assets/694eb3c01c94deb52f44b88a_p10%200062_24.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/694eb3df7cd787f4f7e50f82_p10%200062_256.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap">
+<link rel="stylesheet" href="/ui/index.css?v=20261024">
 </head>
 <body>
-  <a class="skip" href="#main">К содержимому</a>
-  <header class="site-header"><a href="../">Denis Yudin<span> / CV</span></a><div><span>Резюме · арт-директор · обновлено 18.10.2026</span><a href="../">На главную</a></div></header>
-
-  <main id="main">
-    <div class="page-title">
-      <div>
-        <h1>Руковожу дизайном так, чтобы качество держалось на&nbsp;системе, а&nbsp;не&nbsp;на&nbsp;ручной приёмке.</h1>
-        <p><b>Денис Юдин, арт-директор, Москва, 19&nbsp;лет в&nbsp;графическом дизайне.</b> Веду дизайн-направление Совкомбанка через&nbsp;тимлидов: ставлю стандарт качества, придумываю и&nbsp;супервайзю key visual, соединяю дизайн с&nbsp;маркетингом, продуктом и&nbsp;HR, строю AI-пайплайны для&nbsp;продакшна. До&nbsp;банка девять лет вёл айдентики и&nbsp;визуальные системы для&nbsp;девелоперов, консалтинга, ритейла и&nbsp;агентств. Открыт к&nbsp;роли руководителя дизайна на&nbsp;стыке продукта и&nbsp;коммуникаций; готов к&nbsp;командировкам.</p>
-      </div>
-      <a href="mailto:inbox@denisyudin.com?subject=CV" class="text-link">Написать <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-    </div>
-    <div class="meta-row">
-      <a href="mailto:inbox@denisyudin.com">inbox@denisyudin.com</a>
-      <a href="https://t.me/inkhv" target="_blank" rel="noopener">Telegram @inkhv</a>
-      <a href="https://hh.ru/resume/bad8f991ff0e634b650039ed1f325243784a69" target="_blank" rel="noopener">Резюме на&nbsp;hh.ru</a>
-      <a href="https://www.figma.com/proto/rqKGGd3Zl5RFemTxmkZFNh/YUDIN-PRESENTATION?page-id=0%3A1&amp;node-id=160-4307&amp;p=f&amp;viewport=-402%2C205%2C0.16&amp;t=hD9NTCoRbjB5B4DM-1&amp;scaling=contain&amp;content-scaling=fixed" target="_blank" rel="noopener">Полная презентация работ</a>
-      <a href="https://calendly.com/inkhv" target="_blank" rel="noopener">30&nbsp;минут в&nbsp;Calendly</a>
-    <a href="Denis-Yudin-CV.pdf" download>Скачать PDF</a>
-    </div>
-
-    <section aria-labelledby="fit-title">
-      <div class="section-heading"><h2 id="fit-title">Коротко</h2></div>
-      <div class="team-grid">
-        <a class="team team-branding" href="#lead"><div class="team-top"><strong>Команда</strong></div><span class="team-summary">15+&nbsp;дизайнеров в&nbsp;трёх связках, тимлид в&nbsp;каждой. Растил дизайнеров до&nbsp;тимлидов в&nbsp;агентстве.</span><span class="team-action">Руковожу <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></a>
-        <a class="team team-dkc" href="#deliver"><div class="team-top"><strong>Проекты</strong></div><span class="team-summary">Айдентики и&nbsp;брендбуки для&nbsp;банка, девелопера, консалтинга и&nbsp;музея. Стенды ПМЭФ, гайды для&nbsp;ритейла.</span><span class="team-action">Довожу <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></a>
-        <a class="team" href="#kv"><div class="team-top"><strong>Key visual</strong></div><span class="team-summary">Метафора, композиция, 3D и&nbsp;нейро-KV. Собственные пайплайны генерации и&nbsp;отбора.</span><span class="team-action">Придумываю <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></a>
-        <a class="team team-plain" href="#connect"><div class="team-top"><strong>Кросс-функции</strong></div><span class="team-summary">Маркетинг, HR, B2B-продукт, CRM-коммуникации, топ-менеджмент,&nbsp;подрядчики.</span><span class="team-action">Соединяю <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></a>
-      </div>
-    </section>
-
-    <nav class="jump" aria-label="Разделы резюме">
-      <div class="jump-inner">
-        <div class="mode-tabs" id="jump-tabs">
-          <a href="#lead">Руковожу</a>
-          <a href="#deliver">Довожу</a>
-          <a href="#kv">Придумываю</a>
-          <a href="#connect">Соединяю</a>
-          <a href="#ai">Внедряю</a>
-          <a href="#teach">Учу</a>
-          <a href="#values">Ценю</a>
-          <a href="#experience">Опыт</a>
-          <a href="#tools">Инструменты</a>
-          <a href="#education">Образование</a>
-        </div>
-      </div>
-    </nav>
-
-    <section class="panel" id="lead" aria-labelledby="lead-h">
-      <div class="section-heading"><h2 id="lead-h">Руковожу</h2><span>команда</span></div>
-      <p class="lead">Командой дизайнеров через&nbsp;тимлидов, а&nbsp;не&nbsp;через&nbsp;микроменеджмент.</p>
-      <div class="cards">
-        <article class="card"><h3>Веду дизайн-направление&nbsp;Совкомбанка</h3><p>С&nbsp;января 2026: три связки (брендинг, корпоративные ценности, B2B и&nbsp;FinTender), 15+&nbsp;дизайнеров, тимлид в&nbsp;каждой.</p></article>
-        <article class="card"><h3>Сформировал контур&nbsp;тимлидов</h3><p>Написал регламент: зоны ответственности, что&nbsp;решают сами, что&nbsp;эскалируют, чек-лист качества до&nbsp;показа&nbsp;мне.</p><div class="card-foot"><span>Публично</span><a href="../teamlead-regulation/">Регламент тимлида <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></div></article>
-        <article class="card"><h3>Держу 1:1, грейды и&nbsp;оценку&nbsp;360°</h3><p>Планы развития для&nbsp;каждого. Удерживаю ключевых людей честным разговором о&nbsp;деньгах, роли и&nbsp;росте, даже когда найм&nbsp;заморожен.</p></article>
-        <article class="card"><h3>Вырастил дизайнеров до&nbsp;тимлидов</h3><p>В&nbsp;Migel Agency несколько дизайнеров поднялись до&nbsp;тимлида и&nbsp;мидла. Сам&nbsp;прошёл там путь от&nbsp;мидла до&nbsp;тимлида, вёл тендеры и&nbsp;рекламные&nbsp;кампании.</p></article>
-        <article class="card"><h3>Описал, как&nbsp;со&nbsp;мной&nbsp;работать</h3><p>Открытый operating manual: формат коммуникации, протоколы решений, чек-лист&nbsp;арт-дир-ревью.</p><div class="card-foot"><span>Публично</span><a href="../art-director-manual/">Operating manual <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></div></article>
-        <article class="card"><h3>Распределяю задачи по&nbsp;трём&nbsp;принципам</h3><p>Загрузка и&nbsp;сроки, ротация концепт/рутина, рост-фокусы дизайнера из&nbsp;1:1. Тимлид флагует риск качества до&nbsp;старта, а&nbsp;не&nbsp;после.</p></article>
-      </div>
-    </section>
-
-    <section class="panel" id="deliver" aria-labelledby="deliver-h">
-      <div class="section-heading"><h2 id="deliver-h">Довожу</h2><span>проекты</span></div>
-      <p class="lead">Комплексные проекты от&nbsp;постановки задачи до&nbsp;внедрения у&nbsp;заказчика.</p>
-      <div class="cards">
-        <article class="card"><h3>Выпустил брендбуки бизнесов&nbsp;банка</h3><p>Страхование, Лизинг, корпоративно-инвестиционный бизнес. Веду дизайн премиальной карты, ребрендинг «Технологии добра» и&nbsp;программу «Лига достижений»: персонажи, мерч,&nbsp;видеозаставки.</p></article>
-        <article class="card"><h3>Закрыл&nbsp;ПМЭФ</h3><p>Стенд, видео, рекламная кампания, журналы. В&nbsp;течение года выставочные стенды банка на&nbsp;отраслевых&nbsp;форумах.</p></article>
-        <article class="card"><h3>Лидировал ребрендинг&nbsp;Царицыно</h3><p>Система выразительности с&nbsp;градацией по&nbsp;типу коммуникации, гайдбук, мерч, графика выставок и&nbsp;фестиваля «Сады в&nbsp;искусстве». Внедрил стиль вместе с&nbsp;инхаус-командой&nbsp;музея.</p></article>
-        <article class="card"><h3>Разработал стиль электромобиля&nbsp;Атом</h3><p>В&nbsp;паре со&nbsp;вторым арт-директором: ключевые визуалы, мастер-макет и&nbsp;рубрикатор SMM, модульные выставочные стенды, презентация с&nbsp;наружной рекламой,&nbsp;гайд.</p></article>
-        <article class="card"><h3>Довёл айдентику «Яков и&nbsp;Партнёры»</h3><p>После неудачных попыток прежней команды: шаблон презентаций, моушен, мастер-макет годового отчёта, SMM, гайдбук. Согласовывал офлайн с&nbsp;клиентом.</p></article>
-        <article class="card"><h3>Построил айдентику BILD из&nbsp;бренд-платформы</h3><p>Девелопер выходит на&nbsp;рынок ОАЭ: воркшоп, дизайн-система, главная сайта, каталог, хординг стройки,&nbsp;гайдбук.</p></article>
-        <article class="card"><h3>Собрал дизайн-систему гайдов&nbsp;Wildberries</h3><p>Руководства по&nbsp;открытию ПВЗ применяются сейчас и&nbsp;переведены на&nbsp;несколько языков. Структура коммуникации внутри ПВЗ, система пропорций мебели и&nbsp;объектов.</p><div class="card-foot"><span>Сайт</span><a href="../portfolio.html">Кейсы <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></div></article>
-      </div>
-    </section>
-
-    <section class="panel" id="kv" aria-labelledby="kv-h">
-      <div class="section-heading"><h2 id="kv-h">Придумываю</h2><span>key visual</span></div>
-      <p class="lead">Макеты, компоновочные схемы, метафоры и&nbsp;ключевые&nbsp;визуалы.</p>
-      <div class="cards">
-        <article class="card"><h3>Начинаю с&nbsp;метафоры</h3><p>Инсайт, big idea, визуальная территория, приём. Ревьюю концепцию до&nbsp;первой генерации, а&nbsp;не&nbsp;после сотой. Для&nbsp;команды собрал курс&nbsp;«Метафора».</p></article>
-        <article class="card"><h3>Поставил пайплайн&nbsp;3D-визуалов</h3><p>Для&nbsp;Совкомбанк-бизнес: перенос композиции по&nbsp;стеку референсов, параллельная генерация, отбор vision-моделью, финишный проход, выдача в&nbsp;Figma.</p></article>
-        <article class="card"><h3>Держу 3D-канон розничной&nbsp;айдентики</h3><p>Серия продуктовых иконок, hero-изображения, рельефные фоны для&nbsp;тёмных&nbsp;носителей.</p></article>
-        <article class="card"><h3>Супервайзю key visual команд и&nbsp;подрядчиков</h3><p>3D-визуализаторы и&nbsp;touch-дизайнер для&nbsp;абстрактной анимации Атома, моушен для&nbsp;«Яков и&nbsp;Партнёры», кампании розницы, малого бизнеса и&nbsp;корпоративного блока&nbsp;банка.</p></article>
-        <article class="card"><h3>Проверяю знак на&nbsp;зрителе</h3><p>Правило для&nbsp;прессы и&nbsp;наружки: знак продукта буквальный, а&nbsp;не&nbsp;метафора ради метафоры. Тест «закрой заголовок — что&nbsp;это?».</p></article>
-        <article class="card"><h3>Рисую сам&nbsp;только авторские&nbsp;проекты</h3><p>Один-два одновременно, каждый до&nbsp;публичного результата. Остальное делает команда по&nbsp;стандарту.</p></article>
-      </div>
-    </section>
-
-    <section class="panel" id="connect" aria-labelledby="connect-h">
-      <div class="section-heading"><h2 id="connect-h">Соединяю</h2><span>кросс-функции</span></div>
-      <p class="lead">Дизайн с&nbsp;маркетингом, продуктом, HR и&nbsp;бизнесом.</p>
-      <div class="cards">
-        <article class="card"><h3>Работаю на&nbsp;равных с&nbsp;маркетингом, продуктом и&nbsp;HR</h3><p>Маркетинг розницы и&nbsp;B2B, департамент корпоративных ценностей, продуктовая команда FinTender, креативный директор. Отстаиваю позицию коммуникационного дизайна аргументами: бриф, критерии, тест на&nbsp;зрителе.</p></article>
-        <article class="card"><h3>Питчу концепции топ-менеджменту</h3><p>В&nbsp;Wildberries так&nbsp;прошли входная группа, клиентская зона и&nbsp;панель-кронштейн ПВЗ. Презентую клиентам офлайн и&nbsp;довожу согласование до&nbsp;подписи.</p></article>
-        <article class="card"><h3>Фильтрую&nbsp;входящее</h3><p>Задача без&nbsp;брифа не&nbsp;берётся. Субъективные правки снимает тимлид, сроки считаются по&nbsp;матрице.</p></article>
-        <article class="card"><h3>Проектирую регулярные цифровые&nbsp;коммуникации</h3><p>Бенчмарк email-рассылок 20&nbsp;брендов × 10&nbsp;писем как&nbsp;основа для&nbsp;CRM-писем банка. In-house SMM для&nbsp;B2B и&nbsp;розничного канала во&nbsp;ВКонтакте.</p></article>
-        <article class="card"><h3>Собрал дашборд статуса&nbsp;направления</h3><p>Единый статус проектов, план дня, синхронизация с&nbsp;задачником. Руководство видит фокус и&nbsp;риски без&nbsp;встреч.</p></article>
-        <article class="card"><h3>Ставлю подрядчикам задачу&nbsp;брифом</h3><p>Критерии приёмки до&nbsp;старта: кинетическая графика в&nbsp;TouchDesigner, видеопродакшн, 3D-визуализация, модульные конструкции&nbsp;стендов.</p></article>
-      </div>
-    </section>
-
-    <section class="panel" id="ai" aria-labelledby="ai-h">
-      <div class="section-heading"><h2 id="ai-h">Внедряю</h2><span>процессы и&nbsp;AI</span></div>
-      <p class="lead">Нейросети как&nbsp;штатный инструмент команды, с&nbsp;замером «до&nbsp;/&nbsp;после».</p>
-      <div class="cards">
-        <article class="card"><h3>Ставлю цель на&nbsp;цифрах</h3><p>В&nbsp;каждой связке минимум один AI-пайплайн, который режет рутину на&nbsp;20%&nbsp;и&nbsp;больше. Карта пайплайнов с&nbsp;цифрами&nbsp;экономии.</p></article>
-        <article class="card"><h3>Запустил&nbsp;пайплайны</h3><p>3D key visual, видеоролики «Лиги достижений», сборка презентаций из&nbsp;текста в&nbsp;Figma, мерч и&nbsp;мокапы, продакшн&nbsp;SMM.</p></article>
-        <article class="card"><h3>Исследую рынок&nbsp;инструментов</h3><p>Срез AI-инструментов для&nbsp;дизайнеров, сравнение Higgsfield и&nbsp;Magnific по&nbsp;обзорам, тест агрегатора моделей и&nbsp;Figma Weave с&nbsp;16&nbsp;участниками&nbsp;команды.</p></article>
-        <article class="card"><h3>Пишу собственные&nbsp;инструменты</h3><p>Плагин Layout Calc для&nbsp;Figma в&nbsp;Community, конструкторы графики, скиллы для&nbsp;Claude Code и&nbsp;Codex, которыми пользуется&nbsp;команда.</p></article>
-        <article class="card"><h3>Снимаю рутину&nbsp;шаблонами</h3><p>В&nbsp;Migel собрал сайт агентства после ребрендинга и&nbsp;научил дизайнеров делать страницы самим. В&nbsp;Алгоритмике шаблон печатных носителей закрыл потребность кураторов без&nbsp;дизайнера.</p></article>
-        <article class="card"><h3>Делюсь</h3><p>Выступление «Создание презентаций с&nbsp;ИИ», конспект курсов Anthropic и&nbsp;курс по&nbsp;Claude Code на&nbsp;русском.</p><div class="card-foot"><a href="../claude-academy/">Конспект Anthropic <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a><a href="../claude/">Claude Code <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></div></article>
-      </div>
-    </section>
-
-    <section class="panel" id="teach" aria-labelledby="teach-h">
-      <div class="section-heading"><h2 id="teach-h">Учу</h2><span>обучение</span></div>
-      <p class="lead">Дизайнеров и&nbsp;команды заказчиков работать с&nbsp;системой без&nbsp;меня.</p>
-      <div class="cards">
-        <article class="card"><h3>Провожу&nbsp;воркшопы</h3><p>Для&nbsp;команды и&nbsp;инхаус-команд заказчиков: поиск идей, композиция, типографика, макетирование, подготовка к&nbsp;печати, стиль в&nbsp;SMM.</p></article>
-        <article class="card"><h3>Ревьюю инхаус-команды&nbsp;клиентов</h3><p>Развёрнутая обратная связь по&nbsp;работам: Царицыно, Атом, страховой бизнес&nbsp;банка.</p></article>
-        <article class="card"><h3>Координирую программу&nbsp;DW200</h3><p>Образовательная программа для&nbsp;дизайнеров в&nbsp;Designworkout. Выступал в&nbsp;Тинькофф Академии с&nbsp;лекцией о&nbsp;трендах в&nbsp;графическом&nbsp;дизайне.</p><div class="card-foot"><a href="https://dw200.designworkout.com/" target="_blank" rel="noopener">DW200 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></div></article>
-        <article class="card"><h3>Пишу гайды, которые&nbsp;читают</h3><p>Регламент тимлида, гайд по&nbsp;фотостилю, 3D-канон, operating manual&nbsp;арт-директора.</p></article>
-        <article class="card"><h3>Веду к&nbsp;самостоятельности</h3><p>Тимлид закрывает оперативку сам, дизайнер защищает концепцию без&nbsp;меня. Моя задача в&nbsp;комнате: развилки, стандарт,&nbsp;люди.</p></article>
-        <article class="card"><h3>Учусь&nbsp;сам</h3><p>Тренинги по&nbsp;коммуникации, продукту и&nbsp;генеративному дизайну; 24&nbsp;курса Anthropic Academy с&nbsp;публичным&nbsp;конспектом.</p></article>
-      </div>
-    </section>
-
-    <section class="values" id="values" aria-labelledby="values-h">
-      <div><h2 id="values-h">Ценю</h2><p>То, что&nbsp;держит качество, когда меня&nbsp;нет&nbsp;в&nbsp;комнате.</p></div>
-      <div class="values-list">
-        <div><h3>Пользу и&nbsp;этику</h3><p>Делаем хорошо и&nbsp;по&nbsp;совести, а&nbsp;не&nbsp;быстро и&nbsp;лишь бы&nbsp;продать. Дизайн должен снижать хаос и&nbsp;давать опору. Особенно близки проекты в&nbsp;культуре и&nbsp;образовании.</p></div>
-        <div><h3>Систему вместо&nbsp;героизма</h3><p>Если связка горит каждую неделю, чиним связку, а&nbsp;не&nbsp;носим вёдра. Ручные подвиги заменяю повторяемыми&nbsp;процессами.</p></div>
-        <div><h3>Честную&nbsp;прямоту</h3><p>Факт, эффект, рекомендация. Без&nbsp;мотивационных клише и&nbsp;реверансов. Про&nbsp;деньги и&nbsp;рост говорю честно, без&nbsp;«скоро&nbsp;решим».</p></div>
-        <div><h3>Критерии до&nbsp;старта</h3><p>Стандарт качества прошит в&nbsp;бриф и&nbsp;чек-лист, а&nbsp;не&nbsp;держится на&nbsp;моём ревью каждой задачи. Задача без&nbsp;брифа не&nbsp;берётся.</p></div>
-        <div><h3>Автономию&nbsp;людей</h3><p>Тимлид решает 80%&nbsp;оперативки сам. Я держу стандарт, развилки, людей и&nbsp;авторские&nbsp;проекты.</p></div>
-        <div><h3>Вкус и&nbsp;форму</h3><p>Мне&nbsp;не&nbsp;всё&nbsp;равно, как&nbsp;это&nbsp;сделано, и&nbsp;визуально, и&nbsp;логически. Метафора важнее эффекта, буквальный знак важнее&nbsp;декорации.</p></div>
-      </div>
-    </section>
-
-    <section class="plain" id="experience" aria-labelledby="experience-h">
-      <div class="section-heading"><h2 id="experience-h">Опыт</h2></div>
-      <div class="log">
-        <div class="log-item"><div class="log-date">Январь 2026 — сейчас</div><div><h3>Арт-директор</h3><span class="org">Совкомбанк, Москва</span><p>Дизайн-направление банка: три связки с&nbsp;тимлидами, стандарт качества и&nbsp;арт-ревью, бренд-платформа, брендбуки дочерних бизнесов, key visual, AI-пайплайны, регламенты и&nbsp;система оценки&nbsp;команды.</p></div></div>
-        <div class="log-item"><div class="log-date">Июнь 2022 — сейчас</div><div><h3>Арт-директор, графический&nbsp;дизайнер</h3><span class="org">Designworkout (masterskaya.pro)</span><p>Ребрендинг Царицыно и&nbsp;стиль электромобиля Атом в&nbsp;паре со&nbsp;вторым арт-директором: концепции, гайдбуки, мерч, стенды, брифинг подрядчиков, работа с&nbsp;инхаус-командами. Координация программы&nbsp;DW200.</p></div></div>
-        <div class="log-item"><div class="log-date">Июль 2024 — март 2025</div><div><h3>Графический&nbsp;дизайнер</h3><span class="org">Wildberries</span><p>Дизайн-система руководств по&nbsp;открытию ПВЗ, единый стиль обучающих материалов, коммуникация внутри ПВЗ, панель-кронштейн и&nbsp;лайтбокс, концепции для&nbsp;питчинга руководству, найм&nbsp;специалистов.</p></div></div>
-        <div class="log-item"><div class="log-date">Февраль 2022 — май 2024</div><div><h3>Team Lead Graphic&nbsp;Designer</h3><span class="org">Migel Agency</span><p>Визуальные концепции, тендеры, рекламные кампании, масштабирование фирменного стиля, сайт агентства после ребрендинга, запуск собственной линейки косметики; рост дизайнеров внутри&nbsp;команды.</p></div></div>
-        <div class="log-item"><div class="log-date">Февраль 2021 — март 2022</div><div><h3>Графический&nbsp;дизайнер</h3><span class="org">Алгоритмика</span><p>Запуск ребрендинга во&nbsp;всех каналах, лендинги по&nbsp;направлениям, печатная продукция и&nbsp;шаблоны для&nbsp;неё, креативы кампаний и&nbsp;SMM, процесс приоритизации с&nbsp;внутренними&nbsp;заказчиками.</p></div></div>
-        <div class="log-item"><div class="log-date">С&nbsp;ноября 2007</div><div><h3>Арт-директор, графический&nbsp;дизайнер</h3><span class="org">Собственная практика</span><p>Айдентики и&nbsp;визуальные системы: BILD (девелопер, выход на&nbsp;рынок ОАЭ), «Яков и&nbsp;Партнёры» (стратегический консалтинг), Binadi (ювелирный бренд, Берлин), Самокат (визуальная концепция для&nbsp;бренд-маркетинга).</p></div></div>
-      </div>
-      <p class="chart-note"><b>Клиенты и&nbsp;бренды:</b> Совкомбанк, Царицыно, Атом, Wildberries, Яков и&nbsp;Партнёры, BILD, Самокат, Ozon, Redkeds, Forma, Алгоритмика,&nbsp;Binadi.</p>
-    </section>
-
-    <section class="plain" id="tools" aria-labelledby="tools-h">
-      <div class="section-heading"><h2 id="tools-h">Инструменты</h2></div>
-      <div class="tools">
-        <div><h3>Дизайн</h3><div class="tags"><span>Figma</span><span>Figma MCP и&nbsp;плагины</span><span>Photoshop</span><span>Illustrator</span><span>InDesign</span><span>After Effects</span><span>Lightroom</span><span>Readymag</span><span>Webflow</span><span>Полиграфия и&nbsp;препресс</span><span>Предметная съёмка</span></div></div>
-        <div><h3>Генерация</h3><div class="tags"><span>Magnific</span><span>Higgsfield</span><span>Krea</span><span>Nano Banana / Gemini</span><span>Seedance</span><span>Vision-отбор</span></div></div>
-        <div><h3>Процесс и&nbsp;код</h3><div class="tags"><span>Claude Code</span><span>Codex</span><span>Pyrus</span><span>YouTrack</span><span>Markdown-регламенты</span><span>HTML / JS</span></div></div>
-      </div>
-    </section>
-
-    <section class="plain" id="education" aria-labelledby="education-h">
-      <div class="section-heading"><h2 id="education-h">Образование</h2></div>
-      <div class="log">
-        <div class="log-item"><div class="log-date">2020, 2021</div><div><h3>Designworkout&nbsp;CAMPUS</h3><span class="org">Курсы «Art Director» и&nbsp;«Мастер-макет»</span></div></div>
-        <div class="log-item"><div class="log-date">2007</div><div><h3>Дальневосточный межрегиональный индустриально-экономический&nbsp;колледж</h3><span class="org">АСУ, техник</span></div></div>
-        <div class="log-item"><div class="log-date">Регулярно</div><div><h3>Тренинги</h3><span class="org">Коммуникация (Илья Мутовин), продукт (Иван Замесин), генеративный дизайн (Миша Кац), паттерны дизайн-менеджмента, Anthropic Academy, Hogan Assessments как&nbsp;основа operating manual</span></div></div>
-      </div>
-    </section>
-
-    <div class="closing">
-      <div><h2>Покажу систему и&nbsp;работы за&nbsp;30&nbsp;минут.</h2><p>Полная презентация работ в&nbsp;Figma, кейсы на&nbsp;сайте, регламенты в&nbsp;открытом доступе. Готов к&nbsp;встрече в&nbsp;офисе или&nbsp;онлайн.</p></div>
-      <div class="buttons">
-        <a class="primary" href="mailto:inbox@denisyudin.com?subject=CV">Написать</a>
-        <a href="https://t.me/inkhv" target="_blank" rel="noopener">Telegram</a>
-        <a href="https://calendly.com/inkhv" target="_blank" rel="noopener">Назначить встречу</a>
-      <a href="Denis-Yudin-CV.pdf" download>Скачать PDF</a>
-      </div>
-    </div>
-
-    <footer><span>Денис Юдин · резюме · 2026</span><a href="../">denisyudin.com</a></footer>
-  </main>
-
-  <script>
-    (function () {
-      var tabs = Array.prototype.slice.call(document.querySelectorAll('#jump-tabs a'));
-      var bar = document.querySelector('.jump');
-      var targets = tabs.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
-      var current = null;
-      function setCurrent(i) {
-        if (i === current) return;
-        current = i;
-        tabs.forEach(function (a, k) { if (k === i) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
-        var el = tabs[i], box = el && el.parentNode;
-        if (el && box && box.scrollWidth > box.clientWidth) {
-          var left = el.offsetLeft - (box.clientWidth - el.offsetWidth) / 2;
-          try { box.scrollTo({ left: Math.max(0, left), behavior: 'smooth' }); } catch (e) { box.scrollLeft = Math.max(0, left); }
-        }
-      }
-      function update() {
-        var offset = (bar ? bar.offsetHeight : 64) + 24;
-        var y = window.scrollY || window.pageYOffset;
-        var idx = -1;
-        for (var k = 0; k < targets.length; k++) {
-          var t = targets[k];
-          if (!t) continue;
-          if (t.getBoundingClientRect().top + y - offset <= y) idx = k;
-        }
-        if (idx === -1 && y + window.innerHeight >= document.documentElement.scrollHeight - 2) idx = targets.length - 1;
-        if (idx >= 0) setCurrent(idx);
-        else { current = null; tabs.forEach(function (a) { a.removeAttribute('aria-current'); }); }
-      }
-      var ticking = false;
-      function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(function () { ticking = false; update(); }); } }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll);
-      window.addEventListener('load', update);
-      update();
-    })();
-  </script>
+<nav class="nav" aria-label="Site">
+<ul class="nav__list">
+<li class="nav__item nav__item--brand"><a href="/">Denis Yudin</a></li>
+<li class="nav__item"><a href="/portfolio.html">Works</a></li>
+<li class="nav__item"><a href="/tools/">Tools</a></li>
+<li class="nav__item"><a href="/#research">Research</a></li>
+<li class="nav__item is-current"><a href="/cv/">CV</a></li>
+<li class="nav__item"><a href="mailto:inbox@denisyudin.com">Contact</a></li>
+</ul>
+</nav>
+<main class="container">
+<div class="profile">
+<section class="sec" id="top">
+<h1 class="sec__title u">Денис Юдин</h1>
+<div class="sec__text"><p>Руковожу дизайном так, чтобы качество держалось на системе, а не на ручной приёмке. Арт-директор, Москва, 19 лет в графическом дизайне. Веду дизайн-направление Совкомбанка через тимлидов<sup>1</sup>: ставлю стандарт качества, придумываю и супервайзю key visual<sup>3</sup>, соединяю дизайн с маркетингом, продуктом и HR<sup>4</sup>, строю AI-пайплайны для продакшна. До банка девять лет вёл айдентики и визуальные системы<sup>2</sup> для девелоперов, консалтинга, ритейла и агентств. Открыт к роли руководителя дизайна на стыке продукта и коммуникаций; готов к командировкам.</p></div>
+<div class="sec__notes"><div class="note"><span class="note__n mono">1</span><p>Команда. 15+ дизайнеров в трёх связках, тимлид в каждой. Растил дизайнеров до тимлидов в агентстве.</p></div>
+<div class="note"><span class="note__n mono">2</span><p>Проекты. Айдентики и брендбуки для банка, девелопера, консалтинга и музея. Стенды ПМЭФ, гайды для ритейла.</p></div>
+<div class="note"><span class="note__n mono">3</span><p>Key visual. Метафора, композиция, 3D и нейро-KV. Собственные пайплайны генерации и отбора.</p></div>
+<div class="note"><span class="note__n mono">4</span><p>Кросс-функции. Маркетинг, HR, B2B-продукт, CRM-коммуникации, топ-менеджмент, подрядчики.</p></div></div>
+</section>
+<section class="sec" id="contact">
+<h2 class="sec__title u">Контакты</h2>
+<div class="sec__text"><p>Пишите на <a href="mailto:inbox@denisyudin.com?subject=CV">inbox@denisyudin.com</a> или в <a href="https://t.me/inkhv">Telegram @inkhv</a>. Резюме на <a href="https://hh.ru/resume/bad8f991ff0e634b650039ed1f325243784a69">hh.ru</a>, полная презентация работ в <a href="https://www.figma.com/proto/rqKGGd3Zl5RFemTxmkZFNh/YUDIN-PRESENTATION?page-id=0%3A1&node-id=160-4307&p=f&viewport=-402%2C205%2C0.16&t=hD9NTCoRbjB5B4DM-1&scaling=contain&content-scaling=fixed">Figma</a>, 30 минут в <a href="https://calendly.com/inkhv">Calendly</a>, версия для печати в <a href="/cv/Denis-Yudin-CV.pdf">PDF</a>.</p></div>
+<div class="sec__links"><a href="mailto:inbox@denisyudin.com?subject=CV">Email</a><a href="https://t.me/inkhv">Telegram</a><a href="https://hh.ru/resume/bad8f991ff0e634b650039ed1f325243784a69">hh.ru</a><a href="https://www.figma.com/proto/rqKGGd3Zl5RFemTxmkZFNh/YUDIN-PRESENTATION?page-id=0%3A1&amp;node-id=160-4307&amp;p=f&amp;viewport=-402%2C205%2C0.16&amp;t=hD9NTCoRbjB5B4DM-1&amp;scaling=contain&amp;content-scaling=fixed">Figma</a><a href="https://calendly.com/inkhv">Calendly</a><a href="/cv/Denis-Yudin-CV.pdf">PDF</a></div>
+</section>
+<section class="sec" id="lead">
+<h2 class="sec__title u">Руковожу</h2>
+<div class="sec__text"><p>Командой дизайнеров через тимлидов, а не через микроменеджмент. Веду дизайн-направление Совкомбанка<sup>1</sup>, сформировал контур тимлидов<sup>2</sup>, держу 1:1, грейды и оценку 360°<sup>3</sup>, вырастил дизайнеров до тимлидов<sup>4</sup>, описал, как со мной работать<sup>5</sup>, распределяю задачи по трём принципам<sup>6</sup>.</p></div>
+<div class="sec__notes"><div class="note"><span class="note__n mono">1</span><p>Веду дизайн-направление Совкомбанка. С января 2026: три связки (брендинг, корпоративные ценности, B2B и FinTender), 15+ дизайнеров, тимлид в каждой.</p></div>
+<div class="note"><span class="note__n mono">2</span><p>Сформировал контур тимлидов. Написал регламент: зоны ответственности, что решают сами, что эскалируют, чек-лист качества до показа мне. <a href="/teamlead-regulation/">Регламент тимлида</a></p></div>
+<div class="note"><span class="note__n mono">3</span><p>Держу 1:1, грейды и оценку 360°. Планы развития для каждого. Удерживаю ключевых людей честным разговором о деньгах, роли и росте, даже когда найм заморожен.</p></div>
+<div class="note"><span class="note__n mono">4</span><p>Вырастил дизайнеров до тимлидов. В Migel Agency несколько дизайнеров поднялись до тимлида и мидла. Сам прошёл там путь от мидла до тимлида, вёл тендеры и рекламные кампании.</p></div>
+<div class="note"><span class="note__n mono">5</span><p>Описал, как со мной работать. Открытый operating manual: формат коммуникации, протоколы решений, чек-лист арт-дир-ревью. <a href="/art-director-manual/">Operating manual</a></p></div>
+<div class="note"><span class="note__n mono">6</span><p>Распределяю задачи по трём принципам. Загрузка и сроки, ротация концепт/рутина, рост-фокусы дизайнера из 1:1. Тимлид флагует риск качества до старта, а не после.</p></div></div>
+</section>
+<section class="sec" id="deliver">
+<h2 class="sec__title u">Довожу</h2>
+<div class="sec__text"><p>Комплексные проекты от постановки задачи до внедрения у заказчика. Выпустил брендбуки бизнесов банка<sup>1</sup>, закрыл ПМЭФ<sup>2</sup>, лидировал ребрендинг Царицыно<sup>3</sup>, разработал стиль электромобиля Атом<sup>4</sup>, довёл айдентику «Яков и Партнёры»<sup>5</sup>, построил айдентику BILD из бренд-платформы<sup>6</sup>, собрал дизайн-систему гайдов Wildberries<sup>7</sup>.</p></div>
+<div class="sec__notes"><div class="note"><span class="note__n mono">1</span><p>Выпустил брендбуки бизнесов банка. Страхование, Лизинг, корпоративно-инвестиционный бизнес. Веду дизайн премиальной карты, ребрендинг «Технологии добра» и программу «Лига достижений»: персонажи, мерч, видеозаставки.</p></div>
+<div class="note"><span class="note__n mono">2</span><p>Закрыл ПМЭФ. Стенд, видео, рекламная кампания, журналы. В течение года выставочные стенды банка на отраслевых форумах.</p></div>
+<div class="note"><span class="note__n mono">3</span><p>Лидировал ребрендинг Царицыно. Система выразительности с градацией по типу коммуникации, гайдбук, мерч, графика выставок и фестиваля «Сады в искусстве». Внедрил стиль вместе с инхаус-командой музея.</p></div>
+<div class="note"><span class="note__n mono">4</span><p>Разработал стиль электромобиля Атом. В паре со вторым арт-директором: ключевые визуалы, мастер-макет и рубрикатор SMM, модульные выставочные стенды, презентация с наружной рекламой, гайд.</p></div>
+<div class="note"><span class="note__n mono">5</span><p>Довёл айдентику «Яков и Партнёры». После неудачных попыток прежней команды: шаблон презентаций, моушен, мастер-макет годового отчёта, SMM, гайдбук. Согласовывал офлайн с клиентом.</p></div>
+<div class="note"><span class="note__n mono">6</span><p>Построил айдентику BILD из бренд-платформы. Девелопер выходит на рынок ОАЭ: воркшоп, дизайн-система, главная сайта, каталог, хординг стройки, гайдбук.</p></div>
+<div class="note"><span class="note__n mono">7</span><p>Собрал дизайн-систему гайдов Wildberries. Руководства по открытию ПВЗ применяются сейчас и переведены на несколько языков. Структура коммуникации внутри ПВЗ, система пропорций мебели и объектов. <a href="/portfolio.html">Кейсы</a></p></div></div>
+</section>
+<section class="sec" id="kv">
+<h2 class="sec__title u">Придумываю</h2>
+<div class="sec__text"><p>Макеты, компоновочные схемы, метафоры и ключевые визуалы. Начинаю с метафоры<sup>1</sup>, поставил пайплайн 3D-визуалов<sup>2</sup>, держу 3D-канон розничной айдентики<sup>3</sup>, супервайзю key visual команд и подрядчиков<sup>4</sup>, проверяю знак на зрителе<sup>5</sup>, рисую сам только авторские проекты<sup>6</sup>.</p></div>
+<div class="sec__notes"><div class="note"><span class="note__n mono">1</span><p>Начинаю с метафоры. Инсайт, big idea, визуальная территория, приём. Ревьюю концепцию до первой генерации, а не после сотой. Для команды собрал курс «Метафора».</p></div>
+<div class="note"><span class="note__n mono">2</span><p>Поставил пайплайн 3D-визуалов. Для Совкомбанк-бизнес: перенос композиции по стеку референсов, параллельная генерация, отбор vision-моделью, финишный проход, выдача в Figma.</p></div>
+<div class="note"><span class="note__n mono">3</span><p>Держу 3D-канон розничной айдентики. Серия продуктовых иконок, hero-изображения, рельефные фоны для тёмных носителей.</p></div>
+<div class="note"><span class="note__n mono">4</span><p>Супервайзю key visual команд и подрядчиков. 3D-визуализаторы и touch-дизайнер для абстрактной анимации Атома, моушен для «Яков и Партнёры», кампании розницы, малого бизнеса и корпоративного блока банка.</p></div>
+<div class="note"><span class="note__n mono">5</span><p>Проверяю знак на зрителе. Правило для прессы и наружки: знак продукта буквальный, а не метафора ради метафоры. Тест «закрой заголовок — что это?».</p></div>
+<div class="note"><span class="note__n mono">6</span><p>Рисую сам только авторские проекты. Один-два одновременно, каждый до публичного результата. Остальное делает команда по стандарту.</p></div></div>
+</section>
+<section class="sec" id="connect">
+<h2 class="sec__title u">Соединяю</h2>
+<div class="sec__text"><p>Дизайн с маркетингом, продуктом, HR и бизнесом. Работаю на равных с маркетингом, продуктом и HR<sup>1</sup>, питчу концепции топ-менеджменту<sup>2</sup>, фильтрую входящее<sup>3</sup>, проектирую регулярные цифровые коммуникации<sup>4</sup>, собрал дашборд статуса направления<sup>5</sup>, ставлю подрядчикам задачу брифом<sup>6</sup>.</p></div>
+<div class="sec__notes"><div class="note"><span class="note__n mono">1</span><p>Работаю на равных с маркетингом, продуктом и HR. Маркетинг розницы и B2B, департамент корпоративных ценностей, продуктовая команда FinTender, креативный директор. Отстаиваю позицию коммуникационного дизайна аргументами: бриф, критерии, тест на зрителе.</p></div>
+<div class="note"><span class="note__n mono">2</span><p>Питчу концепции топ-менеджменту. В Wildberries так прошли входная группа, клиентская зона и панель-кронштейн ПВЗ. Презентую клиентам офлайн и довожу согласование до подписи.</p></div>
+<div class="note"><span class="note__n mono">3</span><p>Фильтрую входящее. Задача без брифа не берётся. Субъективные правки снимает тимлид, сроки считаются по матрице.</p></div>
+<div class="note"><span class="note__n mono">4</span><p>Проектирую регулярные цифровые коммуникации. Бенчмарк email-рассылок 20 брендов × 10 писем как основа для CRM-писем банка. In-house SMM для B2B и розничного канала во ВКонтакте.</p></div>
+<div class="note"><span class="note__n mono">5</span><p>Собрал дашборд статуса направления. Единый статус проектов, план дня, синхронизация с задачником. Руководство видит фокус и риски без встреч.</p></div>
+<div class="note"><span class="note__n mono">6</span><p>Ставлю подрядчикам задачу брифом. Критерии приёмки до старта: кинетическая графика в TouchDesigner, видеопродакшн, 3D-визуализация, модульные конструкции стендов.</p></div></div>
+</section>
+<section class="sec" id="ai">
+<h2 class="sec__title u">Внедряю</h2>
+<div class="sec__text"><p>Нейросети как штатный инструмент команды, с замером «до / после». Ставлю цель на цифрах<sup>1</sup>, запустил пайплайны<sup>2</sup>, исследую рынок инструментов<sup>3</sup>, пишу собственные инструменты<sup>4</sup>, снимаю рутину шаблонами<sup>5</sup>, делюсь<sup>6</sup>.</p></div>
+<div class="sec__notes"><div class="note"><span class="note__n mono">1</span><p>Ставлю цель на цифрах. В каждой связке минимум один AI-пайплайн, который режет рутину на 20% и больше. Карта пайплайнов с цифрами экономии.</p></div>
+<div class="note"><span class="note__n mono">2</span><p>Запустил пайплайны. 3D key visual, видеоролики «Лиги достижений», сборка презентаций из текста в Figma, мерч и мокапы, продакшн SMM.</p></div>
+<div class="note"><span class="note__n mono">3</span><p>Исследую рынок инструментов. Срез AI-инструментов для дизайнеров, сравнение Higgsfield и Magnific по обзорам, тест агрегатора моделей и Figma Weave с 16 участниками команды.</p></div>
+<div class="note"><span class="note__n mono">4</span><p>Пишу собственные инструменты. Плагин Layout Calc для Figma в Community, конструкторы графики, скиллы для Claude Code и Codex, которыми пользуется команда. <a href="/tools/">Инструменты</a></p></div>
+<div class="note"><span class="note__n mono">5</span><p>Снимаю рутину шаблонами. В Migel собрал сайт агентства после ребрендинга и научил дизайнеров делать страницы самим. В Алгоритмике шаблон печатных носителей закрыл потребность кураторов без дизайнера.</p></div>
+<div class="note"><span class="note__n mono">6</span><p>Делюсь. Выступление «Создание презентаций с ИИ», конспект курсов Anthropic и курс по Claude Code на русском. <a href="/claude-academy/">Конспект Anthropic</a> <a href="/claude/">Claude Code</a></p></div></div>
+</section>
+<section class="sec" id="teach">
+<h2 class="sec__title u">Учу</h2>
+<div class="sec__text"><p>Дизайнеров и команды заказчиков работать с системой без меня. Провожу воркшопы<sup>1</sup>, ревьюю инхаус-команды клиентов<sup>2</sup>, координирую программу DW200<sup>3</sup>, пишу гайды, которые читают<sup>4</sup>, веду к самостоятельности<sup>5</sup>, учусь сам<sup>6</sup>.</p></div>
+<div class="sec__notes"><div class="note"><span class="note__n mono">1</span><p>Провожу воркшопы. Для команды и инхаус-команд заказчиков: поиск идей, композиция, типографика, макетирование, подготовка к печати, стиль в SMM.</p></div>
+<div class="note"><span class="note__n mono">2</span><p>Ревьюю инхаус-команды клиентов. Развёрнутая обратная связь по работам: Царицыно, Атом, страховой бизнес банка.</p></div>
+<div class="note"><span class="note__n mono">3</span><p>Координирую программу DW200. Образовательная программа для дизайнеров в Designworkout. Выступал в Тинькофф Академии с лекцией о трендах в графическом дизайне. <a href="https://dw200.designworkout.com/">DW200</a></p></div>
+<div class="note"><span class="note__n mono">4</span><p>Пишу гайды, которые читают. Регламент тимлида, гайд по фотостилю, 3D-канон, operating manual арт-директора.</p></div>
+<div class="note"><span class="note__n mono">5</span><p>Веду к самостоятельности. Тимлид закрывает оперативку сам, дизайнер защищает концепцию без меня. Моя задача в комнате: развилки, стандарт, люди.</p></div>
+<div class="note"><span class="note__n mono">6</span><p>Учусь сам. Тренинги по коммуникации, продукту и генеративному дизайну; 24 курса Anthropic Academy с публичным конспектом.</p></div></div>
+</section>
+<section class="sec" id="values">
+<h2 class="sec__title u">Ценю</h2>
+<div class="sec__text"><p>То, что держит качество, когда меня нет в комнате. Пользу и этику<sup>1</sup>, систему вместо героизма<sup>2</sup>, честную прямоту<sup>3</sup>, критерии до старта<sup>4</sup>, автономию людей<sup>5</sup>, вкус и форму<sup>6</sup>.</p></div>
+<div class="sec__notes"><div class="note"><span class="note__n mono">1</span><p>Пользу и этику. Делаем хорошо и по совести, а не быстро и лишь бы продать. Дизайн должен снижать хаос и давать опору. Особенно близки проекты в культуре и образовании.</p></div>
+<div class="note"><span class="note__n mono">2</span><p>Систему вместо героизма. Если связка горит каждую неделю, чиним связку, а не носим вёдра. Ручные подвиги заменяю повторяемыми процессами.</p></div>
+<div class="note"><span class="note__n mono">3</span><p>Честную прямоту. Факт, эффект, рекомендация. Без мотивационных клише и реверансов. Про деньги и рост говорю честно, без «скоро решим».</p></div>
+<div class="note"><span class="note__n mono">4</span><p>Критерии до старта. Стандарт качества прошит в бриф и чек-лист, а не держится на моём ревью каждой задачи. Задача без брифа не берётся.</p></div>
+<div class="note"><span class="note__n mono">5</span><p>Автономию людей. Тимлид решает 80% оперативки сам. Я держу стандарт, развилки, людей и авторские проекты.</p></div>
+<div class="note"><span class="note__n mono">6</span><p>Вкус и форму. Мне не всё равно, как это сделано, и визуально, и логически. Метафора важнее эффекта, буквальный знак важнее декорации.</p></div></div>
+</section>
+<section class="sec" id="experience">
+<h2 class="sec__title u">Опыт</h2>
+<div class="sec__text"><p>19 лет в графическом дизайне: Совкомбанк<sup>1</sup>, Designworkout<sup>2</sup>, Wildberries<sup>3</sup>, Migel Agency<sup>4</sup>, Алгоритмика<sup>5</sup> и собственная практика<sup>6</sup>. Клиенты и бренды: Совкомбанк, Царицыно, Атом, Wildberries, Яков и Партнёры, BILD, Самокат, Ozon, Redkeds, Forma, Алгоритмика, Binadi.</p></div>
+<div class="sec__notes"><div class="note"><span class="note__n mono">1</span><p>Январь 2026 — сейчас. Арт-директор, Совкомбанк, Москва. Дизайн-направление банка: три связки с тимлидами, стандарт качества и арт-ревью, бренд-платформа, брендбуки дочерних бизнесов, key visual, AI-пайплайны, регламенты и система оценки команды.</p></div>
+<div class="note"><span class="note__n mono">2</span><p>Июнь 2022 — сейчас. Арт-директор, графический дизайнер, Designworkout. Ребрендинг Царицыно и стиль электромобиля Атом в паре со вторым арт-директором: концепции, гайдбуки, мерч, стенды, брифинг подрядчиков, работа с инхаус-командами. Координация программы DW200. <a href="https://masterskaya.pro/">masterskaya.pro</a></p></div>
+<div class="note"><span class="note__n mono">3</span><p>Июль 2024 — март 2025. Графический дизайнер, Wildberries. Дизайн-система руководств по открытию ПВЗ, единый стиль обучающих материалов, коммуникация внутри ПВЗ, панель-кронштейн и лайтбокс, концепции для питчинга руководству, найм специалистов.</p></div>
+<div class="note"><span class="note__n mono">4</span><p>Февраль 2022 — май 2024. Team Lead Graphic Designer, Migel Agency. Визуальные концепции, тендеры, рекламные кампании, масштабирование фирменного стиля, сайт агентства после ребрендинга, запуск собственной линейки косметики; рост дизайнеров внутри команды.</p></div>
+<div class="note"><span class="note__n mono">5</span><p>Февраль 2021 — март 2022. Графический дизайнер, Алгоритмика. Запуск ребрендинга во всех каналах, лендинги по направлениям, печатная продукция и шаблоны для неё, креативы кампаний и SMM, процесс приоритизации с внутренними заказчиками.</p></div>
+<div class="note"><span class="note__n mono">6</span><p>С ноября 2007. Арт-директор, графический дизайнер, собственная практика. Айдентики и визуальные системы: BILD (девелопер, выход на рынок ОАЭ), «Яков и Партнёры» (стратегический консалтинг), Binadi (ювелирный бренд, Берлин), Самокат (визуальная концепция для бренд-маркетинга).</p></div></div>
+</section>
+<section class="sec" id="tools">
+<h2 class="sec__title u">Инструменты</h2>
+<div class="sec__text"><p>Дизайн<sup>1</sup>, генерация<sup>2</sup>, процесс и код<sup>3</sup>.</p></div>
+<div class="sec__notes"><div class="note"><span class="note__n mono">1</span><p>Дизайн. Figma, Figma MCP и плагины, Photoshop, Illustrator, InDesign, After Effects, Lightroom, Readymag, Webflow, полиграфия и препресс, предметная съёмка.</p></div>
+<div class="note"><span class="note__n mono">2</span><p>Генерация. Magnific, Higgsfield, Krea, Nano Banana / Gemini, Seedance, vision-отбор.</p></div>
+<div class="note"><span class="note__n mono">3</span><p>Процесс и код. Claude Code, Codex, Pyrus, YouTrack, Markdown-регламенты, HTML / JS.</p></div></div>
+</section>
+<section class="sec" id="education">
+<h2 class="sec__title u">Образование</h2>
+<div class="sec__text"><p>Designworkout CAMPUS<sup>1</sup>, индустриально-экономический колледж<sup>2</sup>, регулярные тренинги<sup>3</sup>.</p></div>
+<div class="sec__notes"><div class="note"><span class="note__n mono">1</span><p>2020, 2021. Designworkout CAMPUS. Курсы «Art Director» и «Мастер-макет».</p></div>
+<div class="note"><span class="note__n mono">2</span><p>2007. Дальневосточный межрегиональный индустриально-экономический колледж. АСУ, техник.</p></div>
+<div class="note"><span class="note__n mono">3</span><p>Регулярно. Тренинги. Коммуникация (Илья Мутовин), продукт (Иван Замесин), генеративный дизайн (Миша Кац), паттерны дизайн-менеджмента, Anthropic Academy, Hogan Assessments как основа operating manual.</p></div></div>
+</section>
+<section class="sec" id="meeting">
+<h2 class="sec__title u">Встреча</h2>
+<div class="sec__text"><p>Покажу систему и работы за 30 минут. Полная презентация работ в Figma, кейсы на сайте, регламенты в открытом доступе. Готов к встрече в офисе или онлайн.</p></div>
+<div class="sec__links"><a href="mailto:inbox@denisyudin.com?subject=CV">Написать</a><a href="https://t.me/inkhv">Telegram</a><a href="https://calendly.com/inkhv">Назначить встречу</a><a href="/cv/Denis-Yudin-CV.pdf">Скачать PDF</a></div>
+</section>
+</div>
+<footer class="footer">
+<div>
+<ul class="footer__nav">
+<li class="footer__nav-item"><span class="footer__nav-number mono">1</span><a href="/portfolio.html">Works</a></li>
+<li class="footer__nav-item"><span class="footer__nav-number mono">2</span><a href="/tools/">Tools</a></li>
+<li class="footer__nav-item"><span class="footer__nav-number mono">3</span><a href="/#research">Research</a></li>
+<li class="footer__nav-item"><span class="footer__nav-number mono">4</span><a href="/#articles">Articles</a></li>
+<li class="footer__nav-item"><span class="footer__nav-number mono">5</span><a href="mailto:inbox@denisyudin.com">Contact</a></li>
+</ul>
+<p>Denis Yudin, 2026</p>
+</div>
+<div>
+<p><a href="mailto:inbox@denisyudin.com">inbox@denisyudin.com</a></p>
+<p class="footer__links"><a href="https://t.me/inkhv">Telegram</a><a href="https://www.instagram.com/inkhv">Instagram</a></p>
+</div>
+</footer>
+</main>
+<script src="/ui/index.js?v=20261024" defer></script>
 </body>
 </html>
