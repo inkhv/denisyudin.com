@@ -116,6 +116,18 @@ a:focus-visible, .a-i:focus-visible { outline: 1px solid currentColor; outline-o
 .index--works .index__header > :nth-child(5), .index--works .index__row > :nth-child(5),
 .index--works .index__header > :nth-child(6), .index--works .index__row > :nth-child(6) { grid-column: span 1; }
 
+/* CV as an index: N1 P2 D4 S1, descriptions wrap; NDA rows are not links */
+.index--cv .index__header > :nth-child(1), .index--cv .index__row > :nth-child(1) { grid-column: span 1; }
+.index--cv .index__header > :nth-child(2), .index--cv .index__row > :nth-child(2) { grid-column: span 2; }
+.index--cv .index__header > :nth-child(3), .index--cv .index__row > :nth-child(3) { grid-column: span 4; }
+.index--cv .index__header > :nth-child(4), .index--cv .index__row > :nth-child(4) { grid-column: span 1; }
+.index--cv .index__row > :nth-child(2), .index--cv .index__row > :nth-child(3) { white-space: normal; overflow: visible; }
+.index--cv .index__body { row-gap: calc(var(--vw) * 8); }
+.index--cv .index__row:hover { opacity: 1; }
+.index__row a { text-decoration: underline; text-underline-offset: .12em; }
+.index__row--nda { cursor: default; }
+.index__row--nda:hover { opacity: 1; }
+
 /* Covers (portfolio) */
 .covers {
   grid-column: 5 / -1; margin-top: calc(var(--vw) * 60);
@@ -181,6 +193,8 @@ sup { font-size: .7em; line-height: 0; vertical-align: baseline; position: relat
   .index--works .index__row > :nth-child(4) { grid-column: 3; }
   .index--works .index__row > :nth-child(5) { display: none; }
   .index--works .index__row > :nth-child(6) { grid-column: 4; }
+  .index--cv .index__row > :nth-child(2) { grid-column: 1 / 4; }
+  .index--cv .index__row > :nth-child(4) { grid-column: 4; }
   .covers { margin-top: calc(var(--vw) * 24); grid-template-columns: var(--cols-4); row-gap: calc(var(--vw) * 24); }
   .cover { grid-column: 1 / -1; }
   .cover.is-muted { display: none; }
