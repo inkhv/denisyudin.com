@@ -3,7 +3,7 @@
 :root { --case-bg: #eaeaea; --case-ink: #1e1e1e; --case-line: #1e1e1e44; --case-dim: #8d8d8d; --case-frame: #dcdcdc; --case-art: #e3e3e3; --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace; }
 html.case-html, body.case-page { background: var(--case-bg); color: var(--case-ink); }
 .case { grid-column: 1 / -1; display: block; }
-.mono, .case .mono { font-family: var(--mono); font-size: 11px; letter-spacing: .02em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
+.case .mono { font-family: var(--mono); font-size: 11px; letter-spacing: .02em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
 .case__top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; padding: 7px 0; border-bottom: 1px solid var(--case-line); color: var(--case-ink); }
 .case__top span + span { color: var(--case-dim); }
 .marks { display: flex; justify-content: space-between; margin: 10px 0; font-family: var(--mono); font-size: 13px; line-height: 1; color: var(--case-ink); user-select: none; }
