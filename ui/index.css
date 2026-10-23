@@ -53,6 +53,8 @@ a:focus-visible, .a-i:focus-visible { outline: 1px solid currentColor; outline-o
 .nav__item { display: inline-flex; gap: .25em; white-space: nowrap; }
 .nav__desc { white-space: normal; }
 .nav__item.is-current a { text-decoration: underline; text-underline-offset: .12em; }
+.nav__item--menu { align-items: center; height: 1.25em; }
+.nav__item--menu dy-tool-menu { display: inline-flex; }
 
 /* Page grid */
 .container {

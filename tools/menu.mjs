@@ -5,20 +5,27 @@ class ToolMenu extends HTMLElement {
     if (this.shadowRoot) return;
     const root = this.attachShadow({mode:'open'});
     const current = location.pathname.replace(/index\.html$/, '').replace(/\/$/, '') || '/';
-    const icon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
+    // Gear: eight teeth on a ring, hub in the middle.
+    const icon = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/><circle cx="12" cy="12" r="7.2"/></svg>';
+    // The list uses Inter; load it once when the host page has not.
+    if (!document.querySelector('link[href*="family=Inter"]')) {
+      const link = document.createElement('link'); link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap';
+      document.head.append(link);
+    }
     root.innerHTML = `<link rel="stylesheet" href="/tools/menu.css">
-      <details><summary aria-label="Инструменты — меню">${icon}<span>Инструменты</span><svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary>
-      <nav popover="manual" aria-label="Инструменты сайта"><a class="catalog" href="/tools/" ${current === '/tools' ? 'aria-current="page"' : ''}>Все инструменты <span>${tools.length}</span></a>
+      <details><summary aria-label="Tools menu" title="Tools">${icon}</summary>
+      <nav popover="manual" aria-label="Site tools"><a class="catalog" href="/tools/" ${current === '/tools' ? 'aria-current="page"' : ''}>All tools <span>${tools.length}</span></a>
       <div class="tool-links">${tools.map(tool => `<a href="${tool.href}" ${current === tool.href.replace(/\/$/, '') ? 'aria-current="page"' : ''}>${tool.name}</a>`).join('')}</div>
-      <div class="site-links"><a href="/">Главная</a><a href="/portfolio.html">Портфолио</a></div></nav></details>`;
+      <div class="site-links"><a href="/">Home</a><a href="/portfolio.html">Works</a><a href="/cv/">CV</a></div></nav></details>`;
     const details = root.querySelector('details'), summary = root.querySelector('summary'), nav = root.querySelector('nav');
     const position = () => {
       const r = summary.getBoundingClientRect();
-      const width = Math.min(288, innerWidth - 24);
+      const width = Math.min(224, innerWidth - 24);
       nav.style.width = `${width}px`;
       nav.style.left = `${Math.max(12, Math.min(r.right - width, innerWidth - width - 12))}px`;
       // Keep the full menu reachable even when its trigger sits low in a mobile panel.
-      const top = Math.max(12, Math.min(r.bottom + 8, innerHeight - Math.min(536, innerHeight - 24) - 12));
+      const top = Math.max(12, Math.min(r.bottom + 10, innerHeight - Math.min(480, innerHeight - 24) - 12));
       nav.style.top = `${top}px`;
       nav.style.maxHeight = `${innerHeight - top - 12}px`;
     };
