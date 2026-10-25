@@ -100,6 +100,8 @@
   /* ---------- header ---------- */
   .header{position:fixed;top:0;left:0;right:0;z-index:50;height:var(--head);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 var(--pad);color:var(--paper);transition:color var(--d) var(--ease),background-color var(--d) var(--ease),box-shadow var(--d) var(--ease)}
   .header.is-solid{background:var(--paper);color:var(--ink);box-shadow:0 1px 0 var(--ink)}
+  .header{transition:color var(--d) var(--ease),background-color var(--d) var(--ease),box-shadow var(--d) var(--ease),transform var(--dl) var(--ease)}
+  .header.is-hidden:not(.is-open){transform:translateY(-100%)}
   .brand{font-size:16px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;font-weight:600}
   .header.is-solid .brand{font-weight:400}
   .nav{display:flex;gap:28px;font-size:15px}
@@ -742,7 +744,7 @@
   <div class="foot-name" aria-hidden="true">Алексей Черкасский</div>
   <div class="row footer">
     <div class="cell footer__logo"><img src="img/ach.svg" alt="" width="32" height="30"></div>
-    <div class="cell"><b>Черкасский Алексей</b>&nbsp;— адвокат, член Адвокатской палаты Московской области.<br>Регистрационный номер в&nbsp;реестре адвокатов: <span data-todo="registry">уточняется</span>.<br>Адвокатское бюро «Мушаилов, Узденский, Рыбаков и&nbsp;партнёры», <a href="https://www.mrplaw.ru/" target="_blank" rel="noopener">mrplaw.ru</a>.</div>
+    <div class="cell">Адвокат, член Адвокатской палаты Московской области.<br>Регистрационный номер в&nbsp;реестре адвокатов: <span data-todo="registry">уточняется</span>.<br>Адвокатское бюро «Мушаилов, Узденский, Рыбаков и&nbsp;партнёры», <a href="https://www.mrplaw.ru/" target="_blank" rel="noopener">mrplaw.ru</a>.</div>
     <div class="cell">Информация на&nbsp;сайте носит справочный характер и&nbsp;не&nbsp;является юридической консультацией или&nbsp;публичной офертой. Описания дел приведены в&nbsp;обобщённом виде; результаты прошлых дел не&nbsp;гарантируют результат по&nbsp;другим делам.</div>
     <div class="cell">©&nbsp;2026 Алексей Черкасский<br><a href="https://t.me/Cherkasskiy_Alexey" target="_blank" rel="noopener">Telegram</a> · <a href="https://t.me/cherkasskiy_news" target="_blank" rel="noopener">Канал</a></div>
   </div>
@@ -757,7 +759,8 @@
   window.addEventListener('load',function(){setTimeout(function(){root.classList.add('ready')},80)});
   setTimeout(function(){root.classList.add('ready')},1500);
 
-  function onScroll(){header.classList.toggle('is-solid',window.scrollY>hero.offsetHeight-72)}
+  var contact=document.getElementById('contact');
+  function onScroll(){header.classList.toggle('is-solid',window.scrollY>hero.offsetHeight-72);header.classList.toggle('is-hidden',window.scrollY+window.innerHeight*.45>=contact.offsetTop)}
   onScroll();window.addEventListener('scroll',onScroll,{passive:true});
 
   function closeMenu(){header.classList.remove('is-open');menuBtn.setAttribute('aria-expanded','false');document.body.style.overflow=''}
