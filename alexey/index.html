@@ -80,6 +80,7 @@
   .shead{grid-template-columns:160px 1fr 1fr}
   .shead .idx{font-size:14px;line-height:1.25;padding-top:calc(var(--pad) + .35em)}
   .shead h2{max-width:12ch}
+  .shead--inv{background:var(--ink);color:var(--paper)}
   .shead .note{font-size:16px;line-height:1.4;max-width:46ch;align-self:end}
   .plus{position:relative;width:32px;height:32px;border:1px solid currentColor;border-radius:50%;flex:none;transition:transform var(--d) var(--ease),background-color var(--d) var(--ease),color var(--d) var(--ease)}
   .plus::before,.plus::after{content:"";position:absolute;left:50%;top:50%;background:currentColor;transform:translate(-50%,-50%)}
@@ -195,7 +196,7 @@
   .docket.is-empty+.cases__empty{display:block}
 
   /* ---------- consultation (light) ---------- */
-  .consult{grid-template-columns:160px 1fr 1fr 1fr;align-items:stretch;background:var(--accent);color:#fff}
+  .consult{grid-template-columns:160px 1fr 1fr 1fr;align-items:stretch;background:var(--ink);color:var(--paper)}
   .consult .cell{padding:28px var(--pad)}
   .consult .price{font-size:clamp(34px,4.2vw,58px);letter-spacing:-.025em;line-height:1}
   .consult .price small{display:block;font-size:14px;letter-spacing:0;margin-top:14px;opacity:.6}
@@ -204,8 +205,8 @@
   .consult li::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;margin-top:9px}
   .consult .cell--btn{padding:0!important;display:flex}
   .consult .cell--btn .btn{width:100%;height:100%;min-height:160px;border:0;border-radius:0;justify-content:flex-start;align-items:flex-start;padding:26px var(--pad);text-align:left;white-space:normal;line-height:1.08;font-size:clamp(24px,2.1vw,32px);letter-spacing:-.02em;background:var(--ink);color:var(--paper)}
-  .consult .cell--btn .btn::before{background:var(--paper);inset:0}
-  .consult .cell--btn .btn:hover{color:var(--ink)}
+  .consult .cell--btn .btn::before{background:var(--accent);inset:0}
+  .consult .cell--btn .btn:hover{color:#fff}
   .pay{grid-template-columns:160px 1fr}
   .pay p{max-width:70ch;font-size:15px;line-height:1.4}
 
@@ -366,7 +367,7 @@
 
 
   <section id="services" aria-labelledby="h-services">
-    <div class="row shead">
+    <div class="row shead shead--inv">
       <div class="cell idx">(01)</div>
       <div class="cell"><h2 id="h-services" class="rv">С&nbsp;чем ко&nbsp;мне приходят</h2></div>
       <div class="cell note rv" style="--i:1">Три направления, в&nbsp;которых веду большинство дел. Если ваш спор рядом с&nbsp;ними&nbsp;— напишите, разберёмся на&nbsp;консультации.</div>
