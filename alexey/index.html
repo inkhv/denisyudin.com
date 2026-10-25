@@ -103,8 +103,9 @@
   .nav{display:flex;gap:28px;font-size:15px}
   .header__cta{justify-self:end}
   .header .btn--paper{border-color:currentColor;background:transparent;color:inherit}
-  .header .btn--paper::before{background:currentColor}
+  .header:not(.is-solid) .btn--paper::before{background:var(--paper)}
   .header:not(.is-solid) .btn--paper:hover{color:var(--ink)}
+  .header.is-solid .btn--paper::before{background:var(--ink)}
   .header.is-solid .btn--paper:hover{color:var(--paper)}
   .menu-btn{display:none;align-items:center;gap:10px;font-size:15px;justify-self:end}
   .menu-btn .ico{position:relative;width:22px;height:12px;display:inline-block}
@@ -129,7 +130,7 @@
   html.ready .lw>span{transform:none}
   .lw:nth-child(2)>span{transition-delay:.08s}.lw:nth-child(3)>span{transition-delay:.16s}
   .hero__sub{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;flex-wrap:wrap}
-  .hero__lead{font-size:clamp(18px,1.6vw,22px);line-height:1.35;max-width:30ch}
+  .hero__lead{font-size:clamp(18px,1.5vw,22px);line-height:1.45;letter-spacing:.01em}
   .hero__bar{position:relative;z-index:2;border-top:1px solid currentColor;grid-template-columns:1fr 1fr 1fr;font-size:14px;line-height:1.25}
   .hero__bar .cell{padding:16px var(--pad)}
   .scroll{display:inline-flex;width:16px;height:16px;overflow:hidden}
@@ -194,13 +195,17 @@
   .docket.is-empty+.cases__empty{display:block}
 
   /* ---------- consultation (light) ---------- */
-  .consult{grid-template-columns:160px 1fr 1fr 1fr;align-items:stretch}
+  .consult{grid-template-columns:160px 1fr 1fr 1fr;align-items:stretch;background:var(--ink);color:var(--paper)}
+  .consult .cell{padding:28px var(--pad)}
   .consult .price{font-size:clamp(34px,4.2vw,58px);letter-spacing:-.025em;line-height:1}
-  .consult .price small{display:block;font-size:14px;letter-spacing:0;margin-top:14px;color:var(--mute)}
+  .consult .price small{display:block;font-size:14px;letter-spacing:0;margin-top:14px;opacity:.6}
   .consult ul{display:grid;gap:8px;font-size:15px;line-height:1.35}
   .consult li{display:grid;grid-template-columns:14px 1fr;gap:10px}
   .consult li::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;margin-top:9px}
-  .consult .cell--btn{display:flex;align-items:flex-end}
+  .consult .cell--btn{padding:0!important;display:flex}
+  .consult .cell--btn .btn{width:100%;height:100%;min-height:160px;border:0;border-radius:0;font-size:clamp(20px,1.7vw,26px);letter-spacing:-.01em;background:var(--paper);color:var(--ink)}
+  .consult .cell--btn .btn::before{background:var(--ink);inset:0}
+  .consult .cell--btn .btn:hover{color:var(--paper)}
   .pay{grid-template-columns:160px 1fr}
   .pay p{max-width:70ch;font-size:15px;line-height:1.4}
 
@@ -278,6 +283,7 @@
     .hero__main{padding-top:calc(var(--head) + 40px);padding-bottom:36px;gap:28px}
     .hero h1{font-size:clamp(40px,11.5vw,80px)}
     .hero__sub{flex-direction:column;align-items:flex-start;gap:24px}
+    .hero__lead br{display:none}
     .hero__bar{grid-template-columns:1fr}
     .hero__bar .cell+.cell{display:none}
     .shead,.also,.pay,.contact{grid-template-columns:1fr}
@@ -306,6 +312,7 @@
     .case__body dd{margin-bottom:10px}
     .consult{grid-template-columns:1fr}
     .consult .cell--btn{grid-column:auto;border-top:0}
+    .consult .cell--btn .btn{min-height:96px}
     .about{grid-template-columns:1fr}
     .about__photo img{min-height:0;aspect-ratio:4/5}
     .qa__head{grid-template-columns:1fr 44px;padding:16px 0}
@@ -346,7 +353,7 @@
     <div class="hero__main">
       <h1><span class="lw"><span>Адвокат</span></span><span class="lw"><span>по&nbsp;арбитражным</span></span><span class="lw"><span>спорам</span></span></h1>
       <div class="hero__sub">
-        <p class="hero__lead">Ко&nbsp;мне приходят, когда нужна реальная помощь и&nbsp;ясный план. Разбираюсь в&nbsp;сути, выстраиваю стратегию и&nbsp;довожу дело до&nbsp;решения.</p>
+        <p class="hero__lead">Ко&nbsp;мне приходят, когда нужна реальная помощь <br>и&nbsp;ясный план. Разбираюсь в&nbsp;сути, выстраиваю <br>стратегию и&nbsp;довожу дело до&nbsp;решения.</p>
         <a class="btn btn--paper" href="https://t.me/Cherkasskiy_Alexey" target="_blank" rel="noopener">Записаться на&nbsp;консультацию</a>
       </div>
     </div>
@@ -372,15 +379,15 @@
     </div>
     <div class="tiles tiles--3">
         <article class="tile tile--svc rv" style="--i:0">
-          <div class="tile__top"><span class="tile__icon" aria-hidden="true"><svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 39.995H10.878L7.49301 24H15.814H18V28.473C19.149 28.493 19.775 28.535 20.223 28.6C20.844 28.694 21.304 28.946 21.602 29.356C21.9 29.766 22 30.813 22 31.944V33V54H28V27V25.943C28 24.812 28.101 23.765 28.398 23.355C28.696 22.945 29.156 22.693 29.777 22.599C30.224 22.535 30.851 22.492 32 22.472V21H28V12H25V14.114C25 16.375 24.799 18.469 24.203 19.29C23.607 20.109 22.687 20.612 21.445 20.8C20.55 20.93 20.923 20.962 18.625 21H5.147C4.919 21.203 4.69801 21.391 4.49701 21.536C3.35998 22.3591 2.02038 22.8379 0.478214 22.9748C0.21136 22.9985 0 23.2173 0 23.4852V23.5C0 23.7761 0.223858 24 0.5 24H4.34201L0.924988 39.995H0V42.995H12V39.995ZM20 24H22V26H20V24ZM3.04999 39.995L5.91599 26.206L8.77399 39.995H3.04999ZM59.503 9.53601C59.302 9.39001 59.081 9.203 58.853 9H45.375C43.077 8.962 43.45 8.92999 42.555 8.79999C41.313 8.61199 40.393 8.10998 39.797 7.28998C39.201 6.46998 39 4.37501 39 2.11401V0H36V9H32V10.473C33.149 10.493 33.775 10.535 34.223 10.6C34.844 10.694 35.304 10.946 35.602 11.356C35.9 11.766 36 12.813 36 13.944V15V44C36 44 34.5596 44 33.0232 44C31.3663 44 30.023 45.3431 30.0194 47C30.0129 50 30 53 30 56H19.687H10H4V62V64H19.687H32H48.186H60V58H52V56H60V52H52V50H60V44H44V52H42V23V21.943C42 20.812 42.101 19.765 42.398 19.355C42.696 18.945 43.156 18.693 43.777 18.599C44.224 18.535 44.851 18.492 46 18.472V12H48.186H56.343L52.925 28H52V31H64V28H62.878L59.492 12H64V11.006C62.256 10.933 60.757 10.443 59.503 9.53601ZM44 16H42V14H44V16ZM60.773 28H55.049L57.915 14.211L60.773 28Z"/></svg></span><span class="tile__idx">01&nbsp;/&nbsp;03</span></div>
+          <div class="tile__top"><span class="tile__icon" aria-hidden="true"><svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 39.995H10.878L7.49301 24H15.814H18V28.473C19.149 28.493 19.775 28.535 20.223 28.6C20.844 28.694 21.304 28.946 21.602 29.356C21.9 29.766 22 30.813 22 31.944V33V54H28V27V25.943C28 24.812 28.101 23.765 28.398 23.355C28.696 22.945 29.156 22.693 29.777 22.599C30.224 22.535 30.851 22.492 32 22.472V21H28V12H25V14.114C25 16.375 24.799 18.469 24.203 19.29C23.607 20.109 22.687 20.612 21.445 20.8C20.55 20.93 20.923 20.962 18.625 21H5.147C4.919 21.203 4.69801 21.391 4.49701 21.536C3.35998 22.3591 2.02038 22.8379 0.478214 22.9748C0.21136 22.9985 0 23.2173 0 23.4852V23.5C0 23.7761 0.223858 24 0.5 24H4.34201L0.924988 39.995H0V42.995H12V39.995ZM20 24H22V26H20V24ZM3.04999 39.995L5.91599 26.206L8.77399 39.995H3.04999ZM59.503 9.53601C59.302 9.39001 59.081 9.203 58.853 9H45.375C43.077 8.962 43.45 8.92999 42.555 8.79999C41.313 8.61199 40.393 8.10998 39.797 7.28998C39.201 6.46998 39 4.37501 39 2.11401V0H36V9H32V10.473C33.149 10.493 33.775 10.535 34.223 10.6C34.844 10.694 35.304 10.946 35.602 11.356C35.9 11.766 36 12.813 36 13.944V15V44C36 44 34.5596 44 33.0232 44C31.3663 44 30.023 45.3431 30.0194 47C30.0129 50 30 53 30 56H19.687H10H4V62V64H19.687H32H48.186H60V58H52V56H60V52H52V50H60V44H44V52H42V23V21.943C42 20.812 42.101 19.765 42.398 19.355C42.696 18.945 43.156 18.693 43.777 18.599C44.224 18.535 44.851 18.492 46 18.472V12H48.186H56.343L52.925 28H52V31H64V28H62.878L59.492 12H64V11.006C62.256 10.933 60.757 10.443 59.503 9.53601ZM44 16H42V14H44V16ZM60.773 28H55.049L57.915 14.211L60.773 28Z"/></svg></span><span class="tile__idx">01</span></div>
           <div class="tile__bottom"><h3>Строительные споры</h3><p>Оплата и&nbsp;объём выполненных работ, качество, односторонние акты, дополнительные работы, неустойки, возврат аванса. Строительно-технические экспертизы. Представляю и&nbsp;заказчиков, и&nbsp;подрядчиков.</p></div>
         </article>
         <article class="tile tile--svc rv" style="--i:1">
-          <div class="tile__top"><span class="tile__icon" aria-hidden="true"><svg viewBox="0 0 55.999 63.873" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M7.99402 25.874H9.14404C9.18604 25.787 9.21302 25.696 9.26202 25.612L10.252 23.894C10.256 23.887 10.258 23.883 10.26 23.876L14.106 17.217H7.17804L5.06403 20.876C4.02103 22.685 3.77703 24.739 4.20703 26.637C5.37703 26.154 6.65102 25.873 7.99402 25.874ZM23.345 17.22L16.418 29.216C15.15 28.369 13.63 27.873 12 27.873H8C3.6 27.873 0 31.473 0 35.873V55.873C0 60.272 3.601 63.873 8 63.873H12C16.4 63.872 20 60.272 20 55.873V35.873C20 35.106 19.885 34.367 19.681 33.664C20.766 32.993 21.707 32.056 22.387 30.878L30.274 17.218L23.345 17.22ZM13.999 57.873C13.999 60.072 12.201 61.873 9.99902 61.873C7.79902 61.873 5.999 60.072 6 57.872V55.893C5.999 55.885 5.99902 55.878 5.99902 55.873V35.874V33.872C5.99902 31.674 7.79902 29.873 9.99902 29.873C11.527 29.873 12.845 30.751 13.518 32.017H9.99304C9.59604 32.017 9.22604 32.137 8.91504 32.339L11.458 33.806C12.267 34.274 13.126 34.573 13.999 34.733V57.873ZM47.945 37.999H46.95C46.884 38.16 46.825 38.323 46.735 38.478L45.745 40.196C45.741 40.203 45.739 40.207 45.737 40.214L41.892 46.872H48.82L50.934 43.213C52.017 41.334 52.244 39.19 51.743 37.232C50.569 37.718 49.292 38 47.945 37.999ZM47.999 0H43.999C39.599 0.001 35.999 3.601 35.999 8V28C35.999 28.833 36.129 29.637 36.368 30.394C35.261 31.067 34.303 32.017 33.612 33.212L25.726 46.872L32.6541 46.87L39.674 34.714C40.924 35.525 42.407 36 43.999 36H47.999C52.398 36 55.999 32.4 55.999 28V8C55.999 3.601 52.398 0 47.999 0ZM49.999 27.999V30.001C49.998 32.199 48.198 34 45.999 34C44.471 34 43.152 33.122 42.479 31.856H45.946C46.278 31.856 46.586 31.767 46.861 31.624L44.54 30.284C43.73 29.816 42.871 29.517 41.999 29.357V6C41.999 3.801 43.798 2 45.999 2C48.198 2 49.998 3.80104 49.997 6.00104L49.998 7.97998C49.999 7.98798 49.999 7.995 49.999 8V27.999Z"/></svg></span><span class="tile__idx">02&nbsp;/&nbsp;03</span></div>
+          <div class="tile__top"><span class="tile__icon" aria-hidden="true"><svg viewBox="0 0 55.999 63.873" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M7.99402 25.874H9.14404C9.18604 25.787 9.21302 25.696 9.26202 25.612L10.252 23.894C10.256 23.887 10.258 23.883 10.26 23.876L14.106 17.217H7.17804L5.06403 20.876C4.02103 22.685 3.77703 24.739 4.20703 26.637C5.37703 26.154 6.65102 25.873 7.99402 25.874ZM23.345 17.22L16.418 29.216C15.15 28.369 13.63 27.873 12 27.873H8C3.6 27.873 0 31.473 0 35.873V55.873C0 60.272 3.601 63.873 8 63.873H12C16.4 63.872 20 60.272 20 55.873V35.873C20 35.106 19.885 34.367 19.681 33.664C20.766 32.993 21.707 32.056 22.387 30.878L30.274 17.218L23.345 17.22ZM13.999 57.873C13.999 60.072 12.201 61.873 9.99902 61.873C7.79902 61.873 5.999 60.072 6 57.872V55.893C5.999 55.885 5.99902 55.878 5.99902 55.873V35.874V33.872C5.99902 31.674 7.79902 29.873 9.99902 29.873C11.527 29.873 12.845 30.751 13.518 32.017H9.99304C9.59604 32.017 9.22604 32.137 8.91504 32.339L11.458 33.806C12.267 34.274 13.126 34.573 13.999 34.733V57.873ZM47.945 37.999H46.95C46.884 38.16 46.825 38.323 46.735 38.478L45.745 40.196C45.741 40.203 45.739 40.207 45.737 40.214L41.892 46.872H48.82L50.934 43.213C52.017 41.334 52.244 39.19 51.743 37.232C50.569 37.718 49.292 38 47.945 37.999ZM47.999 0H43.999C39.599 0.001 35.999 3.601 35.999 8V28C35.999 28.833 36.129 29.637 36.368 30.394C35.261 31.067 34.303 32.017 33.612 33.212L25.726 46.872L32.6541 46.87L39.674 34.714C40.924 35.525 42.407 36 43.999 36H47.999C52.398 36 55.999 32.4 55.999 28V8C55.999 3.601 52.398 0 47.999 0ZM49.999 27.999V30.001C49.998 32.199 48.198 34 45.999 34C44.471 34 43.152 33.122 42.479 31.856H45.946C46.278 31.856 46.586 31.767 46.861 31.624L44.54 30.284C43.73 29.816 42.871 29.517 41.999 29.357V6C41.999 3.801 43.798 2 45.999 2C48.198 2 49.998 3.80104 49.997 6.00104L49.998 7.97998C49.999 7.98798 49.999 7.995 49.999 8V27.999Z"/></svg></span><span class="tile__idx">02</span></div>
           <div class="tile__bottom"><h3>Банкротство юридических лиц</h3><p>Защита руководителей и&nbsp;участников от&nbsp;субсидиарной ответственности и&nbsp;взыскания убытков, оспаривание сделок, включение требований в&nbsp;реестр, сопровождение кредиторов и&nbsp;должников в&nbsp;процедурах.</p></div>
         </article>
         <article class="tile tile--svc rv" style="--i:2">
-          <div class="tile__top"><span class="tile__icon" aria-hidden="true"><svg viewBox="0 0 56 63.872" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M21.196 11.872H16V23.872H14V0L2 2.56299V3.18604L12 5.302V7.87201H2V18.686C1.918 20.406 1.43401 21.887 0.536011 23.126C0.390011 23.327 0.203 23.549 0 23.776V30.872H13.92V32.872H0V36.872H13.92V38.872H0V42.872H13.92V44.872H0V48.872H13.92V50.872H0V54.872H13.92V56.872H0V63.872H22V23.872H18.414L21.196 11.872ZM55.464 23.127C54.567 21.888 54.082 20.406 54 18.687V11.872H47.33C46.596 11.849 46.127 11.812 45.777 11.762C45.156 11.668 44.697 11.416 44.398 11.006C44.104 10.601 44.002 9.57402 44 8.46002V7.87201V5.30304L54 3.18701V2.56403L42 0.0010376V7.87201H37.586L33.69 23.872H37.484L28 63.872H42V23.872H44V30.867H56V23.777C55.797 23.55 55.609 23.328 55.464 23.127ZM44 63.872H56V56.877H44V63.872ZM44 42.867H56V32.867H44V42.867ZM44 54.877H56V44.867H44V54.877Z"/></svg></span><span class="tile__idx">03&nbsp;/&nbsp;03</span></div>
+          <div class="tile__top"><span class="tile__icon" aria-hidden="true"><svg viewBox="0 0 56 63.872" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M21.196 11.872H16V23.872H14V0L2 2.56299V3.18604L12 5.302V7.87201H2V18.686C1.918 20.406 1.43401 21.887 0.536011 23.126C0.390011 23.327 0.203 23.549 0 23.776V30.872H13.92V32.872H0V36.872H13.92V38.872H0V42.872H13.92V44.872H0V48.872H13.92V50.872H0V54.872H13.92V56.872H0V63.872H22V23.872H18.414L21.196 11.872ZM55.464 23.127C54.567 21.888 54.082 20.406 54 18.687V11.872H47.33C46.596 11.849 46.127 11.812 45.777 11.762C45.156 11.668 44.697 11.416 44.398 11.006C44.104 10.601 44.002 9.57402 44 8.46002V7.87201V5.30304L54 3.18701V2.56403L42 0.0010376V7.87201H37.586L33.69 23.872H37.484L28 63.872H42V23.872H44V30.867H56V23.777C55.797 23.55 55.609 23.328 55.464 23.127ZM44 63.872H56V56.877H44V63.872ZM44 42.867H56V32.867H44V42.867ZM44 54.877H56V44.867H44V54.877Z"/></svg></span><span class="tile__idx">03</span></div>
           <div class="tile__bottom"><h3>Корпоративные конфликты</h3><p>Тупики в&nbsp;ООО, истребование документов у&nbsp;общества, оспаривание решений и&nbsp;сделок, защита от&nbsp;поддельных ликвидаций и&nbsp;смены директоров, сопровождение участников при&nbsp;проверках по&nbsp;заявлениям оппонентов.</p></div>
         </article>
     </div>
@@ -653,7 +660,7 @@
         <li>План действий и&nbsp;порядок шагов</li>
         <li>Ориентир по&nbsp;срокам и&nbsp;стоимости ведения дела</li>
       </ul></div>
-      <div class="cell cell--btn rv" style="--i:2"><a class="btn btn--block" href="https://t.me/Cherkasskiy_Alexey" target="_blank" rel="noopener">Записаться на&nbsp;консультацию</a></div>
+      <div class="cell cell--btn rv" style="--i:2"><a class="btn" href="https://t.me/Cherkasskiy_Alexey" target="_blank" rel="noopener">Записаться на&nbsp;консультацию</a></div>
     </div>
     <div class="row pay">
       <div class="cell small">Оплата</div>
