@@ -134,10 +134,10 @@
   .hero__lead{font-size:clamp(18px,1.5vw,22px);line-height:1.45;letter-spacing:.01em}
   .hero__bar{position:relative;z-index:2;border-top:1px solid currentColor;grid-template-columns:1fr 1fr 1fr;font-size:14px;line-height:1.25}
   .hero__bar .cell{padding:18px var(--pad)}
-  .hero__cta{position:relative;isolation:isolate;display:flex;align-items:center;background:var(--paper);color:var(--ink);font-size:16px;transition:color var(--d) var(--ease)}
-  .hero__cta::after{content:"";position:absolute;inset:0;background:var(--ink);transform:scaleY(0);transform-origin:bottom;transition:transform var(--d) var(--ease);z-index:-1}
-  .hero__cta:hover{color:var(--paper)}
-  .hero__cta:hover::after{transform:scaleY(1);transform-origin:top}
+  .hero__cta{display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--paper);color:var(--ink);font-size:16px;transition:background-color var(--d) var(--ease),color var(--d) var(--ease)}
+  .hero__cta:hover{background:transparent;color:var(--paper)}
+  .hero__arrow{width:22px;height:22px;flex:none;opacity:0;transform:translate(-8px,8px);transition:opacity var(--d) var(--ease),transform var(--dl) var(--ease)}
+  .hero__cta:hover .hero__arrow{opacity:1;transform:none}
 
   /* ---------- facts ---------- */
   .facts{grid-template-columns:repeat(4,1fr)}
@@ -359,7 +359,7 @@
       </div>
     </div>
     <div class="row hero__bar">
-      <a class="cell hero__cta" href="https://t.me/Cherkasskiy_Alexey" target="_blank" rel="noopener">Записаться на&nbsp;консультацию</a>
+      <a class="cell hero__cta" href="https://t.me/Cherkasskiy_Alexey" target="_blank" rel="noopener"><span>Записаться на&nbsp;консультацию</span><svg class="hero__arrow" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 0V4H33.18L0 37.18L2.82 40L36 6.82V32H40V0H8Z" fill="currentColor"/></svg></a>
       <div class="cell">Партнёр адвокатского бюро «Мушаилов, Узденский, Рыбаков и&nbsp;партнёры»</div>
       <div class="cell">В&nbsp;юриспруденции с&nbsp;2011&nbsp;года</div>
     </div>
