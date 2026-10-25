@@ -33,7 +33,7 @@
 <style>
   /* ---------- tokens: one weight, ink on paper, hairline grid ---------- */
   :root{
-    --ink:#17191A; --paper:#F2F2F2; --paper-2:#E8E8E8; --mute:#7B7E80;
+    --ink:#17191A; --paper:#F2F2F2; --paper-2:#E8E8E8; --mute:#7B7E80; --accent:#3A7B69;
     --font:'Onest','ABC Monument','TT Norms Pro',system-ui,-apple-system,'Segoe UI',sans-serif;
     --pad:20px; --head:64px;
     --ease:cubic-bezier(.43,.195,.02,1); --ease-out:cubic-bezier(.215,.61,.355,1);
@@ -132,11 +132,11 @@
   .hero__sub{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;flex-wrap:wrap}
   .hero__lead{font-size:clamp(18px,1.5vw,22px);line-height:1.45;letter-spacing:.01em}
   .hero__bar{position:relative;z-index:2;border-top:1px solid currentColor;grid-template-columns:1fr 1fr 1fr;font-size:14px;line-height:1.25}
-  .hero__bar .cell{padding:16px var(--pad)}
-  .scroll{display:inline-flex;width:16px;height:16px;overflow:hidden}
-  .scroll svg{width:16px;height:16px;display:block;animation:scroll-down 2.2s var(--ease) infinite}
-  @keyframes scroll-down{0%{transform:translateY(-120%)}35%,65%{transform:translateY(0)}to{transform:translateY(120%)}}
-  html.static .scroll svg{animation:none}
+  .hero__bar .cell{padding:18px var(--pad)}
+  .hero__cta{position:relative;isolation:isolate;display:flex;align-items:center;background:var(--paper);color:var(--ink);font-size:16px;transition:color var(--d) var(--ease)}
+  .hero__cta::after{content:"";position:absolute;inset:0;background:var(--ink);transform:scaleY(0);transform-origin:bottom;transition:transform var(--d) var(--ease);z-index:-1}
+  .hero__cta:hover{color:var(--paper)}
+  .hero__cta:hover::after{transform:scaleY(1);transform-origin:top}
 
   /* ---------- facts ---------- */
   .facts{grid-template-columns:repeat(4,1fr)}
@@ -195,7 +195,7 @@
   .docket.is-empty+.cases__empty{display:block}
 
   /* ---------- consultation (light) ---------- */
-  .consult{grid-template-columns:160px 1fr 1fr 1fr;align-items:stretch;background:var(--ink);color:var(--paper)}
+  .consult{grid-template-columns:160px 1fr 1fr 1fr;align-items:stretch;background:var(--accent);color:#fff}
   .consult .cell{padding:28px var(--pad)}
   .consult .price{font-size:clamp(34px,4.2vw,58px);letter-spacing:-.025em;line-height:1}
   .consult .price small{display:block;font-size:14px;letter-spacing:0;margin-top:14px;opacity:.6}
@@ -203,7 +203,7 @@
   .consult li{display:grid;grid-template-columns:14px 1fr;gap:10px}
   .consult li::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;margin-top:9px}
   .consult .cell--btn{padding:0!important;display:flex}
-  .consult .cell--btn .btn{width:100%;height:100%;min-height:160px;border:0;border-radius:0;justify-content:flex-start;align-items:flex-end;padding:28px var(--pad);text-align:left;white-space:normal;line-height:1.08;font-size:clamp(24px,2.1vw,32px);letter-spacing:-.02em;background:var(--ink);color:var(--paper)}
+  .consult .cell--btn .btn{width:100%;height:100%;min-height:160px;border:0;border-radius:0;justify-content:flex-start;align-items:flex-start;padding:26px var(--pad);text-align:left;white-space:normal;line-height:1.08;font-size:clamp(24px,2.1vw,32px);letter-spacing:-.02em;background:var(--ink);color:var(--paper)}
   .consult .cell--btn .btn::before{background:var(--paper);inset:0}
   .consult .cell--btn .btn:hover{color:var(--ink)}
   .pay{grid-template-columns:160px 1fr}
@@ -355,11 +355,10 @@
       <h1><span class="lw"><span>Адвокат</span></span><span class="lw"><span>по&nbsp;арбитражным</span></span><span class="lw"><span>спорам</span></span></h1>
       <div class="hero__sub">
         <p class="hero__lead">Ко&nbsp;мне приходят, когда нужна реальная помощь <br>и&nbsp;ясный план. Разбираюсь в&nbsp;сути, выстраиваю <br>стратегию и&nbsp;довожу дело до&nbsp;решения.</p>
-        <a class="btn btn--paper" href="https://t.me/Cherkasskiy_Alexey" target="_blank" rel="noopener">Записаться на&nbsp;консультацию</a>
       </div>
     </div>
     <div class="row hero__bar">
-      <div class="cell"><span class="scroll" aria-label="Листайте вниз"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1v13M2.5 8.5 8 14l5.5-5.5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span></div>
+      <a class="cell hero__cta" href="https://t.me/Cherkasskiy_Alexey" target="_blank" rel="noopener">Записаться на&nbsp;консультацию</a>
       <div class="cell">Партнёр адвокатского бюро «Мушаилов, Узденский, Рыбаков и&nbsp;партнёры»</div>
       <div class="cell">Москва · Хабаровск · онлайн по&nbsp;всей России</div>
     </div>
