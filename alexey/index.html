@@ -14,7 +14,7 @@
 <link rel="icon" href="img/ach.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -100,7 +100,8 @@
   /* ---------- header ---------- */
   .header{position:fixed;top:0;left:0;right:0;z-index:50;height:var(--head);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 var(--pad);color:var(--paper);transition:color var(--d) var(--ease),background-color var(--d) var(--ease),box-shadow var(--d) var(--ease)}
   .header.is-solid{background:var(--paper);color:var(--ink);box-shadow:0 1px 0 var(--ink)}
-  .brand{font-size:16px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+  .brand{font-size:16px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;font-weight:600}
+  .header.is-solid .brand{font-weight:400}
   .nav{display:flex;gap:28px;font-size:15px}
   .header__cta{justify-self:end}
   .header .btn--paper{border-color:currentColor;background:transparent;color:inherit}
