@@ -206,8 +206,10 @@
   .consult li::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;margin-top:9px}
   .consult .cell--btn{padding:0!important;display:flex}
   .consult .cell--btn .btn{width:100%;height:100%;min-height:160px;border:0;border-radius:0;justify-content:flex-start;align-items:flex-start;padding:26px var(--pad);text-align:left;white-space:normal;line-height:1.08;font-size:clamp(24px,2.1vw,32px);letter-spacing:-.02em;background:var(--ink);color:var(--paper)}
-  .consult .cell--btn .btn::before{background:var(--accent);inset:0}
-  .consult .cell--btn .btn:hover{color:#fff}
+  .consult .cell--btn .btn::before{background:var(--paper);inset:0}
+  .consult .cell--btn .btn:hover{color:var(--ink)}
+  .consult__arrow{position:absolute;right:var(--pad);bottom:26px;width:28px;height:28px;opacity:0;transform:translate(-8px,8px);transition:opacity var(--d) var(--ease),transform var(--dl) var(--ease)}
+  .consult .cell--btn .btn:hover .consult__arrow{opacity:1;transform:none}
   .pay{grid-template-columns:160px 1fr}
   .pay p{max-width:70ch;font-size:15px;line-height:1.4}
 
@@ -656,7 +658,7 @@
         <li>План действий и&nbsp;порядок шагов</li>
         <li>Ориентир по&nbsp;срокам и&nbsp;стоимости ведения дела</li>
       </ul></div>
-      <div class="cell cell--btn rv" style="--i:2"><a class="btn" href="https://t.me/Cherkasskiy_Alexey" target="_blank" rel="noopener">Записаться<br>на&nbsp;консультацию</a></div>
+      <div class="cell cell--btn rv" style="--i:2"><a class="btn" href="https://t.me/Cherkasskiy_Alexey" target="_blank" rel="noopener"><span>Записаться<br>на&nbsp;консультацию</span><svg class="consult__arrow" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 0V4H33.18L0 37.18L2.82 40L36 6.82V32H40V0H8Z" fill="currentColor"/></svg></a></div>
     </div>
     <div class="row pay">
       <div class="cell small">Оплата</div>
