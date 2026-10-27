@@ -1,0 +1,91 @@
+/* /bridge/dayNN — страница дня. Карточки повторяют компонент BRIDGE CARD из Figma FINAL (304 px, радиус 12, ярлык 36 px),
+   Typewriter v.2 / Repro заменены на Manrope. Рамка страницы — грамматика сайта (/cv). */
+:root {--paper:#fafafa; --white:#fff; --ink:#000; --muted:#666; --line:#d5d5d5; --surface:#e5e5e5; --accent:#ff2f00; --focus:#c62500;
+  --blue:#005bf9; --pink:#ff0095; --orange:#ff5200; --card-ink:#101010; --term-ink:#262626; --bar-ink:#e5e5e5;
+  --radius:20px; color-scheme:light; font-family:Manrope,Arial,sans-serif; color:var(--ink); background:var(--paper); font-synthesis:none}
+* {box-sizing:border-box}
+html {scroll-behavior:smooth; scrollbar-color:#999 var(--paper)}
+body {margin:0; -webkit-font-smoothing:antialiased}
+a {color:inherit; text-underline-offset:3px; -webkit-tap-highlight-color:transparent}
+a:focus-visible {outline:3px solid var(--focus); outline-offset:4px}
+::selection {background:var(--accent); color:var(--ink)}
+h1,h2,h3,p,ul,ol,figure {margin:0}
+.skip {position:fixed; z-index:30; top:-100px; left:20px; padding:12px; background:var(--white)}
+.skip:focus {top:10px}
+.site-header {max-width:1760px; margin:auto; padding:24px 48px; display:flex; justify-content:space-between; align-items:center; font-size:14px}
+.site-header .brand {font-weight:800; letter-spacing:-.025em}
+.site-header .brand a {text-decoration:none}
+.site-header .brand span {font-weight:500; color:var(--muted)}
+.site-header .brand span a {color:var(--muted)}
+.site-header .brand span a:hover {text-decoration:underline}
+.site-header>div {display:flex; align-items:center; gap:20px; font-size:12px; color:var(--muted)}
+.site-header>div a {text-decoration:none; color:var(--ink); font-weight:600}
+.site-header>div a:hover {text-decoration:underline}
+main {max-width:1760px; margin:auto; padding:24px 48px 0}
+
+/* титул дня — как блок в Figma: серая плашка с логотипами и чёрное поле с названием */
+.title {border-radius:var(--radius) var(--radius) 0 0; overflow:hidden; background:#000; color:var(--bar-ink)}
+.title-bar {background:var(--surface); display:flex; align-items:center; justify-content:space-between; gap:24px; padding:3.1% 3.7%; border-radius:var(--radius) var(--radius) 0 0}
+.title-bar img {display:block; height:auto}
+.title-bar .logo {width:34%}
+.title-bar .rings {width:9%}
+.title-bar .tl {width:41%}
+.title-text {padding:4% 6% 5%; text-align:center}
+.title-text h1 {font-size:clamp(34px,6.2vw,118px); line-height:.92; letter-spacing:-.045em; font-weight:500; text-wrap:balance}
+.title-text h1 em {display:block; font-style:normal; font-weight:400; letter-spacing:-.05em}
+.title-text h1 span {display:block}
+.meta-row {display:flex; flex-wrap:wrap; gap:8px 20px; font-size:12px; color:var(--muted); margin:20px 0 32px}
+.meta-row b {color:var(--ink); font-weight:600}
+
+/* группа = синий заголовок раздела + серое поле с карточками */
+.group {margin-top:36px}
+.bar {background:var(--blue); color:var(--bar-ink); border-radius:48px 48px 0 0; padding:clamp(14px,2vw,30px) clamp(20px,2.3vw,32px) clamp(16px,2.4vw,38px)}
+.bar h2 {font-size:clamp(28px,5.4vw,96px); line-height:.8; letter-spacing:-.07em; font-weight:500; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.cards {background:var(--surface); padding:clamp(24px,5vw,88px) clamp(20px,5vw,88px) clamp(32px,5vw,88px); display:grid; grid-template-columns:repeat(auto-fill,304px); gap:40px; align-items:start; justify-content:start}
+
+/* BRIDGE CARD */
+.card {width:304px; background:var(--white); border-radius:12px; overflow:hidden; color:var(--card-ink); padding-bottom:17px; font-size:16px; line-height:18px; letter-spacing:.018em}
+.card .img {padding-bottom:8px}
+.card .img img {display:block; width:304px; height:auto}
+.card .head {padding:0 8px 18px; display:flex; flex-direction:column; gap:5px}
+.card .term {font-size:26px; line-height:27px; letter-spacing:-.07em; font-weight:600; text-transform:uppercase; color:var(--term-ink); max-width:288px; text-wrap:balance}
+.card .en {padding:0 3px; text-transform:lowercase; letter-spacing:.018em}
+.card .text {padding:0 10px 15px 11px; display:flex; flex-direction:column; gap:14px}
+.card .text p {text-wrap:pretty}
+.card .text ul, .card .text ol {padding-left:18px; display:flex; flex-direction:column; gap:0}
+.card .text ol {padding-left:22px}
+.card .text li {padding-left:2px}
+.card .text ul li {list-style:none; position:relative}
+.card .text ul li::before {content:"—"; position:absolute; left:-18px}
+.card .text a {font-weight:600}
+.card .ref {padding:3px 12px 0 11px; font-size:11px; line-height:12px; letter-spacing:.018em; text-wrap:pretty}
+.term .tab {height:36px; background:var(--surface) url(assets/term-tab.svg) 0 0/304px 36px no-repeat; display:flex; align-items:center; padding:0 8px}
+.term .tab span, .strip span {color:#efefef; font-size:22px; line-height:1; letter-spacing:-.06em; font-weight:600; text-transform:uppercase; white-space:nowrap}
+.task, .ref {padding-top:20px}
+.bhead {display:flex; align-items:flex-end; padding:0 2px 0 8px; height:64px}
+.bhead .b {display:block; width:76px; height:64px; margin-right:-6px}
+.bhead .num {font-size:84px; line-height:64px; letter-spacing:-.14em; font-weight:500; color:var(--card-ink); flex:1; min-width:0; white-space:nowrap}
+.card .sub {margin:16px 0 12px; padding:0 8px; font-size:21px; line-height:21px; letter-spacing:-.07em; font-weight:600; text-transform:uppercase; color:var(--card-ink); max-width:272px}
+.strip {height:36px; display:flex; align-items:center; padding:0 8px}
+.strip.pink {background:var(--pink)}
+.strip.orange {background:var(--orange)}
+.task .head, .ref .head {padding:0 8px 17px}
+
+.daynav {display:flex; justify-content:space-between; gap:16px; margin-top:48px; font-size:14px; font-weight:600}
+.daynav a {text-decoration:none; background:var(--ink); color:var(--white); border-radius:24px; padding:12px 18px}
+.daynav a:hover {background:#333}
+footer {display:flex; justify-content:space-between; gap:24px; font-size:12px; line-height:1.6; color:var(--muted); border-top:1px solid var(--line); padding:28px 0; margin-top:48px}
+footer a {text-decoration:none}
+footer a:hover {text-decoration:underline}
+
+@media(max-width:1100px) {
+  main {padding:16px 24px 0} .site-header {padding:20px 24px}
+}
+@media(max-width:720px) {
+  .site-header>div span {display:none}
+  .title-text h1 {font-size:clamp(30px,9vw,60px)}
+  .bar {border-radius:24px 24px 0 0}
+  .cards {justify-content:center; gap:24px; padding:20px 16px 28px}
+  .daynav {flex-wrap:wrap}
+  footer {flex-direction:column; gap:8px}
+}
