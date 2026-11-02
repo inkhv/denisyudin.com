@@ -1,0 +1,51 @@
+[
+  {
+    "file": "husn.webp",
+    "sourcePage": "https://www.hilton.com/en/hotels/mctahwa-al-husn-hotel-muscat/",
+    "originalUrl": "https://www.hilton.com/im/en/MCTAHWA/24116518/aerial-view-shangri-la-al-husn-2.jpg?impolicy=crop&cw=5000&ch=2636&gravity=NorthWest&xposition=0&yposition=88&rw=1600&rh=844",
+    "retrieved": "2026-11-02",
+    "kind": "official-hotel-photograph"
+  },
+  {
+    "file": "bandar.webp",
+    "sourcePage": "https://www.hilton.com/en/hotels/mctabhi-hilton-muscat-al-bandar/",
+    "originalUrl": "https://www.hilton.com/im/en/MCTABHI/24077699/aerial-generic-1.jpg?impolicy=crop&cw=5000&ch=2636&gravity=NorthWest&xposition=0&yposition=88&rw=1100&rh=580",
+    "retrieved": "2026-11-02",
+    "kind": "official-hotel-photograph"
+  },
+  {
+    "file": "crowne.webp",
+    "sourcePage": "https://www.ihg.com/crowneplaza/hotels/us/en/muscat/mschc/hoteldetail",
+    "originalUrl": "https://digital.ihg.com/is/image/ihg/crowne-plaza-muscat-5782772765-original?resmode=bilin&qlt=80&fmt=webp&wid=1100",
+    "retrieved": "2026-11-02",
+    "kind": "official-hotel-photograph"
+  },
+  {
+    "file": "kempinski.webp",
+    "sourcePage": "https://www.kempinski.com/en/kempinski-hotel-muscat",
+    "originalUrl": "https://storage.kempinski.com/cdn-cgi/image/w=1200,f=auto,fit=scale-down/ki-cms-prod/images/7/3/7/0/510737-1-eng-GB/81b29f8b9793-74577850_4K.jpg",
+    "retrieved": "2026-11-02",
+    "kind": "official-hotel-photograph"
+  },
+  {
+    "file": "jumeirah.webp",
+    "sourcePage": "https://www.jumeirah.com/en/stay/oman/jumeirah-muscat-bay",
+    "originalUrl": "https://cdn.jumeirah.com/api/public/content/aa1bec5170b54f0ab3e40cc539e36c53?v=061bd01d",
+    "retrieved": "2026-11-02",
+    "kind": "official-hotel-photograph"
+  },
+  {
+    "file": "intercontinental.webp",
+    "sourcePage": "https://www.ihg.com/intercontinental/hotels/us/en/muscat/mscha/hoteldetail",
+    "originalUrl": "https://digital.ihg.com/is/image/ihg/intercontinental-muscat-11003692449-original?resmode=bilin&qlt=80&fmt=webp&wid=1100",
+    "retrieved": "2026-11-02",
+    "kind": "official-hotel-photograph"
+  },
+  {
+    "file": "waha.webp",
+    "sourcePage": "https://www.hilton.com/en/hotels/mctawdi-doubletree-muscat-al-waha/",
+    "originalUrl": "https://www.hilton.com/im/en/MCTAWDI/24108531/shangr-2.jpg?impolicy=crop&cw=5000&ch=2636&gravity=NorthWest&xposition=0&yposition=348&rw=1100&rh=580",
+    "retrieved": "2026-11-02",
+    "kind": "official-hotel-photograph"
+  }
+]
