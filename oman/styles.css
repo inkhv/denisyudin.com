@@ -12,3 +12,90 @@
 @media(max-width:360px){.site-header,main{padding-inline:16px}.site-header nav{gap:12px}.hero h1{font-size:47px}.choice-price{display:block}.choice-price>p:last-child{max-width:none;margin-top:14px}.choice-actions{align-items:start;flex-direction:column}.hotel-content>h3{font-size:24px}.trip-strip{font-size:12px}.table-price strong{font-size:17px}}
 @media(prefers-reduced-motion:reduce){:root{scroll-behavior:auto}.hero-photo{animation:none}*,*::before,*::after{transition:none!important}}
 @media print{.site-header nav,.controls,.button-link,#copy-status{display:none!important}.hero{padding-top:0}.hero-photo img{height:250px}.comparison{margin-bottom:30px}.hotel{break-inside:avoid;grid-template-columns:1fr 1.5fr;padding-block:24px;gap:24px}.hotel-photo img{max-height:240px}details .disclosure{display:block}footer{border-top:1px solid var(--line)}a{color:inherit}}
+
+.trip-section {
+  margin-top: clamp(64px, 8vw, 112px);
+}
+.trip-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--line);
+}
+.trip-entry {
+  display: grid;
+  grid-template-columns: minmax(130px, 1fr) minmax(0, 3.2fr) minmax(200px, 1.4fr);
+  gap: 24px;
+  padding-block: 24px;
+  border-top: 1px solid var(--line);
+}
+.trip-meta,
+.trip-price {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.trip-meta strong,
+.trip-meta time {
+  font-size: 16px;
+  font-weight: 550;
+}
+.trip-meta span,
+.trip-price span,
+.trip-footnote {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.trip-copy p {
+  max-width: 65ch;
+  margin-top: 8px;
+  font-size: 14px;
+}
+.trip-price strong {
+  font-size: 23px;
+  font-weight: 550;
+  letter-spacing: -.025em;
+}
+.trip-price a {
+  margin-top: 6px;
+  color: var(--sea);
+  font-size: 13px;
+}
+.trip-plan {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+  margin-top: 24px;
+  padding: 24px;
+  background: var(--panel);
+}
+.trip-plan p,
+.trip-footnote {
+  max-width: 74ch;
+}
+.trip-footnote {
+  margin-top: 16px;
+}
+@media (max-width: 740px) {
+  .site-header nav a[href="#compare"],
+  .site-header nav a[href="#booking"] {
+    display: none;
+  }
+  .site-header nav a[href="#excursions"] {
+    display: inline;
+  }
+  .trip-entry,
+  .trip-plan {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .trip-meta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+  }
+}
