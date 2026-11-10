@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#07080a">
+  <meta name="description" content="Виртуальная галерея шаблонов и интерактивная презентация AI Stream.">
+  <title>AI Stream — галерея презентаций</title>
+  <link rel="stylesheet" href="fonts.css">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="./" aria-label="AI Stream, галерея"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 29 9.5v13L16 30 3 22.5v-13L16 2Zm0 0v15m13-7.5L16 17 3 9.5m13 7.5v13"/></svg><span>AI STREAM</span></a>
+    <nav class="top-nav" aria-label="Разделы">
+      <a href="#gallery" data-route="gallery">Галерея</a>
+      <a href="#deck/1" data-route="deck">Презентация <span class="nav-dot" aria-hidden="true"></span></a>
+    </nav>
+    <a class="home-link" href="/" aria-label="На сайт Дениса Юдина">Denis Yudin <span aria-hidden="true">↗</span></a>
+  </header>
+  <main id="gallery">
+    <section class="exhibition" aria-labelledby="gallery-title">
+      <div class="scene" id="scene" tabindex="0" aria-label="Коридор галереи. Стрелки влево и вправо меняют экспонат. Enter открывает выбранную работу.">
+        <canvas id="wire" aria-hidden="true"></canvas>
+        <div class="walls" id="walls"></div>
+        <div class="scene-caption">
+          <h1 id="gallery-title">Галерея<br>презентаций</h1>
+          <p>Шаблоны из Figma и презентация проекта</p>
+        </div>
+        <span class="scene-coord" aria-hidden="true" id="coord">ЗАЛ / 01</span>
+        <p class="scene-help"><span class="desktop-help">Прокрутите или нажмите ← →</span><span class="touch-help">Проведите в сторону</span></p>
+      </div>
+      <div class="console">
+        <div class="work-meta"><span class="serial" id="work-index"></span><div><h2 id="work-title"></h2><p id="work-type"></p></div></div>
+        <div class="position" id="position" aria-label="Выбор работы"></div>
+        <div class="console-controls">
+          <button class="plain icon-btn" id="walk-prev" type="button" aria-label="Предыдущая работа"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4m6-6-6 6 6 6"/></svg></button>
+          <button class="plain icon-btn" id="walk-next" type="button" aria-label="Следующая работа"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button>
+          <button class="solid" id="work-open" type="button">Смотреть <span aria-hidden="true">↗</span></button>
+        </div>
+      </div>
+    </section>
+    <section class="catalogue" id="catalogue" aria-labelledby="catalogue-title">
+      <div class="section-top"><h2 id="catalogue-title">Все работы</h2><span id="catalogue-count"></span></div>
+      <div id="catalogue-grid" class="catalogue-grid"></div>
+    </section>
+  </main>
+  <main id="deck" hidden aria-labelledby="deck-title">
+    <div class="deck-toolbar">
+      <div><h1 id="deck-title">ИИ-стрим презентаций</h1><p id="chapter-title"></p></div>
+      <div class="deck-tools">
+        <button class="plain" id="reading-toggle" type="button" aria-pressed="false">Текст слайда</button>
+        <button class="plain icon-btn" id="deck-fullscreen" type="button" aria-label="На весь экран"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/></svg></button>
+      </div>
+    </div>
+    <section class="viewer" id="viewer" aria-label="Просмотр презентации">
+      <div class="deck-viewport" id="deck-viewport"><div class="slide" id="slide"></div></div>
+      <div class="reading" id="reading" hidden></div>
+      <div class="deck-progress" aria-hidden="true"><div id="deck-progress"></div></div>
+      <div class="deck-controls">
+        <button class="plain icon-btn" id="slide-prev" type="button" aria-label="Предыдущий слайд"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4m6-6-6 6 6 6"/></svg></button>
+        <label class="slide-picker"><span class="sr-only">Перейти к слайду</span><select id="slide-select"></select></label>
+        <button class="plain icon-btn" id="slide-next" type="button" aria-label="Следующий слайд"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><span>AI Stream</span><a href="/">denisyudin.com</a></footer>
+  <dialog id="work-dialog" aria-labelledby="detail-title">
+    <div class="detail-top"><span class="serial" id="detail-index"></span><button class="plain icon-btn" id="detail-close" type="button" aria-label="Закрыть"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+    <img id="detail-img" alt="">
+    <div class="detail-bottom"><div><h2 id="detail-title"></h2><p id="detail-type"></p></div><a class="solid" id="detail-source" target="_blank" rel="noopener noreferrer">Открыть в Figma <span aria-hidden="true">↗</span></a></div>
+  </dialog>
+  <div class="sr-only" id="announce" role="status"></div>
+  <noscript><p class="noscript">Для просмотра галереи включите JavaScript. <a href="https://www.figma.com/design/CSJO6EHIsKkp0TfBQavCxt/AI-STREAM-PP?node-id=152-610">Шаблоны в Figma</a> · <a href="https://www.figma.com/design/CSJO6EHIsKkp0TfBQavCxt/AI-STREAM-PP?node-id=1537-2">Презентация в Figma</a></p></noscript>
+</body>
+</html>
