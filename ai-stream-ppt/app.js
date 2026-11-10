@@ -307,7 +307,9 @@ function animateSlide() {
   animate('.draw-rule',[{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}],870,27);
   animate('.draw-dot',[{scale:'.15',opacity:0},{scale:'1',opacity:1}],470,49);
   animate('.stage-label',[{opacity:.25,translate:'0 12px'},{opacity:1,translate:'0 0'}],620,43);
-  animate('.chart-fill',[{scale:'0 1'},{scale:'1 1'}],980,90);
+  animate('.chart-fill, .draw-bar',[
+    {scale:'0 1',transformOrigin:'left center'},{scale:'1 1',transformOrigin:'left center'}
+  ],980,90);
   animate('.draw-tile',[{clipPath:'inset(98% 0 0 0)'},{clipPath:'inset(0 0 0 0)'}],760,64);
   animate('.artwork-reveal',[{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}],770,54);
 
@@ -341,7 +343,7 @@ function renderReading(content) {
   heading.textContent=content.title;
   const fragment=document.createDocumentFragment();
   fragment.append(heading);
-  const paragraphs = content.id==='1537:12' ? [2,1,4,3,6,5,0].map(i=>content.text[i]) : content.text;
+  const paragraphs = content.id==='1644:51' ? [2,1,4,3,6,5,0].map(i=>content.text[i]) : content.text;
   paragraphs.forEach(([kind,text]) => {
     const p=document.createElement('p');
     if (kind==='heading') {
@@ -367,8 +369,8 @@ function setReading(value) {
 
 // These two charts use the exact ranges and counts stated on the source slides.
 const charts = {
-  '1537:12': {x:1212,y:376,width:612,start:0,end:148/216*100,color:'#176cff',label:'Доля задач ДПМ: 148 из 216'},
-  '1537:27': {x:64,y:754,width:1020,start:70,end:80,color:'#f63b42',label:'70–80 процентов слайдов повторяют типовые'}
+  '1644:51': {x:1212,y:376,width:612,start:0,end:148/216*100,color:'#176cff',label:'Доля задач ДПМ: 148 из 216'},
+  '1644:133': {x:64,y:754,width:1020,start:70,end:80,color:'#f63b42',label:'70–80 процентов слайдов повторяют типовые'}
 };
 function addChart(spec) {
   const chart = document.createElement('div');

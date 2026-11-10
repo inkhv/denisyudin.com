@@ -1,78 +1,106 @@
 {
-  "slide-01-img3d.webp": {
-    "slide": "1537:3",
-    "layer": "img3D"
-  },
-  "slide-05-imgdot.svg": {
-    "slide": "1537:92",
-    "layer": "imgDot"
-  },
-  "slide-06-img.webp": {
-    "slide": "1538:2",
-    "layer": "img"
-  },
-  "slide-07-imgimg.webp": {
-    "slide": "1538:11",
-    "layer": "imgImg"
-  },
-  "slide-08-imgimg1.webp": {
-    "slide": "1538:48",
-    "layer": "imgImg1"
-  },
-  "slide-08-imgimg2.webp": {
-    "slide": "1538:48",
-    "layer": "imgImg2"
-  },
-  "slide-08-imgimg3.webp": {
-    "slide": "1538:48",
-    "layer": "imgImg3"
-  },
-  "slide-08-imgimg4.webp": {
-    "slide": "1538:48",
-    "layer": "imgImg4"
-  },
-  "slide-08-imgimg5.webp": {
-    "slide": "1538:48",
-    "layer": "imgImg5"
-  },
-  "slide-08-imgimg6.webp": {
-    "slide": "1538:48",
-    "layer": "imgImg6"
-  },
-  "slide-08-imgimg7.webp": {
-    "slide": "1538:48",
-    "layer": "imgImg7"
-  },
-  "slide-08-imgimg8.webp": {
-    "slide": "1538:48",
-    "layer": "imgImg8"
-  },
-  "slide-09-img.webp": {
-    "slide": "1539:2",
-    "layer": "img"
-  },
-  "slide-10-imgdot.svg": {
-    "slide": "1539:9",
-    "layer": "imgDot"
-  },
-  "slide-12-img.webp": {
-    "slide": "1540:2",
-    "layer": "img"
-  },
-  "slide-13-imgdot.svg": {
-    "slide": "1540:9",
-    "layer": "imgDot"
-  },
-  "slide-14-imgimg13602.webp": {
-    "slide": "1540:37",
-    "layer": "imgImg13602"
-  },
-  "slide-17-img3d.webp": {
-    "slide": "1541:62",
-    "layer": "img3D"
-  },
-  "slide-20-img.webp": {
-    "slide": "1542:47",
-    "layer": "img"
-  }
+  "motion-01-imgimage6.webp": [
+    {
+      "slide": "1644:3",
+      "layer": "imgImage6"
+    }
+  ],
+  "slide-13-imgdot.svg": [
+    {
+      "slide": "1644:535",
+      "layer": "imgDot"
+    },
+    {
+      "slide": "1644:1108",
+      "layer": "imgDot"
+    },
+    {
+      "slide": "1644:1390",
+      "layer": "imgDot"
+    }
+  ],
+  "motion-06-img.webp": [
+    {
+      "slide": "1627:121",
+      "layer": "img"
+    }
+  ],
+  "slide-08-imgimg1.webp": [
+    {
+      "slide": "1644:991",
+      "layer": "imgImg1"
+    }
+  ],
+  "slide-08-imgimg2.webp": [
+    {
+      "slide": "1644:991",
+      "layer": "imgImg2"
+    }
+  ],
+  "slide-08-imgimg3.webp": [
+    {
+      "slide": "1644:991",
+      "layer": "imgImg3"
+    }
+  ],
+  "slide-08-imgimg4.webp": [
+    {
+      "slide": "1644:991",
+      "layer": "imgImg4"
+    }
+  ],
+  "slide-08-imgimg5.webp": [
+    {
+      "slide": "1644:991",
+      "layer": "imgImg5"
+    }
+  ],
+  "slide-08-imgimg6.webp": [
+    {
+      "slide": "1644:991",
+      "layer": "imgImg6"
+    }
+  ],
+  "slide-08-imgimg7.webp": [
+    {
+      "slide": "1644:991",
+      "layer": "imgImg7"
+    }
+  ],
+  "slide-08-imgimg8.webp": [
+    {
+      "slide": "1644:991",
+      "layer": "imgImg8"
+    }
+  ],
+  "motion-09-img.webp": [
+    {
+      "slide": "1627:184",
+      "layer": "img"
+    }
+  ],
+  "motion-12-img.webp": [
+    {
+      "slide": "1627:259",
+      "layer": "img"
+    }
+  ],
+  "slide-14-imgimg13602.webp": [
+    {
+      "slide": "1644:1555",
+      "layer": "imgImg13602"
+    }
+  ],
+  "motion-17-img3d.webp": [
+    {
+      "slide": "1644:2026",
+      "layer": "img3D"
+    }
+  ],
+  "motion-20-img.webp": [
+    {
+      "slide": "1644:2162",
+      "layer": "img"
+    }
+  ]
 }
