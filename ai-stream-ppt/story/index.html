@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#050506">
+  <meta name="description" content="Семь недель ИИ-стрима презентаций: аудит слайдов, мастер-шаблоны, сборка в Figma и работа с данными.">
+  <title>Как мы собираем презентации с ИИ · AI Stream</title>
+  <link rel="stylesheet" href="../fonts.css">
+  <link rel="stylesheet" href="story.css">
+  <script type="module" src="story.js"></script>
+</head>
+<body>
+  <a class="skip" href="#content">К статье</a>
+  <header class="masthead">
+    <a class="brand" href="../">AI STREAM <span>↗</span></a>
+    <nav aria-label="Разделы AI Stream">
+      <a href="../">Галерея</a><a href="../#deck/1">Слайды</a><a href="./" aria-current="page">Лонгрид</a>
+    </nav>
+    <a class="folio" href="/">Denis Yudin ↗</a>
+    <div class="read-progress" id="read-progress" aria-hidden="true"></div>
+  </header>
+  <main id="content">
+    <article>
+      <header class="hero">
+        <img class="hero-art" src="../assets/slide-01-img3d.webp" alt="" width="1024" height="1024" fetchpriority="high">
+        <div class="wrap hero-inner">
+          <div class="hero-meta mono"><span>Дизайн-центр · Совкомбанк</span><span>15.09–03.11.2026</span></div>
+          <div class="hero-body">
+            <h1>Как мы собираем<br>презентации с ИИ</h1>
+            <p>За семь недель команда разобрала архив слайдов, собрала шаблоны и проверила, как Claude и ОВИ справляются с реальными задачами.</p>
+          </div>
+          <a class="hero-next mono" href="#audit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg> Читать с начала</a>
+        </div>
+      </header>
+
+      <nav class="contents" aria-label="Оглавление">
+        <div class="wrap contents-inner">
+          <a href="#audit"><span>01</span> Аудит</a>
+          <a href="#templates"><span>02</span> Шаблоны</a>
+          <a href="#assembly"><span>03</span> Сборка</a>
+          <a href="#data"><span>04</span> Данные</a>
+          <a href="#results"><span>05</span> Что дальше</a>
+        </div>
+      </nav>
+
+      <section class="chapter paper" id="audit" aria-labelledby="audit-title">
+        <div class="wrap">
+          <div class="chapter-meta mono"><span>01 / Аудит</span><a href="../#deck/2">Слайды 02–03 ↗</a></div>
+          <h2 id="audit-title">В кастомных деках повторяются одни и те же слайды</h2>
+          <div class="audit-spread">
+            <div class="audit-figure">
+              <div class="range-number" aria-label="От 70 до 80 процентов"><span aria-hidden="true"><span data-count="70">70</span>–<span data-count="80">80</span><span class="pct">%</span></span></div>
+              <div class="range-track" data-draw role="img" aria-label="На шкале от 0 до 100 процентов выделен диапазон от 70 до 80 процентов"><span></span></div>
+              <div class="range-ticks mono" aria-hidden="true"><span>0%</span><span>100%</span></div>
+            </div>
+            <div class="body-copy">
+              <p>В архиве B2B примерно 70–80% слайдов в кастомных презентациях повторяли типовые: таблицы, графики, KPI и планы. Своё оформление чаще требовалось обложкам, разделителям, лозунгам и коллажам.</p>
+              <p>Отсюда рабочая оценка: <strong>25–30 мастер-макетов</strong> хватит для типового ядра. В архиве при этом нашли 43 типа слайдов.</p>
+            </div>
+          </div>
+          <dl class="stats">
+            <div><dt><span data-count="3034">3 034</span> ч</dt><dd>Учтено в 216 задачах на презентации с января по 11 сентября 2026 года.</dd></div>
+            <div><dt><span data-count="14">14</span> ч</dt><dd>В среднем заняла одна задача по данным этой выгрузки.</dd></div>
+            <div><dt><span data-count="1551">1 551</span></dt><dd>Столько слайдов 16:9 было в архиве B2B за 2024–2026 годы.</dd></div>
+          </dl>
+          <p class="source mono">Источники: выгрузка YouTrack от 11.09.2026, без эпиков; аудит архива B2B в Figma от 21.10.2026.</p>
+        </div>
+      </section>
+
+      <section class="chapter dark" id="templates" aria-labelledby="templates-title">
+        <div class="wrap">
+          <div class="chapter-meta mono"><span>02 / Шаблоны</span><a href="../#deck/7">Слайды 07–08 ↗</a></div>
+          <div class="section-lead">
+            <h2 id="templates-title">Каждому типу слайда дали своё место</h2>
+            <div class="body-copy">
+              <p>В «Лиге Приключений 2026» обложки, таблицы, статистика и финальные слайды лежат в отдельных секциях. Когда в задаче нужна таблица, Claude может взять готовый макет из нужной секции.</p>
+              <p>К 3 ноября через скиллы собирали <strong>семь шаблонов</strong>. Для СКБ Бизнес и СКБ Розницы подготовили по 90 типовых слайдов, для зарплатного проекта — 32.</p>
+            </div>
+          </div>
+          <figure class="slide-strip">
+            <div class="strip-grid" data-strip>
+              <img src="../assets/slide-08-imgimg1.webp" alt="Обложка презентации «Спецрассрочка»" width="1280" height="720" loading="lazy">
+              <img src="../assets/slide-08-imgimg2.webp" alt="Слайд с условиями спецрассрочки" width="1280" height="720" loading="lazy">
+              <img src="../assets/slide-08-imgimg3.webp" alt="Слайд с таблицей расчётов" width="1280" height="720" loading="lazy">
+              <img src="../assets/slide-08-imgimg4.webp" alt="Слайд об оплате услуг ЖКХ" width="1280" height="720" loading="lazy">
+              <img src="../assets/slide-08-imgimg5.webp" alt="Слайд с примером выгоды" width="1280" height="720" loading="lazy">
+              <img src="../assets/slide-08-imgimg6.webp" alt="Сравнение спецрассрочки и кредита" width="1280" height="720" loading="lazy">
+              <img src="../assets/slide-08-imgimg7.webp" alt="Слайд об изменении условий" width="1280" height="720" loading="lazy">
+              <img src="../assets/slide-08-imgimg8.webp" alt="Слайд с акциями в приложении" width="1280" height="720" loading="lazy">
+            </div>
+            <figcaption><strong><span data-count="42">42</span> слайда</strong><span>Перенесли из PPTX в Figma в трёх презентациях Халвы. Текст, фигуры и изображения остались редактируемыми. Здесь восемь слайдов «Спецрассрочки».</span></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="chapter paper" id="assembly" aria-labelledby="assembly-title">
+        <div class="wrap">
+          <div class="chapter-meta mono"><span>03 / Сборка</span><a href="../#deck/10">Слайд 10 ↗</a></div>
+          <div class="section-lead">
+            <h2 id="assembly-title">Как Claude собирает слайды в Figma</h2>
+            <div class="body-copy"><p>Дизайнер передаёт исходник и выбирает шаблон. В скилле записаны типы слайдов, сетка, шрифты и правила направления. По ним Claude выбирает кадры и переносит текст.</p></div>
+          </div>
+          <ol class="assembly-steps">
+            <li><b>01</b><h3>Задача</h3><p>Текст, DOCX или черновик в PPTX.</p></li>
+            <li><b>02</b><h3>Шаблон</h3><p>Типы слайдов, сетка и материалы направления.</p></li>
+            <li><b>03</b><h3>Сборка</h3><p>Claude копирует кадры в Figma и переносит текст.</p></li>
+            <li><b>04</b><h3>Проверка</h3><p>Дизайнер сверяет текст, переносы и наложения.</p></li>
+            <li><b>05</b><h3>Выгрузка</h3><p>После правок дизайнер сохраняет PDF или PPTX.</p></li>
+          </ol>
+          <div class="timeline" aria-labelledby="timeline-title">
+            <h3 id="timeline-title">Семь недель работы</h3>
+            <div class="timeline-nav" id="timeline-nav" aria-label="Даты проекта"></div>
+            <div class="timeline-story" id="timeline-story" aria-live="polite"></div>
+            <noscript><p>15 сентября собрали задачи в YouTrack. 23 сентября перенесли первый дек Халвы. 30 октября проверили полный цикл обезличивания. 3 ноября подвели итоги теста ОВИ.</p></noscript>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter dark" id="data" aria-labelledby="data-title">
+        <div class="wrap">
+          <div class="chapter-meta mono"><span>04 / Данные</span><a href="../#deck/13">Слайды 13–16 ↗</a></div>
+          <div class="section-lead">
+            <h2 id="data-title">В Claude уходит копия с подменными данными</h2>
+            <div class="body-copy">
+              <p>Перед вёрсткой приложение в ОВИ заменяет реальные значения и названия. Claude собирает обезличенный дек. После вёрстки плагин в Figma возвращает значения и перестраивает графики.</p>
+              <p>30 октября команда проверила полный цикл на деке из 25 слайдов: плагин вернул <strong>266 замен</strong>. В отчёте остались два вопроса: обрывы связи в ОВИ и длина подменных значений.</p>
+            </div>
+          </div>
+          <div class="demo" aria-labelledby="demo-title">
+            <div class="demo-head">
+              <div><h3 id="demo-title">Один макет, три состояния</h3><p>На вымышленных данных</p></div>
+              <div class="demo-controls" id="demo-controls" aria-label="Этап обезличивания">
+                <button type="button" aria-pressed="true" data-demo="0">Исходник</button>
+                <button type="button" aria-pressed="false" data-demo="1">Маски</button>
+                <button type="button" aria-pressed="false" data-demo="2">Возврат</button>
+              </div>
+            </div>
+            <div class="demo-slide" id="demo-slide">
+              <div class="demo-copy">
+                <p class="mono" id="demo-phase">ДО ОБЕЗЛИЧИВАНИЯ</p>
+                <h4 id="demo-name">Проект «Север»</h4>
+                <strong id="demo-kpi">42 заявки</strong>
+              </div>
+              <div class="demo-plot" id="demo-plot" role="img" aria-label="Распределение: 8, 14 и 20 заявок">
+                <div style="--level:17.78%"><span>8</span></div><div style="--level:31.11%"><span>14</span></div><div style="--level:44.44%"><span>20</span></div>
+              </div>
+            </div>
+            <p class="demo-note mono" id="demo-note" aria-live="polite">Исходные значения находятся в рабочем файле.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter paper" id="results" aria-labelledby="results-title">
+        <div class="wrap">
+          <div class="chapter-meta mono"><span>05 / Что дальше</span><a href="../#deck/15">Слайды 15–20 ↗</a></div>
+          <h2 id="results-title">По итогам теста ОВИ готовил структуру, Claude собирал макет</h2>
+          <div class="compare">
+            <div class="compare-dark"><h3>Claude</h3><p>Собирал слайды из шаблона в Figma и проверял макет по скриншотам. Работал с подменными данными, потому что обработка шла во внешнем облаке.</p></div>
+            <div><h3>ОВИ</h3><p>В тесте извлекал текст, шрифты, цвета и размеры внутри банка. Результат вёрстки команда считала черновиком: в одном тесте ОВИ взял фон гайдбука вместо стиля презентации.</p></div>
+          </div>
+          <div class="closing body-copy">
+            <p>На следующую неделю запланировали тесты на облегчённых шаблонах, ещё один прогон обезличивания и отдельный трек для кастомных презентаций. Перед выпуском дизайнер проверяет факты, права на материалы и итоговый макет.</p>
+          </div>
+          <p class="source mono">Срез на 3 ноября 2026 года. Основа: <a href="https://www.figma.com/design/CSJO6EHIsKkp0TfBQavCxt/AI-STREAM-PP?node-id=1537-2">«ИИ-стрим презентаций», 4 ноября 2026 ↗</a>.</p>
+          <div class="next-links"><a href="../#deck/1">Открыть 20 слайдов <span>↗</span></a><a href="../">Смотреть шаблоны <span>↗</span></a></div>
+        </div>
+      </section>
+    </article>
+  </main>
+  <footer class="footer"><div class="wrap"><a href="../">AI Stream</a><a href="/">denisyudin.com ↗</a></div></footer>
+</body>
+</html>
