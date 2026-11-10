@@ -1,4 +1,5 @@
 import {covers} from './covers.js';
+import {formatText} from './typography.js';
 
 const $ = id => document.getElementById(id);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -59,6 +60,9 @@ for (const [i,work] of works.entries()) {
   panels.push(panel);
 
   const card = button('catalogue-item');
+  const cover = document.createElement('span');
+  cover.className = 'catalogue-cover';
+  cover.append(imageFor(work, i > 2));
   const label = document.createElement('span');
   label.className = 'catalogue-label';
   const serial = document.createElement('span');
@@ -66,14 +70,15 @@ for (const [i,work] of works.entries()) {
   serial.textContent = pad(i + 1);
   const name = document.createElement('strong');
   name.textContent = work.title;
+  formatText(name);
   const arrow = document.createElement('span');
   arrow.textContent = '↗'; arrow.className = 'external'; arrow.setAttribute('aria-hidden', 'true');
   label.append(serial, name, arrow);
-  card.append(imageFor(work, i > 2), label);
+  card.append(cover, label);
   card.addEventListener('click', () => openWork(i));
   $('catalogue-grid').append(card);
 }
-$('catalogue-count').textContent = covers.length + ' шаблонов · 1 презентация';
+$('catalogue-count').textContent = covers.length + '\u00a0шаблонов · 1\u00a0презентация';
 
 function openWork(i) {
   selectWork(i, false);
@@ -85,6 +90,7 @@ function openWork(i) {
   restoreFocus = document.activeElement;
   $('detail-index').textContent = pad(i + 1) + ' / ' + pad(works.length);
   $('detail-title').textContent = item.title;
+  formatText($('detail-title'));
   $('detail-type').textContent = item.type;
   $('detail-img').src = workImage(item);
   $('detail-img').alt = 'Обложка: ' + item.title;
@@ -111,6 +117,7 @@ function selectWork(index, say = true) {
   $('work-index').textContent = pad(next + 1) + ' / ' + pad(works.length);
   $('coord').textContent = 'ЗАЛ / ' + pad(next + 1);
   $('work-title').textContent = item.title;
+  formatText($('work-title'));
   $('work-type').textContent = item.type;
   $('walk-prev').disabled = next === 0;
   $('walk-next').disabled = next === works.length - 1;
@@ -282,7 +289,7 @@ swipe(scene,direction=>selectWork(active+direction));
 const deck=$('deck'), viewer=$('viewer'), stage=$('deck-viewport'), slide=$('slide'), readingPanel=$('reading'), picker=$('slide-select');
 let deckLoad;
 function loadDeck() {
-  if (!deckLoad) deckLoad=import('./slides.js').then(module => {
+  if (!deckLoad) deckLoad=import('./slides.js?v=typography-1').then(module => {
     slides=module.slides;
     slides.forEach((s,i)=>picker.add(new Option(pad(i+1)+' · '+s.title,String(i))));
     return slides;
@@ -341,6 +348,7 @@ function animateSlide() {
 function renderReading(content) {
   const heading = document.createElement('h2');
   heading.textContent=content.title;
+  formatText(heading);
   const fragment=document.createDocumentFragment();
   fragment.append(heading);
   const paragraphs = content.id==='1644:51' ? [2,1,4,3,6,5,0].map(i=>content.text[i]) : content.text;
@@ -351,6 +359,7 @@ function renderReading(content) {
       strong.textContent=text;
       p.append(strong);
     } else p.textContent=text;
+    formatText(p, {reflow:true});
     fragment.append(p);
   });
   readingPanel.replaceChildren(fragment);
@@ -394,11 +403,18 @@ function showSlide(i, replay = false) {
   slide.style.backgroundColor=content.bg;
   // The slide pack is generated locally from source layouts. No remote HTML is inserted.
   slide.innerHTML=content.html;
+  slide.querySelectorAll('p').forEach(block => {
+    const prose = block.style.width && parseFloat(block.style.fontSize) < 48
+      && block.style.whiteSpace !== 'nowrap';
+    formatText(block, {reflow:Boolean(prose)});
+    if (prose) block.classList.add('slide-prose');
+  });
   if (charts[content.id]) addChart(charts[content.id]);
   if (!reading) {scaleSlide();animateSlide();}
   renderReading(content);
   readingPanel.scrollTop=0;
   $('chapter-title').textContent=pad(i+1)+' / '+pad(slides.length)+' · '+content.title;
+  formatText($('chapter-title'));
   $('deck-progress').style.width=(100*(i+1)/slides.length)+'%';
   picker.value=String(i);
   $('slide-prev').disabled=i===0;
@@ -470,5 +486,6 @@ async function route() {
   }
 }
 window.addEventListener('hashchange',route);
+document.querySelectorAll('.scene-caption p, .scene-help span, .noscript').forEach(block => formatText(block));
 selectWork(0,false);
 route();

@@ -1,3 +1,5 @@
+import {formatText} from '../typography.js';
+
 const $ = id => document.getElementById(id);
 const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 const ease = 'cubic-bezier(.16,1,.3,1)';
@@ -16,6 +18,8 @@ function showMilestone(index, animate = true) {
   const copy = document.createElement('p');
   heading.textContent=title;
   copy.textContent=text;
+  formatText(heading);
+  formatText(copy);
   $('timeline-story').replaceChildren(heading,copy);
   [...$('timeline-nav').children].forEach((button,i)=>button.setAttribute('aria-pressed',String(i===index)));
   if (animate && !reduce.matches) $('timeline-story').animate(
@@ -60,6 +64,7 @@ $('demo-controls').addEventListener('click',e=>{
   $('demo-name').textContent=item.name;
   $('demo-kpi').textContent=item.kpi;
   $('demo-note').textContent=item.note;
+  formatText($('demo-note'));
   $('demo-slide').classList.toggle('masked',i===1);
   $('demo-plot').setAttribute('aria-label',item.label);
   [...$('demo-plot').children].forEach((bar,j)=>{
@@ -69,6 +74,9 @@ $('demo-controls').addEventListener('click',e=>{
   [...$('demo-controls').children].forEach((el,j)=>el.setAttribute('aria-pressed',String(i===j)));
   if (!reduce.matches) $('demo-name').animate([{opacity:.2},{opacity:1}],{duration:390,easing:ease});
 });
+
+document.querySelectorAll('article h1, article h2, article h3, article h4, article p, article dd, .slide-strip figcaption > span')
+  .forEach(block => formatText(block));
 
 const formatter = new Intl.NumberFormat('ru');
 const observeMotion=new IntersectionObserver(entries=>{

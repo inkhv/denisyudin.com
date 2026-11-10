@@ -8,8 +8,8 @@
   <meta name="description" content="Семь недель ИИ-стрима презентаций: аудит слайдов, мастер-шаблоны, сборка в Figma и работа с данными.">
   <title>Как мы собираем презентации с ИИ · AI Stream</title>
   <link rel="stylesheet" href="../fonts.css">
-  <link rel="stylesheet" href="story.css">
-  <script type="module" src="story.js"></script>
+  <link rel="stylesheet" href="story.css?v=typography-1">
+  <script type="module" src="story.js?v=typography-1"></script>
 </head>
 <body>
   <a class="skip" href="#content">К статье</a>
@@ -57,13 +57,13 @@
             </div>
             <div class="body-copy">
               <p>В архиве B2B примерно 70–80% слайдов в кастомных презентациях повторяли типовые: таблицы, графики, KPI и планы. Своё оформление чаще требовалось обложкам, разделителям, лозунгам и коллажам.</p>
-              <p>Отсюда рабочая оценка: <strong>25–30 мастер-макетов</strong> хватит для типового ядра. В архиве при этом нашли 43 типа слайдов.</p>
+              <p>Отсюда рабочая оценка: <strong class="keep-together">25–30 мастер-макетов</strong> хватит для типового ядра. В архиве при этом нашли 43 типа слайдов.</p>
             </div>
           </div>
           <dl class="stats">
             <div><dt><span data-count="3034">3 034</span> ч</dt><dd>Учтено в 216 задачах на презентации с января по 11 сентября 2026 года.</dd></div>
             <div><dt><span data-count="14">14</span> ч</dt><dd>В среднем заняла одна задача по данным этой выгрузки.</dd></div>
-            <div><dt><span data-count="1551">1 551</span></dt><dd>Столько слайдов 16:9 было в архиве B2B за 2024–2026 годы.</dd></div>
+            <div><dt><span data-count="1551">1 551</span></dt><dd>Слайды 16:9 из архива B2B за 2024–2026.</dd></div>
           </dl>
           <p class="source mono">Источники: выгрузка YouTrack от 11.09.2026, без эпиков; аудит архива B2B в Figma от 21.10.2026.</p>
         </div>
@@ -122,7 +122,7 @@
         <div class="wrap">
           <div class="chapter-meta mono"><span>04 / Данные</span><a href="../#deck/13">Слайды 13–16 ↗</a></div>
           <div class="section-lead">
-            <h2 id="data-title">В Claude уходит копия с подменными данными</h2>
+            <h2 id="data-title">В Claude уходит копия с масками</h2>
             <div class="body-copy">
               <p>Перед вёрсткой приложение в ОВИ заменяет реальные значения и названия. Claude собирает обезличенный дек. После вёрстки плагин в Figma возвращает значения и перестраивает графики.</p>
               <p>30 октября команда проверила полный цикл на деке из 25 слайдов: плагин вернул <strong>266 замен</strong>. В отчёте остались два вопроса: обрывы связи в ОВИ и длина подменных значений.</p>
