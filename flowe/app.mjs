@@ -8,15 +8,18 @@ import {createUI} from './studio/ui.mjs';
 const $=id=>document.getElementById(id),v=(x=0,y=0,z=0)=>new T.Vector3(x,y,z);
 const state=newState();applyPalette(state,'blue');
 const groups=[],meshes=[],bases=[],external=[],emitters=[];
-let scene,root,camera,orbit,renderer,pipeline,logoMesh,bluePocket,bluePlain,environment,ambient,ui,focusPoint=null;
+let scene,root,camera,orbit,renderer,pipeline,logoMesh,logoCenter,bluePocket,bluePlain,environment,ambient,ui,focusPoint=null;
 let dirty=true,ready=false,raf,exporting=false,toastTimer,syncingCamera=false;
 const invalidate=()=>dirty=true;
 function toast(message){$('status').textContent=message;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('status').textContent='',4500);}
 function worldCenter(i){if(i===5){logoMesh.geometry.computeBoundingBox();return logoMesh.localToWorld(logoMesh.geometry.boundingBox.getCenter(v()));}return groups[i].getWorldPosition(v());}
 function params(){return [...state.petals.map((_,i)=>effectiveMaterial(state,i)),{...materials.enamel,baseColor:state.logo.color,opacity:state.logo.opacity,roughness:state.logo.roughness,emissionColor:state.logo.emissionColor,emission:state.logo.emission}];}
 function updateShape(){groups.forEach((g,i)=>{const radial=1+state.spread/100*1.6;g.position.set(bases[i].x*radial,.24+(4-i)*layerStep(state.layers)+state.petals[i].lift,bases[i].z*radial);g.rotation.y=T.MathUtils.degToRad(state.twist*(2-i)*.65+state.petals[i].turn);});
- logoMesh.visible=state.showLogo;logoMesh.position.y=state.logo.depth;
- meshes[0].geometry=state.showLogo&&Math.abs(state.logo.depth)<.0001?bluePocket:bluePlain;
+ const logoAngle=T.MathUtils.degToRad(state.logo.rotation%360);
+ logoMesh.visible=state.showLogo;logoMesh.rotation.y=logoAngle;
+ // Keep the off-origin sign centered in its original inset as it turns.
+ logoMesh.position.copy(logoCenter).sub(logoCenter.clone().applyEuler(logoMesh.rotation));logoMesh.position.y=state.logo.depth;
+ meshes[0].geometry=state.showLogo&&Math.abs(state.logo.depth)<.0001&&logoAngle===0?bluePocket:bluePlain;
  root.updateMatrixWorld(true);
 }
 function updateMaterials(){params().forEach((p,i)=>{const mesh=i===5?logoMesh:meshes[i],m=mesh.material;m.color.set(p.baseColor);m.roughness=p.roughness;m.ior=p.ior;m.metalness=p.metalness;m.specularIntensity=p.specular;m.clearcoat=p.coat;m.clearcoatRoughness=p.coatRoughness;m.emissive.set(p.emissionColor);m.emissiveIntensity=p.emission;m.envMapIntensity=state.lighting.enabled?state.lighting.environment:0;
@@ -80,7 +83,7 @@ async function main(){try{
  scene=new T.Scene();root=new T.Group();scene.add(root);RectAreaLightUniformsLib.init();ambient=new T.HemisphereLight('#ffffff','#526482',.35);scene.add(ambient);const pmrem=new T.PMREMGenerator(renderer),room=new RoomEnvironment();environment=pmrem.fromScene(room,.035).texture;room.dispose();pmrem.dispose();scene.environmentRotation.set(.22,.4,.18);
  camera=new T.PerspectiveCamera(35,aspect(),.05,300);camera.setFocalLength(50);camera.position.set(7,16,20);bindOrbit();
  const response=await fetch(new URL('assets/flower.json',import.meta.url));if(!response.ok)throw Error('Не удалось загрузить модель.');const data=await response.json();for(const part of data.parts){const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(part.position,3));geo.setAttribute('normal',new T.Float32BufferAttribute(part.normal,3));geo.setIndex(part.index);geo.computeBoundingSphere();const mesh=new T.Mesh(geo,physicalMaterial());mesh.name=part.name;if(part.part==='petal'){const group=new T.Group(),base=new T.Vector3(...part.pivot);root.add(group);group.add(mesh);groups.push(group);bases.push(base);meshes.push(mesh);}else{logoMesh=mesh;groups[0].add(logoMesh);}}
- if(groups.length!==5||!logoMesh)throw Error('Неполная модель.');bluePocket=meshes[0].geometry;bluePlain=meshes[1].geometry.clone().rotateY(Math.atan2(-bases[0].x,-bases[0].z)-Math.atan2(-bases[1].x,-bases[1].z));bluePlain.computeBoundingSphere();
+ if(groups.length!==5||!logoMesh)throw Error('Неполная модель.');logoMesh.geometry.computeBoundingBox();logoCenter=logoMesh.geometry.boundingBox.getCenter(v());bluePocket=meshes[0].geometry;bluePlain=meshes[1].geometry.clone().rotateY(Math.atan2(-bases[0].x,-bases[0].z)-Math.atan2(-bases[1].x,-bases[1].z));bluePlain.computeBoundingSphere();
  for(let i=0;i<6;i++){const pair=[new T.PointLight('#ffffff',0,15,2),new T.PointLight('#ffffff',0,15,2)];pair.forEach(l=>scene.add(l));emitters.push(pair);}
  pipeline=new StudioRenderer(renderer,scene,[...meshes,logoMesh]);ui=createUI(state,{change,view:setView,preset,demo,cameraType,distance,focal,orthoSize,pickFocus,focusTarget,clearFocus,resetCamera});ready=true;change();resize();setView('hero');initInteractions();$('controls').disabled=false;for(const id of ['reset','reset-mobile','export','spin'])$(id).disabled=false;document.querySelectorAll('[data-view]').forEach(b=>b.disabled=false);$('loading').hidden=true;
  new ResizeObserver(resize).observe($('viewport'));renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();cancelAnimationFrame(raf);$('error').hidden=false;$('error-message').textContent='Графический контекст потерян. Обновите страницу или выберите меньшее качество просмотра.';});
