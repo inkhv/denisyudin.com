@@ -7,82 +7,335 @@
   <link rel="canonical" href="https://denisyudin.com/forma/">
   <meta name="theme-color" content="#f7f7f2">
   <meta name="description" content="FORMA — AI-агенты для маркетинговых команд. Креативы, презентации, рассылки и 3D в стиле бренда. Соберите профиль под задачи своей кампании.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="FORMA — AI-агенты для маркетинговых команд">
+  <meta property="og:description" content="Креативы, презентации, рассылки и 3D в едином стиле бренда.">
+  <meta property="og:url" content="https://denisyudin.com/forma/">
+  <meta property="og:image" content="https://denisyudin.com/forma/assets/img/og.jpg">
   <title>FORMA — AI-агенты для маркетинговых команд</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="preload" as="font" href="assets/onest-regular.ttf" type="font/ttf" crossorigin>
-  <link rel="preload" as="image" href="assets/forma-art.webp">
-  <link rel="stylesheet" href="style.css?v=20261112-1">
-  <script src="app.js?v=20261112-1" defer></script>
+  <link rel="preload" as="font" href="assets/onest-regular.woff2" type="font/woff2" crossorigin>
+  <link rel="preload" as="font" href="assets/onest-semibold.woff2" type="font/woff2" crossorigin>
+  <link rel="preload" as="image" href="assets/img/hero-3d.webp" imagesrcset="assets/img/hero-3d-900.webp 900w, assets/img/hero-3d.webp 1800w" imagesizes="(max-width:720px) 82vw, 48vw">
+  <link rel="stylesheet" href="style.css?v=20261113h">
+  <script>(function(){var d=document.documentElement;d.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('motion');setTimeout(function(){if(!window.__formaMotion)d.classList.remove('motion')},2500)}})()</script>
+  <script src="vendor/gsap.min.js" defer></script>
+  <script src="vendor/ScrollTrigger.min.js" defer></script>
+  <script src="vendor/SplitText.min.js" defer></script>
+  <script src="vendor/Flip.min.js" defer></script>
+  <script src="vendor/lenis.min.js" defer></script>
+  <script src="app.js?v=20261113h" defer></script>
+  <script src="motion.js?v=20261113h" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">К содержимому</a>
 <svg class="svg-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
   <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></symbol>
-  <symbol id="diagonal" viewBox="0 0 24 24"><path d="M5 19 19 5M5 5h14v14"/></symbol>
+  <symbol id="diagonal" viewBox="0 0 24 24"><path d="M6 18 18 6M8 6h10v10"/></symbol>
   <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
   <symbol id="upload" viewBox="0 0 24 24"><path d="M12 16V4m-5 5 5-5 5 5M4 16v4h16v-4"/></symbol>
   <symbol id="download" viewBox="0 0 24 24"><path d="M12 4v12m-5-5 5 5 5-5M4 17v3h16v-3"/></symbol>
+  <symbol id="star" viewBox="0 0 32 32"><path d="M16 3v26M3 16h26M7 7l18 18M7 25 25 7"/></symbol>
 </defs></svg>
-<header class="header wrap">
-  <a class="logo" href="#" aria-label="FORMA — на главную">forma<span class="logo-star" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 3v26M3 16h26M7 7l18 18M7 25 18-18"/></svg></span></a>
-  <nav class="desktop-nav" aria-label="Основная навигация">
-    <a href="#agents">Агенты</a><a href="#brand">Ваш стиль</a><a href="#workflow">Как это работает</a><a href="#pricing">Подписка</a>
-  </nav>
-  <a class="button button-dark header-cta" href="#configure">Собрать агента <svg><use href="#diagonal"/></svg></a>
-  <button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button>
+
+<header class="header" id="top">
+  <div class="wrap header-inner">
+    <a class="logo" href="#top" aria-label="FORMA — на главную">forma<span class="logo-star" aria-hidden="true"><svg><use href="#star"/></svg></span></a>
+    <nav class="desktop-nav" aria-label="Основная навигация">
+      <a href="#agents">Агенты</a><a href="#brand">Ваш стиль</a><a href="#workflow">Как это работает</a><a href="#pricing">Подписка</a>
+    </nav>
+    <a class="button button-dark header-cta" href="#configure"><span>Собрать агента</span> <svg><use href="#diagonal"/></svg></a>
+    <button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button>
+  </div>
 </header>
-<nav id="mobile-nav" class="mobile-nav" aria-label="Мобильная навигация" hidden><a href="#agents">Агенты</a><a href="#brand">Ваш стиль</a><a href="#workflow">Как это работает</a><a href="#pricing">Подписка</a><a href="#configure">Собрать агента</a></nav>
+<nav id="mobile-nav" class="mobile-nav" aria-label="Мобильная навигация" hidden>
+  <a href="#agents"><span>01</span>Агенты</a>
+  <a href="#brand"><span>02</span>Ваш стиль</a>
+  <a href="#workflow"><span>03</span>Как это работает</a>
+  <a href="#pricing"><span>04</span>Подписка</a>
+  <a href="#configure"><span>05</span>Собрать агента</a>
+</nav>
+
 <main id="main">
-  <section class="hero wrap" aria-labelledby="hero-title">
-    <div class="hero-heading"><h1 id="hero-title">Ваш бриф.<br><span>Его работа.</span></h1><div class="hero-copy"><p>AI-агенты для маркетинговых команд.<br>Креативы, презентации и рассылки<br class="desktop-break"> в едином стиле бренда.</p><a class="button button-orange" href="#agents">Выбрать агента <svg><use href="#diagonal"/></svg></a><span class="hero-footnote">Вы задаёте цель кампании. Агент готовит материалы.</span></div></div>
-    <div class="hero-gallery" aria-label="Концептуальные примеры визуальных направлений">
-      <a class="showcase" href="#configure" data-pick="3d"><div class="art art-chrome"><span class="image-tag">3D & объекты</span><span class="round-arrow"><svg><use href="#diagonal"/></svg></span></div><div class="art-caption"><span>3D для запуска продукта</span><span>3D-агент</span></div></a>
-      <a class="showcase" href="#configure" data-pick="concept"><div class="art art-orange"><span class="image-tag">Арт-дирекшн</span><span class="round-arrow"><svg><use href="#diagonal"/></svg></span></div><div class="art-caption"><span>Визуальная идея кампании</span><span>Концепт-агент</span></div></a>
-      <a class="showcase" href="#configure" data-pick="branding"><div class="art art-violet"><span class="image-tag">Брендинг & айдентика</span><span class="round-arrow"><svg><use href="#diagonal"/></svg></span></div><div class="art-caption"><span>Узнаваемый образ бренда</span><span>Бренд-агент</span></div></a>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <p class="eyebrow hero-eyebrow" data-hero-fade><i aria-hidden="true"></i>Творческие агенты по подписке · концепция сервиса</p>
+      <div class="hero-heading">
+        <h1 id="hero-title" data-split="hero">Ваш бриф.<br><span class="muted">Его работа.</span></h1>
+        <div class="hero-copy">
+          <p data-hero-fade>AI-агенты для маркетинговых команд. Креативы, презентации и рассылки в&nbsp;едином стиле бренда.</p>
+          <a class="button button-orange" href="#agents" data-hero-fade><span>Выбрать агента</span> <svg><use href="#diagonal"/></svg></a>
+          <span class="hero-footnote" data-hero-fade>Вы задаёте цель кампании. Агент готовит материалы.</span>
+        </div>
+      </div>
+      <div class="hero-gallery" aria-label="Концептуальные примеры визуальных направлений">
+        <a class="showcase showcase-wide" href="#configure" data-pick="3d">
+          <div class="frame" data-hero-frame data-parallax>
+            <div class="frame-media"><img src="assets/img/hero-3d.webp" srcset="assets/img/hero-3d-900.webp 900w, assets/img/hero-3d.webp 1800w" sizes="(max-width:720px) 82vw, 48vw" width="1800" height="1208" alt="3D-визуал: флакон AERA внутри хромированной ленты, рядом оранжевая сфера и сиреневый стеклянный диск" fetchpriority="high"></div>
+            <span class="image-tag">3D и объекты</span><span class="round-arrow"><svg><use href="#diagonal"/></svg></span>
+          </div>
+          <div class="art-caption"><span>3D для запуска продукта</span><span>3D-художник</span></div>
+        </a>
+        <a class="showcase" href="#configure" data-pick="concept">
+          <div class="frame" data-hero-frame data-parallax>
+            <div class="frame-media"><img src="assets/img/hero-poster.webp" srcset="assets/img/hero-poster-900.webp 900w, assets/img/hero-poster.webp 1200w" sizes="(max-width:720px) 82vw, 24vw" width="1200" height="1490" alt="Городской постер кампании AERA со слоганом Less. But better. на остановке вечером"></div>
+            <span class="image-tag">Арт-дирекшн</span><span class="round-arrow"><svg><use href="#diagonal"/></svg></span>
+          </div>
+          <div class="art-caption"><span>Визуальная идея кампании</span><span>Концепт-директор</span></div>
+        </a>
+        <a class="showcase" href="#configure" data-pick="branding">
+          <div class="frame" data-hero-frame data-parallax>
+            <div class="frame-media"><img src="assets/img/hero-brand.webp" srcset="assets/img/hero-brand-900.webp 900w, assets/img/hero-brand.webp 1200w" sizes="(max-width:720px) 82vw, 24vw" width="1200" height="1490" alt="Раскладка фирменных носителей AERA: пакет, визитки, конверт, наклейки и шопер"></div>
+            <span class="image-tag">Брендинг и айдентика</span><span class="round-arrow"><svg><use href="#diagonal"/></svg></span>
+          </div>
+          <div class="art-caption"><span>Узнаваемый образ бренда</span><span>Бренд-дизайнер</span></div>
+        </a>
+      </div>
+      <div class="gallery-note" data-hero-fade><span>Один бренд. Разные каналы.</span><span>AERA — вымышленный бренд. Визуалы созданы в&nbsp;Krea для демонстрации.</span></div>
     </div>
-    <div class="gallery-note"><span>Один бренд. Разные каналы.</span><span>Визуальные концепции FORMA · демонстрация</span></div>
   </section>
 
-  <section class="tools-strip" aria-label="Планируемая экосистема инструментов"><div class="wrap tools-inner"><p>Инструменты для маркетинга.<br><span>Внутри вашего агента.</span></p><div class="tool-wordmarks"><span>Claude Code</span><span>Figma</span><span>krea</span><span>Magnific</span><span>Higgsfield</span><span>Blender</span><span>GitHub</span></div></div></section>
-
-  <section class="agents-section wrap section" id="agents" aria-labelledby="agents-heading">
-    <div class="section-heading"><h2 id="agents-heading">От концепции<br>до кампании.</h2><p>Выберите агента под запуск,<br>контент-план или коммуникации<br>с клиентами.</p></div>
-    <div class="filters" role="group" aria-label="Направление работы"><button class="filter active" data-filter="all" aria-pressed="true">Все агенты <span>7</span></button><button class="filter" data-filter="design" aria-pressed="false">Дизайн</button><button class="filter" data-filter="content" aria-pressed="false">Контент</button><button class="filter" data-filter="space" aria-pressed="false">3D и пространство</button></div>
-    <p class="sr-only" id="filter-status" role="status"></p>
-    <div class="agent-grid">
-      <article class="agent-card" data-category="design"><div class="agent-cover cover-brand"><span class="specimen-word">ae<br>ra<span>®</span></span><span class="cover-label">BEAUTY IN BALANCE</span><span class="sample-corner">BRAND SYSTEM / 001</span></div><div class="agent-info"><div><h3>Бренд-дизайнер</h3><span>Брендинг / айдентика</span></div><a class="icon-link" href="#configure" data-pick="branding" aria-label="Выбрать бренд-дизайнера"><svg><use href="#diagonal"/></svg></a></div><p>Разрабатывает айдентику и фирменные материалы для новых продуктов и кампаний.</p><div class="skill-tags"><span>Figma</span><span>Krea</span><span>Brand skills</span></div></article>
-      <article class="agent-card" data-category="design"><div class="agent-cover cover-illustration"><div class="type-flower" aria-hidden="true"><i></i><i></i><i></i><i></i></div><span class="illustration-word">hello,<br>different.</span><span class="sample-corner">ILLUSTRATION / 002</span></div><div class="agent-info"><div><h3>Иллюстратор</h3><span>Иллюстрации / визуальные серии</span></div><a class="icon-link" href="#configure" data-pick="illustration" aria-label="Выбрать иллюстратора"><svg><use href="#diagonal"/></svg></a></div><p>Готовит иллюстрации для соцсетей, рекламы и лендингов в едином стиле.</p><div class="skill-tags"><span>Krea</span><span>Magnific</span><span>Style skills</span></div></article>
-      <article class="agent-card" data-category="space"><div class="agent-cover art art-chrome"><span class="sample-corner">OBJECT STUDY / 003</span></div><div class="agent-info"><div><h3>3D-художник</h3><span>Объекты / предметные инсталляции</span></div><a class="icon-link" href="#configure" data-pick="3d" aria-label="Выбрать 3D-художника"><svg><use href="#diagonal"/></svg></a></div><p>Создаёт предметные визуалы, 3D-сцены и инсталляции для продвижения продукта.</p><div class="skill-tags"><span>Blender</span><span>Cinema 4D</span><span>3D skills</span></div></article>
-      <article class="agent-card" data-category="content"><div class="agent-cover cover-deck"><span class="deck-title">Ideas<br>take shape.</span><div class="deck-meta">A NEW PERSPECTIVE<br>CREATIVE STRATEGY</div><div class="deck-mini"><b>Think<br>beyond.</b><span>→</span></div><span class="sample-corner">PRESENTATION / 004</span></div><div class="agent-info"><div><h3>Презентационный дизайнер</h3><span>Презентации / сторителлинг</span></div><a class="icon-link" href="#configure" data-pick="presentation" aria-label="Выбрать презентационного дизайнера"><svg><use href="#diagonal"/></svg></a></div><p>Собирает презентации продукта, коммерческие предложения и отчёты по кампаниям.</p><div class="skill-tags"><span>Figma</span><span>Weave</span><span>Story skills</span></div></article>
-      <article class="agent-card" data-category="content"><div class="agent-cover cover-mail"><div class="mail-sheet"><span>POST / FROM AERA</span><h4>A little<br>something<br>for you.</h4><div class="mail-rule"></div><div class="mail-button">TAKE A LOOK <span>↗</span></div></div><span class="sample-corner">EMAIL DESIGN / 005</span></div><div class="agent-info"><div><h3>Email-дизайнер</h3><span>Рассылки / цепочки писем</span></div><a class="icon-link" href="#configure" data-pick="email" aria-label="Выбрать email-дизайнера"><svg><use href="#diagonal"/></svg></a></div><p>Готовит проморассылки, цепочки писем и материалы для CRM-коммуникаций.</p><div class="skill-tags"><span>Figma</span><span>GitHub</span><span>Email skills</span></div></article>
-      <article class="agent-card" data-category="design content"><div class="agent-cover art art-orange"><span class="sample-corner">ART DIRECTION / 006</span></div><div class="agent-info"><div><h3>Концепт-директор</h3><span>Концептуальные макеты / видео</span></div><a class="icon-link" href="#configure" data-pick="concept" aria-label="Выбрать концепт-директора"><svg><use href="#diagonal"/></svg></a></div><p>Развивает идею кампании в фотосюжет, крафт, сценарий ролика или образный борд.</p><div class="skill-tags"><span>Higgsfield</span><span>Kling</span><span>Concept skills</span></div></article>
-      <article class="agent-card agent-wide" data-category="space"><div class="architecture-specimen"><div class="arch-form" aria-hidden="true"></div><span>space<br>to think.</span><span class="sample-corner">SPATIAL STUDY / 007</span></div><div class="wide-content"><div class="agent-info"><div><h3>Архитектор формы</h3><span>Архитектурный минимализм</span></div><a class="icon-link" href="#configure" data-pick="architecture" aria-label="Выбрать архитектора формы"><svg><use href="#diagonal"/></svg></a></div><p>Создаёт пространственные концепции для презентации продукта, выставок и бренд-зон. Работает с пропорциями, светом и минималистичными композициями.</p><div class="skill-tags"><span>Blender</span><span>Krea</span><span>Spatial skills</span></div></div></article>
+  <section class="tools-strip" aria-label="Планируемая экосистема инструментов">
+    <div class="wrap tools-inner">
+      <p>Инструменты для маркетинга.<br><span>Внутри вашего агента.</span></p>
+      <div class="marquee">
+        <div class="marquee-track">
+          <ul class="tool-wordmarks"><li>Claude Code</li><li>Figma</li><li>krea</li><li>Magnific</li><li>Higgsfield</li><li>Blender</li><li>GitHub</li></ul>
+          <ul class="tool-wordmarks" aria-hidden="true"><li>Claude Code</li><li>Figma</li><li>krea</li><li>Magnific</li><li>Higgsfield</li><li>Blender</li><li>GitHub</li></ul>
+          <ul class="tool-wordmarks" aria-hidden="true"><li>Claude Code</li><li>Figma</li><li>krea</li><li>Magnific</li><li>Higgsfield</li><li>Blender</li><li>GitHub</li></ul>
+          <ul class="tool-wordmarks" aria-hidden="true"><li>Claude Code</li><li>Figma</li><li>krea</li><li>Magnific</li><li>Higgsfield</li><li>Blender</li><li>GitHub</li></ul>
+        </div>
+      </div>
     </div>
-    <p class="section-note">Примеры показывают направления работы. Набор инструментов уточняется при запуске сервиса.</p>
   </section>
 
-  <section class="brand-section" id="brand" aria-labelledby="brand-heading"><div class="wrap brand-grid">
-    <div class="brand-copy"><h2 id="brand-heading">Один бренд.<br><span>Во всех каналах.</span></h2><p>Добавьте брендбук, тон коммуникации и утверждённые примеры. Агент будет использовать их в креативах, презентациях, письмах и 3D.</p><p class="secondary-copy">Команда работает с общими правилами бренда. Профиль можно передать коллегам или подрядчику для следующей кампании.</p><a class="text-link" href="#configure">Настроить под свой бренд <svg><use href="#arrow"/></svg></a><div class="context-files"><span><svg><use href="#check"/></svg> brand-guide.pdf</span><span><svg><use href="#check"/></svg> tone-of-voice.md</span><span><svg><use href="#check"/></svg> references</span></div></div>
-    <div class="brand-demo" data-style="minimal"><div class="board-top"><span>Бренд-контекст / AERA</span><span class="demo-label">Демо</span></div><div class="style-tabs" role="group" aria-label="Пример стиля"><button data-style="minimal" class="selected" aria-pressed="true">Минимализм</button><button data-style="bold" aria-pressed="false">Смелый</button><button data-style="craft" aria-pressed="false">Крафт</button></div><div class="brand-board"><div class="board-poster"><div class="board-poster-top">AERA<span>FORM / FEELING</span></div><strong id="board-headline">Less.<br>But better.</strong><div class="board-shape" aria-hidden="true"></div><span class="board-bottom">A NEW WAY TO SEE THE EVERYDAY.</span></div><div class="board-side"><div class="board-swatch"><span>Палитра</span><div><i></i><i></i><i></i></div></div><div class="board-type"><span>Типографика</span><b>Aa</b><small id="type-name">Чистая и точная</small></div><div class="board-output"><svg><use href="#check"/></svg><span>Единый стиль<br>для всех форматов</span></div></div></div><div class="board-caption"><span id="style-description">Воздух, точные пропорции, спокойная палитра.</span><span>Контекст → результат</span></div></div>
-  </div></section>
-
-  <section class="workflow wrap section" id="workflow" aria-labelledby="workflow-heading"><div class="section-heading"><h2 id="workflow-heading">От брифа<br>к материалам.</h2><p>Задайте цель кампании.<br>Добавьте бренд и каналы.<br>Выберите нужные материалы.</p></div><div class="steps"><article><span class="step-number">01</span><h3>Определите задачу</h3><p>Запуск продукта, сезонная кампания, контент-план или рассылка. Выберите агента под нужные материалы.</p></article><article><span class="step-number">02</span><h3>Добавьте контекст</h3><p>Брендбук, аудитория, предложение и ограничения. Укажите каналы, форматы и цель коммуникации.</p></article><article><span class="step-number">03</span><h3>Задайте направление</h3><p>Выберите стиль и добавьте утверждённые референсы. Сохраните правила для следующих кампаний.</p></article><article><span class="step-number">04</span><h3>Проверьте результат</h3><p>Обсудите варианты с командой, проверьте тексты и визуалы. Утвердите материалы перед публикацией.</p></article></div>
-    <details class="stack-details"><summary><span>Что внутри агента</span><span>Ядро + MCP + навыки + контекст</span><svg><use href="#plus"/></svg></summary><div class="stack-content"><div><h4>Ядро</h4><p>Claude Code. Конкретная модель и версия выбираются при настройке.</p></div><div><h4>Инструменты через MCP</h4><p>Figma / Weave · Krea / Magnific · Higgsfield / Seedance / Kling / MiniMax · Blender / Cinema 4D · GitHub.</p></div><div><h4>Подготовленный профиль</h4><p>Навыки, рабочие процессы, разрешённые подключения и контекст проекта. Возможность интеграций и условия доступа проверяются перед запуском.</p></div></div></details>
+  <section class="agents-section section" id="agents" aria-labelledby="agents-heading">
+    <div class="wrap">
+      <div class="section-heading">
+        <div><p class="eyebrow" data-reveal><i aria-hidden="true"></i>Агенты</p><h2 id="agents-heading" data-split>От концепции<br>до кампании.</h2></div>
+        <p data-reveal>Выберите агента под запуск, контент-план или коммуникации с&nbsp;клиентами.</p>
+      </div>
+      <div class="filters" role="group" aria-label="Направление работы" data-reveal>
+        <button class="filter active" data-filter="all" aria-pressed="true">Все агенты <span>7</span></button>
+        <button class="filter" data-filter="design" aria-pressed="false">Дизайн</button>
+        <button class="filter" data-filter="content" aria-pressed="false">Контент</button>
+        <button class="filter" data-filter="space" aria-pressed="false">3D и пространство</button>
+      </div>
+      <p class="sr-only" id="filter-status" role="status"></p>
+      <div class="agent-grid">
+        <article class="agent-card span-7" data-category="design">
+          <div class="agent-cover" data-img-reveal><img src="assets/img/agent-brand.webp" srcset="assets/img/agent-brand-900.webp 900w, assets/img/agent-brand.webp 1600w" sizes="(max-width:720px) 100vw, (max-width:1000px) 50vw, 56vw" width="1600" height="1073" alt="Раскрытый брендбук AERA: построение логотипа, палитра и шрифтовой образец" loading="lazy" decoding="async"><span class="sample-corner">Brand system</span></div>
+          <div class="agent-info"><span class="agent-index">01</span><div><h3>Бренд-дизайнер</h3><span>Брендинг / айдентика</span></div><a class="icon-link" href="#configure" data-pick="branding" aria-label="Выбрать бренд-дизайнера"><svg><use href="#diagonal"/></svg></a></div>
+          <p>Разрабатывает айдентику и фирменные материалы для новых продуктов и кампаний.</p>
+          <div class="skill-tags"><span>Figma</span><span>Krea</span><span>Brand skills</span></div>
+        </article>
+        <article class="agent-card span-5" data-category="design">
+          <div class="agent-cover" data-img-reveal><img src="assets/img/agent-illustration.webp" srcset="assets/img/agent-illustration-900.webp 900w, assets/img/agent-illustration.webp 1600w" sizes="(max-width:720px) 100vw, (max-width:1000px) 50vw, 40vw" width="1600" height="1073" alt="Три иллюстрированных постера AERA на стене: цветок, руки с солнцем и лицо" loading="lazy" decoding="async"><span class="sample-corner">Illustration</span></div>
+          <div class="agent-info"><span class="agent-index">02</span><div><h3>Иллюстратор</h3><span>Иллюстрации / визуальные серии</span></div><a class="icon-link" href="#configure" data-pick="illustration" aria-label="Выбрать иллюстратора"><svg><use href="#diagonal"/></svg></a></div>
+          <p>Готовит иллюстрации для соцсетей, рекламы и лендингов в едином стиле.</p>
+          <div class="skill-tags"><span>Krea</span><span>Magnific</span><span>Style skills</span></div>
+        </article>
+        <article class="agent-card span-4" data-category="space">
+          <div class="agent-cover" data-img-reveal><img src="assets/img/agent-3d.webp" srcset="assets/img/agent-3d-900.webp 900w, assets/img/agent-3d.webp 1600w" sizes="(max-width:720px) 100vw, (max-width:1000px) 50vw, 32vw" width="1600" height="1073" alt="3D-этюд: хромированный узел, сиреневая стеклянная спираль и синяя сфера" loading="lazy" decoding="async"><span class="sample-corner">Object study</span></div>
+          <div class="agent-info"><span class="agent-index">03</span><div><h3>3D-художник</h3><span>Объекты / предметные инсталляции</span></div><a class="icon-link" href="#configure" data-pick="3d" aria-label="Выбрать 3D-художника"><svg><use href="#diagonal"/></svg></a></div>
+          <p>Создаёт предметные визуалы, 3D-сцены и инсталляции для продвижения продукта.</p>
+          <div class="skill-tags"><span>Blender</span><span>Cinema 4D</span><span>3D skills</span></div>
+        </article>
+        <article class="agent-card span-4" data-category="content">
+          <div class="agent-cover" data-img-reveal><img src="assets/img/agent-presentation.webp" srcset="assets/img/agent-presentation-900.webp 900w, assets/img/agent-presentation.webp 1600w" sizes="(max-width:720px) 100vw, (max-width:1000px) 50vw, 32vw" width="1600" height="1073" alt="Ноутбук со слайдом Spring launch и распечатанные слайды презентации AERA" loading="lazy" decoding="async"><span class="sample-corner">Presentation</span></div>
+          <div class="agent-info"><span class="agent-index">04</span><div><h3>Презентационный дизайнер</h3><span>Презентации / сторителлинг</span></div><a class="icon-link" href="#configure" data-pick="presentation" aria-label="Выбрать презентационного дизайнера"><svg><use href="#diagonal"/></svg></a></div>
+          <p>Собирает презентации продукта, коммерческие предложения и отчёты по кампаниям.</p>
+          <div class="skill-tags"><span>Figma</span><span>Weave</span><span>Story skills</span></div>
+        </article>
+        <article class="agent-card span-4" data-category="content">
+          <div class="agent-cover" data-img-reveal><img src="assets/img/agent-email.webp" srcset="assets/img/agent-email-900.webp 900w, assets/img/agent-email.webp 1600w" sizes="(max-width:720px) 100vw, (max-width:1000px) 50vw, 32vw" width="1600" height="1073" alt="Рука держит телефон с промописьмом AERA: A little something for you" loading="lazy" decoding="async"><span class="sample-corner">Email design</span></div>
+          <div class="agent-info"><span class="agent-index">05</span><div><h3>Email-дизайнер</h3><span>Рассылки / цепочки писем</span></div><a class="icon-link" href="#configure" data-pick="email" aria-label="Выбрать email-дизайнера"><svg><use href="#diagonal"/></svg></a></div>
+          <p>Готовит проморассылки, цепочки писем и материалы для CRM-коммуникаций.</p>
+          <div class="skill-tags"><span>Figma</span><span>GitHub</span><span>Email skills</span></div>
+        </article>
+        <article class="agent-card span-5" data-category="design content">
+          <div class="agent-cover" data-img-reveal><img src="assets/img/agent-concept.webp" srcset="assets/img/agent-concept-900.webp 900w, assets/img/agent-concept.webp 1600w" sizes="(max-width:720px) 100vw, (max-width:1000px) 50vw, 40vw" width="1600" height="1073" alt="Бумажная крафт-инсталляция для съёмки кампании AERA: цветы, холмы и рука с пинцетом" loading="lazy" decoding="async"><span class="sample-corner">Art direction</span></div>
+          <div class="agent-info"><span class="agent-index">06</span><div><h3>Концепт-директор</h3><span>Концептуальные макеты / видео</span></div><a class="icon-link" href="#configure" data-pick="concept" aria-label="Выбрать концепт-директора"><svg><use href="#diagonal"/></svg></a></div>
+          <p>Развивает идею кампании в фотосюжет, крафт, сценарий ролика или образный борд.</p>
+          <div class="skill-tags"><span>Higgsfield</span><span>Kling</span><span>Concept skills</span></div>
+        </article>
+        <article class="agent-card span-7" data-category="space">
+          <div class="agent-cover" data-img-reveal><img src="assets/img/agent-architecture.webp" srcset="assets/img/agent-architecture-900.webp 900w, assets/img/agent-architecture.webp 2000w" sizes="(max-width:720px) 100vw, (max-width:1000px) 50vw, 56vw" width="2000" height="1116" alt="Минималистичный павильон бренда AERA: арки, изогнутая зелёная стена и оранжевая банкетка" loading="lazy" decoding="async"><span class="sample-corner">Spatial study</span></div>
+          <div class="agent-info"><span class="agent-index">07</span><div><h3>Архитектор формы</h3><span>Архитектурный минимализм</span></div><a class="icon-link" href="#configure" data-pick="architecture" aria-label="Выбрать архитектора формы"><svg><use href="#diagonal"/></svg></a></div>
+          <p>Создаёт пространственные концепции для презентации продукта, выставок и бренд-зон. Работает с пропорциями, светом и минималистичными композициями.</p>
+          <div class="skill-tags"><span>Blender</span><span>Krea</span><span>Spatial skills</span></div>
+        </article>
+      </div>
+      <p class="section-note" data-reveal>Примеры показывают направления работы. Набор инструментов уточняется при запуске сервиса.</p>
+    </div>
   </section>
 
-  <section class="pricing-section section" id="pricing" aria-labelledby="pricing-heading"><div class="wrap"><div class="section-heading"><h2 id="pricing-heading">Своя команда.<br>По подписке.</h2><div class="pricing-control"><p>Начните с одной кампании.<br>Подключайте агентов под каналы<br>и задачи команды.</p><div class="billing-toggle" role="group" aria-label="Период подписки"><button class="active" data-billing="month" aria-pressed="true">Месяц</button><button data-billing="year" aria-pressed="false">Год <span>−20%</span></button></div></div></div><p class="pricing-note">Пример тарифной модели. Оплата и запуск агентов в демо недоступны.</p><div class="pricing-grid">
-    <article class="price-card"><h3>Solo</h3><p class="plan-for">Для одной задачи или кампании</p><div class="price"><span data-month="4900" data-year="3920">4 900</span><span>₽ / мес.</span></div><p class="billing-detail">Оплата помесячно</p><a class="button button-outline" href="#configure" data-plan="Solo">Выбрать Solo <svg><use href="#diagonal"/></svg></a><ul><li>Один агент на выбор</li><li>Один контекст бренда</li><li>Готовые навыки и стили</li><li>Рабочая среда маркетолога</li></ul></article>
-    <article class="price-card featured"><div class="plan-title"><h3>Team</h3><span>Для команды</span></div><p class="plan-for">Для постоянного маркетинга бренда</p><div class="price"><span data-month="12900" data-year="10320">12 900</span><span>₽ / мес.</span></div><p class="billing-detail">Оплата помесячно</p><a class="button button-dark" href="#configure" data-plan="Team">Выбрать Team <svg><use href="#diagonal"/></svg></a><ul><li>Три агента под разные задачи</li><li>До пяти контекстов брендов</li><li>Свои навыки и наборы стилей</li><li>Общая среда для команды</li></ul></article>
-    <article class="price-card"><h3>Scale</h3><p class="plan-for">Для нескольких брендов и направлений</p><div class="price"><span data-month="29900" data-year="23920">29 900</span><span>₽ / мес.</span></div><p class="billing-detail">Оплата помесячно</p><a class="button button-outline" href="#configure" data-plan="Scale">Выбрать Scale <svg><use href="#diagonal"/></svg></a><ul><li>Семь агентов в команде</li><li>Отдельные пространства брендов</li><li>Передача настроенного профиля</li><li>Помощь с настройкой процессов</li></ul></article>
-  </div><p class="credits-note">Лимиты генераций, стоимость внешних сервисов и доступы будут определены до старта подписки.</p></div></section>
+  <section class="brand-section" id="brand" aria-labelledby="brand-heading">
+    <div class="wrap brand-grid">
+      <div class="brand-copy">
+        <p class="eyebrow" data-reveal><i aria-hidden="true"></i>Ваш стиль</p>
+        <h2 id="brand-heading" data-split>Один бренд.<br><span class="muted">Во всех каналах.</span></h2>
+        <p data-reveal>Добавьте брендбук, тон коммуникации и утверждённые примеры. Агент будет использовать их в креативах, презентациях, письмах и 3D.</p>
+        <p class="secondary-copy" data-reveal>Команда работает с общими правилами бренда. Профиль можно передать коллегам или подрядчику для следующей кампании.</p>
+        <a class="text-link" href="#configure" data-reveal>Настроить под свой бренд <svg><use href="#arrow"/></svg></a>
+        <div class="context-files" data-reveal><span><svg><use href="#check"/></svg> brand-guide.pdf</span><span><svg><use href="#check"/></svg> tone-of-voice.md</span><span><svg><use href="#check"/></svg> references</span></div>
+      </div>
+      <div class="brand-demo" data-style="minimal" data-reveal>
+        <div class="board-top"><span>Бренд-контекст / AERA</span><span class="demo-label">Демо</span></div>
+        <div class="style-tabs" role="group" aria-label="Пример стиля"><button data-style="minimal" class="selected" aria-pressed="true">Минимализм</button><button data-style="bold" aria-pressed="false">Смелый</button><button data-style="craft" aria-pressed="false">Крафт</button></div>
+        <div class="brand-board">
+          <div class="board-poster">
+            <img data-style-img="minimal" src="assets/img/style-minimal.webp" srcset="assets/img/style-minimal-900.webp 900w, assets/img/style-minimal.webp 1100w" sizes="(max-width:1000px) 60vw, 30vw" width="1100" height="1365" alt="Минималистичный кадр: флакон AERA на однотонном зелёном фоне" loading="lazy" decoding="async">
+            <img data-style-img="bold" src="assets/img/style-bold.webp" srcset="assets/img/style-bold-900.webp 900w, assets/img/style-bold.webp 1100w" sizes="(max-width:1000px) 60vw, 30vw" width="1100" height="1365" alt="Смелый кадр: крупный флакон AERA на оранжевом фоне с лаймовым кругом и фиолетовой полосой" loading="lazy" decoding="async">
+            <img data-style-img="craft" src="assets/img/style-craft.webp" srcset="assets/img/style-craft-900.webp 900w, assets/img/style-craft.webp 1100w" sizes="(max-width:1000px) 60vw, 30vw" width="1100" height="1365" alt="Крафтовый кадр: флакон AERA на глиняной подставке среди льна и сухоцветов" loading="lazy" decoding="async">
+            <span class="board-poster-top">AERA · ключевой кадр</span>
+          </div>
+          <div class="board-side">
+            <div class="board-headline"><span>Заголовок кампании</span><strong id="board-headline">Less.<br>But better.</strong></div>
+            <div class="board-swatch"><span>Палитра</span><div><i></i><i></i><i></i><i></i></div></div>
+            <div class="board-type"><span>Типографика</span><b>Aa</b><small id="type-name">Чистая и точная</small></div>
+          </div>
+        </div>
+        <div class="board-caption"><span id="style-description">Воздух, точные пропорции, спокойная палитра.</span><span>Контекст → результат</span></div>
+      </div>
+    </div>
+  </section>
 
-  <section class="configure-section wrap section" id="configure" aria-labelledby="configure-heading"><div class="section-heading"><h2 id="configure-heading">Соберите агента<br>под свою задачу.</h2><p>Выберите специализацию.<br>Добавьте бренд и бриф кампании.<br>Сохраните профиль для команды.</p></div><div class="configurator"><form id="agent-form" class="config-form"><div class="form-heading"><h3>Настройка профиля</h3><span class="demo-label">Деморежим</span></div><div class="form-row"><div class="field"><label for="agent-select">Специализация</label><select id="agent-select" name="agent"><option value="branding">Бренд-дизайнер</option><option value="illustration">Иллюстратор</option><option value="3d">3D-художник</option><option value="presentation">Презентационный дизайнер</option><option value="email">Email-дизайнер</option><option value="concept">Концепт-директор</option><option value="architecture">Архитектор формы</option></select></div><div class="field"><label for="brand-name">Название бренда</label><input id="brand-name" name="brand" placeholder="Например, AERA" maxlength="60" autocomplete="organization"></div></div><fieldset class="style-field"><legend>С чего начнём стиль</legend><div class="config-styles"><label><input type="radio" name="style" value="minimal" checked><span>Минимализм</span></label><label><input type="radio" name="style" value="bold"><span>Смелый</span></label><label><input type="radio" name="style" value="craft"><span>Крафт</span></label><label><input type="radio" name="style" value="custom"><span>Свой гайд</span></label></div></fieldset><div class="field"><label for="brand-context">Бриф кампании и правила бренда</label><textarea id="brand-context" name="context" rows="3" maxlength="6000" placeholder="Какой продукт продвигаем? Кто аудитория? Цель, каналы, форматы и правила бренда."></textarea></div><div class="upload-area" id="drop-area"><input id="guide-file" type="file" accept=".pdf,.md,.txt" aria-describedby="file-help file-status"><svg><use href="#upload"/></svg><div><label for="guide-file">Добавить гайд или контекст</label><span id="file-help">PDF, TXT или MD · до 10 МБ · только в этом браузере</span></div></div><div id="file-result" hidden><p id="file-status" role="status"></p><button type="button" id="remove-file" class="remove-file">Убрать файл</button></div><button type="submit" class="button button-orange config-submit">Собрать профиль <svg><use href="#arrow"/></svg></button><p class="form-note">Файлы остаются на устройстве. Для PDF сохраняется ссылка по имени; текстовые файлы можно включить в профиль.</p></form><aside class="agent-preview" aria-label="Предпросмотр агента"><div class="preview-top"><span>Ваш агент</span><span id="preview-plan">Solo</span></div><div class="preview-art art art-violet" id="preview-art"></div><div class="preview-body"><h3 id="preview-name">Бренд-дизайнер</h3><p id="preview-brand">Готов познакомиться с вашим брендом</p><dl><div><dt>Стиль</dt><dd id="preview-style">Минимализм</dd></div><div><dt>Контекст</dt><dd id="preview-context">Ожидает вводных</dd></div><div><dt>Инструменты</dt><dd id="preview-tools">Figma · Krea · Magnific</dd></div></dl><div id="profile-result" class="profile-result" hidden><span class="result-title"><svg><use href="#check"/></svg> Профиль собран</span><p>Сохраните настройки, чтобы передать их команде. Реальный агент пока не запущен.</p><button id="download-profile" class="button button-dark" type="button">Скачать профиль <svg><use href="#download"/></svg></button></div><p class="preview-hint" id="preview-hint">Меняйте настройки слева.<br>Здесь собирается ваш профиль.</p></div></aside></div><p id="form-status" class="sr-only" role="status"></p></section>
+  <section class="workflow section" id="workflow" aria-labelledby="workflow-heading">
+    <div class="wrap workflow-grid">
+      <div class="workflow-aside">
+        <p class="eyebrow" data-reveal><i aria-hidden="true"></i>Как это работает</p>
+        <h2 id="workflow-heading" data-split>От брифа<br>к материалам.</h2>
+        <p data-reveal>Задайте цель кампании. Добавьте бренд и каналы. Выберите нужные материалы.</p>
+      </div>
+      <ol class="steps">
+        <li><span class="step-number">01</span><h3>Определите задачу</h3><p>Запуск продукта, сезонная кампания, контент-план или рассылка. Выберите агента под нужные материалы.</p></li>
+        <li><span class="step-number">02</span><h3>Добавьте контекст</h3><p>Брендбук, аудитория, предложение и ограничения. Укажите каналы, форматы и цель коммуникации.</p></li>
+        <li><span class="step-number">03</span><h3>Задайте направление</h3><p>Выберите стиль и добавьте утверждённые референсы. Сохраните правила для следующих кампаний.</p></li>
+        <li><span class="step-number">04</span><h3>Проверьте результат</h3><p>Обсудите варианты с командой, проверьте тексты и визуалы. Утвердите материалы перед публикацией.</p></li>
+      </ol>
+    </div>
+    <div class="wrap">
+      <details class="stack-details" data-reveal>
+        <summary><span>Что внутри агента</span><span>Ядро + MCP + навыки + контекст</span><svg><use href="#plus"/></svg></summary>
+        <div class="stack-content">
+          <div><h4>Ядро</h4><p>Claude Code. Конкретная модель и версия выбираются при настройке.</p></div>
+          <div><h4>Инструменты через MCP</h4><p>Figma / Weave · Krea / Magnific · Higgsfield / Seedance / Kling / MiniMax · Blender / Cinema 4D · GitHub.</p></div>
+          <div><h4>Подготовленный профиль</h4><p>Навыки, рабочие процессы, разрешённые подключения и контекст проекта. Возможность интеграций и условия доступа проверяются перед запуском.</p></div>
+        </div>
+      </details>
+    </div>
+  </section>
 
-  <section class="faq wrap section" aria-labelledby="faq-heading"><h2 id="faq-heading">Ещё пара деталей.</h2><div class="faq-list"><details><summary>Чем агент отличается от подписки на нейросеть?<svg><use href="#plus"/></svg></summary><p>В концепции FORMA вы арендуете подготовленную рабочую среду: специалиста с навыками, набором инструментов, стилями и контекстом проекта. Вводные и правила сохраняются в профиле и используются в следующих задачах.</p></details><details><summary>Аккаунты и инструменты уже подключены?<svg><use href="#plus"/></svg></summary><p>Так устроен замысел сервиса: агент приходит с настроенными доступами. В рабочей версии будут использоваться разрешённые интеграции и выделенные сервисные доступы либо подключения клиента. Этот сайт показывает концепцию; живых подключений здесь пока нет.</p></details><details><summary>Можно передать агента команде или подрядчику?<svg><use href="#plus"/></svg></summary><p>Профиль можно передать коллегам, подрядчику или клиенту. В демо доступен JSON с навыками, стилем и контекстом. Передача рабочего пространства заложена в тариф Scale и появится вместе с запуском сервиса.</p></details><details><summary>Как агент сохраняет стиль бренда?<svg><use href="#plus"/></svg></summary><p>В его контекст входят гайд, палитра, шрифты, примеры, тон коммуникации и ограничения. Навыки используют эти правила при подготовке задач. Готовые материалы всё равно проходят проверку человеком.</p></details></div></section>
+  <section class="pricing-section section" id="pricing" aria-labelledby="pricing-heading">
+    <div class="wrap">
+      <div class="section-heading">
+        <div><p class="eyebrow" data-reveal><i aria-hidden="true"></i>Подписка</p><h2 id="pricing-heading" data-split>Своя команда.<br>По подписке.</h2></div>
+        <div class="pricing-control" data-reveal>
+          <p>Начните с одной кампании. Подключайте агентов под каналы и задачи команды.</p>
+          <div class="billing-toggle" role="group" aria-label="Период подписки"><button class="active" data-billing="month" aria-pressed="true">Месяц</button><button data-billing="year" aria-pressed="false">Год <span>−20%</span></button></div>
+        </div>
+      </div>
+      <p class="pricing-note" data-reveal>Пример тарифной модели. Оплата и запуск агентов в демо недоступны.</p>
+      <div class="pricing-grid">
+        <article class="price-card" data-reveal>
+          <h3>Solo</h3><p class="plan-for">Для одной задачи или кампании</p>
+          <div class="price"><span data-month="4900" data-year="3920">4 900</span><span>₽ / мес.</span></div>
+          <p class="billing-detail">Оплата помесячно</p>
+          <a class="button button-outline" href="#configure" data-plan="Solo"><span>Выбрать Solo</span> <svg><use href="#diagonal"/></svg></a>
+          <ul><li>Один агент на выбор</li><li>Один контекст бренда</li><li>Готовые навыки и стили</li><li>Рабочая среда маркетолога</li></ul>
+        </article>
+        <article class="price-card featured" data-reveal>
+          <div class="plan-title"><h3>Team</h3><span>Для команды</span></div><p class="plan-for">Для постоянного маркетинга бренда</p>
+          <div class="price"><span data-month="12900" data-year="10320">12 900</span><span>₽ / мес.</span></div>
+          <p class="billing-detail">Оплата помесячно</p>
+          <a class="button button-orange" href="#configure" data-plan="Team"><span>Выбрать Team</span> <svg><use href="#diagonal"/></svg></a>
+          <ul><li>Три агента под разные задачи</li><li>До пяти контекстов брендов</li><li>Свои навыки и наборы стилей</li><li>Общая среда для команды</li></ul>
+        </article>
+        <article class="price-card" data-reveal>
+          <h3>Scale</h3><p class="plan-for">Для нескольких брендов и направлений</p>
+          <div class="price"><span data-month="29900" data-year="23920">29 900</span><span>₽ / мес.</span></div>
+          <p class="billing-detail">Оплата помесячно</p>
+          <a class="button button-outline" href="#configure" data-plan="Scale"><span>Выбрать Scale</span> <svg><use href="#diagonal"/></svg></a>
+          <ul><li>Семь агентов в команде</li><li>Отдельные пространства брендов</li><li>Передача настроенного профиля</li><li>Помощь с настройкой процессов</li></ul>
+        </article>
+      </div>
+      <p class="credits-note" data-reveal>Лимиты генераций, стоимость внешних сервисов и доступы будут определены до старта подписки.</p>
+    </div>
+  </section>
 
-  <section class="closing"><div class="wrap"><h2>Следующая кампания.<br>В стиле вашего бренда.</h2><a class="button button-dark" href="#configure">Собрать своего агента <svg><use href="#diagonal"/></svg></a><span class="closing-mark" aria-hidden="true">f.</span></div></section>
+  <section class="configure-section section" id="configure" aria-labelledby="configure-heading">
+    <div class="wrap">
+      <div class="section-heading">
+        <div><p class="eyebrow" data-reveal><i aria-hidden="true"></i>Конфигуратор</p><h2 id="configure-heading" data-split>Соберите агента<br>под свою задачу.</h2></div>
+        <p data-reveal>Выберите специализацию. Добавьте бренд и бриф кампании. Сохраните профиль для команды.</p>
+      </div>
+      <div class="configurator" data-reveal>
+        <form id="agent-form" class="config-form">
+          <div class="form-heading"><h3>Настройка профиля</h3><span class="demo-label">Деморежим</span></div>
+          <div class="form-row">
+            <div class="field"><label for="agent-select">Специализация</label><select id="agent-select" name="agent"><option value="branding">Бренд-дизайнер</option><option value="illustration">Иллюстратор</option><option value="3d">3D-художник</option><option value="presentation">Презентационный дизайнер</option><option value="email">Email-дизайнер</option><option value="concept">Концепт-директор</option><option value="architecture">Архитектор формы</option></select></div>
+            <div class="field"><label for="brand-name">Название бренда</label><input id="brand-name" name="brand" placeholder="Например, AERA" maxlength="60" autocomplete="organization"></div>
+          </div>
+          <fieldset class="style-field"><legend>С чего начнём стиль</legend><div class="config-styles"><label><input type="radio" name="style" value="minimal" checked><span>Минимализм</span></label><label><input type="radio" name="style" value="bold"><span>Смелый</span></label><label><input type="radio" name="style" value="craft"><span>Крафт</span></label><label><input type="radio" name="style" value="custom"><span>Свой гайд</span></label></div></fieldset>
+          <div class="field"><label for="brand-context">Бриф кампании и правила бренда</label><textarea id="brand-context" name="context" rows="4" maxlength="6000" placeholder="Какой продукт продвигаем? Кто аудитория? Цель, каналы, форматы и правила бренда."></textarea></div>
+          <div class="upload-area" id="drop-area"><input id="guide-file" type="file" accept=".pdf,.md,.txt" aria-describedby="file-help file-status"><svg><use href="#upload"/></svg><div><label for="guide-file">Добавить гайд или контекст</label><span id="file-help">PDF, TXT или MD · до 10 МБ · только в этом браузере</span></div></div>
+          <div id="file-result" hidden><p id="file-status" role="status"></p><button type="button" id="remove-file" class="remove-file">Убрать файл</button></div>
+          <button type="submit" class="button button-orange config-submit"><span>Собрать профиль</span> <svg><use href="#arrow"/></svg></button>
+          <p class="form-note">Файлы остаются на устройстве. Для PDF сохраняется ссылка по имени; текстовые файлы можно включить в профиль.</p>
+        </form>
+        <aside class="agent-preview" aria-label="Предпросмотр агента">
+          <div class="preview-sticky">
+            <div class="preview-top"><span>Ваш агент</span><span id="preview-plan">Solo</span></div>
+            <div class="preview-art" id="preview-art"><img src="assets/img/agent-brand-900.webp" width="900" height="604" alt="" decoding="async"></div>
+            <div class="preview-body">
+              <h3 id="preview-name">Бренд-дизайнер</h3>
+              <p id="preview-brand">Готов познакомиться с вашим брендом</p>
+              <dl><div><dt>Стиль</dt><dd id="preview-style">Минимализм</dd></div><div><dt>Контекст</dt><dd id="preview-context">Ожидает вводных</dd></div><div><dt>Инструменты</dt><dd id="preview-tools">Figma · Krea · Magnific</dd></div></dl>
+              <div id="profile-result" class="profile-result" hidden><span class="result-title"><svg><use href="#check"/></svg> Профиль собран</span><p>Сохраните настройки, чтобы передать их команде. Реальный агент пока не запущен.</p><button id="download-profile" class="button button-dark" type="button"><span>Скачать профиль</span> <svg><use href="#download"/></svg></button></div>
+              <p class="preview-hint" id="preview-hint">Меняйте настройки слева.<br>Здесь собирается ваш профиль.</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+      <p id="form-status" class="sr-only" role="status"></p>
+    </div>
+  </section>
+
+  <section class="faq section" aria-labelledby="faq-heading">
+    <div class="wrap faq-grid">
+      <div class="faq-aside"><p class="eyebrow" data-reveal><i aria-hidden="true"></i>Вопросы</p><h2 id="faq-heading" data-split>Ещё пара<br>деталей.</h2></div>
+      <div class="faq-list" data-reveal>
+        <details><summary>Чем агент отличается от подписки на нейросеть?<svg><use href="#plus"/></svg></summary><p>В концепции FORMA вы арендуете подготовленную рабочую среду: специалиста с навыками, набором инструментов, стилями и контекстом проекта. Вводные и правила сохраняются в профиле и используются в следующих задачах.</p></details>
+        <details><summary>Аккаунты и инструменты уже подключены?<svg><use href="#plus"/></svg></summary><p>Так устроен замысел сервиса: агент приходит с настроенными доступами. В рабочей версии будут использоваться разрешённые интеграции и выделенные сервисные доступы либо подключения клиента. Этот сайт показывает концепцию; живых подключений здесь пока нет.</p></details>
+        <details><summary>Можно передать агента команде или подрядчику?<svg><use href="#plus"/></svg></summary><p>Профиль можно передать коллегам, подрядчику или клиенту. В демо доступен JSON с навыками, стилем и контекстом. Передача рабочего пространства заложена в тариф Scale и появится вместе с запуском сервиса.</p></details>
+        <details><summary>Как агент сохраняет стиль бренда?<svg><use href="#plus"/></svg></summary><p>В его контекст входят гайд, палитра, шрифты, примеры, тон коммуникации и ограничения. Навыки используют эти правила при подготовке задач. Готовые материалы всё равно проходят проверку человеком.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing" aria-labelledby="closing-heading">
+    <div class="wrap">
+      <div class="closing-panel" data-parallax>
+        <div class="frame-media closing-media"><img class="closing-bg" src="assets/img/closing.webp" srcset="assets/img/closing-900.webp 900w, assets/img/closing.webp 2400w" sizes="(max-width:720px) 260vw, 100vw" width="2400" height="1018" alt="" loading="lazy" decoding="async"></div>
+        <div class="closing-content">
+          <h2 id="closing-heading" data-split>Следующая кампания. В&nbsp;стиле вашего бренда.</h2>
+          <a class="button button-dark" href="#configure" data-reveal><span>Собрать своего агента</span> <svg><use href="#diagonal"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
-<footer class="footer wrap"><a class="logo" href="#">forma<span class="logo-star" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 3v26M3 16h26M7 7l18 18M7 25 18-18"/></svg></span></a><p>AI-команда для вашего маркетинга.</p><span>Концепция сервиса · 2026</span><a href="#main">Наверх <svg><use href="#diagonal"/></svg></a></footer>
+
+<footer class="footer">
+  <div class="wrap footer-top">
+    <p>AI-команда для вашего маркетинга.</p>
+    <nav aria-label="Навигация в подвале"><a href="#agents">Агенты</a><a href="#brand">Ваш стиль</a><a href="#workflow">Как это работает</a><a href="#pricing">Подписка</a><a href="#configure">Конфигуратор</a></nav>
+    <a class="to-top" href="#main">Наверх <svg><use href="#diagonal"/></svg></a>
+  </div>
+  <a class="footer-word" href="#top" aria-label="FORMA — наверх"><span>forma</span><svg aria-hidden="true"><use href="#star"/></svg></a>
+  <div class="wrap footer-bottom"><span>Концепция сервиса · 2026</span><span>AERA — вымышленный бренд. Визуалы созданы в&nbsp;Krea для демонстрации.</span></div>
+</footer>
 <noscript><div class="noscript">Для фильтрации и сборки профиля включите JavaScript. Описание сервиса доступно без него.</div></noscript>
 </body></html>

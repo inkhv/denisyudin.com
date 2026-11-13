@@ -3,13 +3,13 @@
   const $ = (q) => document.querySelector(q);
   const $$ = (q) => Array.from(document.querySelectorAll(q));
   const agents = {
-    branding: { name: 'Бренд-дизайнер', tools: ['Figma', 'Krea', 'Magnific'], skills: ['Брендинг', 'Айдентика', 'Система носителей'], art: 'art-violet' },
-    illustration: { name: 'Иллюстратор', tools: ['Krea', 'Magnific'], skills: ['Иллюстрации', 'Визуальные серии', 'Сохранение стиля'], art: 'art-violet' },
-    '3d': { name: '3D-художник', tools: ['Blender', 'Cinema 4D'], skills: ['3D', 'Материалы и свет', 'Предметные инсталляции'], art: 'art-chrome' },
-    presentation: { name: 'Презентационный дизайнер', tools: ['Figma', 'Weave'], skills: ['Презентации', 'Сторителлинг', 'Макеты слайдов'], art: 'art-violet' },
-    email: { name: 'Email-дизайнер', tools: ['Figma', 'GitHub'], skills: ['Рассылки', 'Цепочки писем', 'Email-макеты'], art: 'art-orange' },
-    concept: { name: 'Концепт-директор', tools: ['Krea', 'Higgsfield', 'Seedance', 'Kling', 'MiniMax'], skills: ['Концептуальные макеты', 'Фотосюжет', 'Крафт', 'Предметная инсталляция', 'Сценарий', 'Образный борд'], art: 'art-orange' },
-    architecture: { name: 'Архитектор формы', tools: ['Blender', 'Krea'], skills: ['Архитектурный минимализм', 'Пространственные концепции'], art: 'art-chrome' }
+    branding: { name: 'Бренд-дизайнер', tools: ['Figma', 'Krea', 'Magnific'], skills: ['Брендинг', 'Айдентика', 'Система носителей'], img: 'agent-brand' },
+    illustration: { name: 'Иллюстратор', tools: ['Krea', 'Magnific'], skills: ['Иллюстрации', 'Визуальные серии', 'Сохранение стиля'], img: 'agent-illustration' },
+    '3d': { name: '3D-художник', tools: ['Blender', 'Cinema 4D'], skills: ['3D', 'Материалы и свет', 'Предметные инсталляции'], img: 'agent-3d' },
+    presentation: { name: 'Презентационный дизайнер', tools: ['Figma', 'Weave'], skills: ['Презентации', 'Сторителлинг', 'Макеты слайдов'], img: 'agent-presentation' },
+    email: { name: 'Email-дизайнер', tools: ['Figma', 'GitHub'], skills: ['Рассылки', 'Цепочки писем', 'Email-макеты'], img: 'agent-email' },
+    concept: { name: 'Концепт-директор', tools: ['Krea', 'Higgsfield', 'Seedance', 'Kling', 'MiniMax'], skills: ['Концептуальные макеты', 'Фотосюжет', 'Крафт', 'Предметная инсталляция', 'Сценарий', 'Образный борд'], img: 'agent-concept' },
+    architecture: { name: 'Архитектор формы', tools: ['Blender', 'Krea'], skills: ['Архитектурный минимализм', 'Пространственные концепции'], img: 'agent-architecture' }
   };
   const styles = {
     minimal: { name: 'Минимализм', title: 'Less.\nBut better.', type: 'Чистая и точная', description: 'Воздух, точные пропорции, спокойная палитра.' },
@@ -33,6 +33,9 @@
     $$('.filter').forEach((b) => { b.classList.toggle('active', b === button); b.setAttribute('aria-pressed', String(b === button)); });
     let count = 0;
     $$('.agent-card').forEach((card) => { const visible = filter === 'all' || card.dataset.category.split(' ').includes(filter); card.hidden = !visible; if (visible) count++; });
+    const grid = $('.agent-grid');
+    grid.classList.toggle('is-filtered', filter !== 'all');
+    grid.dataset.count = String(count);
     $('#filter-status').textContent = `Показано агентов: ${count}`;
   }));
   function currentStyle() { return $('input[name="style"]:checked').value; }
@@ -45,7 +48,9 @@
     $('#preview-context').textContent = attachment ? attachment.name : $('#brand-context').value.trim() ? 'Добавлены правила бренда' : 'Ожидает вводных';
     $('#preview-tools').textContent = agent.tools.join(' · ');
     $('#preview-plan').textContent = plan;
-    $('#preview-art').className = `preview-art art ${agent.art}`;
+    const art = $('#preview-art img');
+    const src = `assets/img/${agent.img}-900.webp`;
+    if (art && art.getAttribute('src') !== src) art.setAttribute('src', src);
   }
   function setStyle(style) {
     const data = styles[style];
