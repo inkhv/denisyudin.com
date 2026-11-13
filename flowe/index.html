@@ -5,7 +5,7 @@
 <title>Flowe — цветок в 3D · Denis Yudin</title>
 <meta name="description" content="Вращайте стеклянный цветок, меняйте лепестки, материалы и свет. Сохраняйте свои композиции в PNG и JPEG.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='18' fill='%23244dc4'/%3E%3C/svg%3E"><meta name="theme-color" content="#efede8"><link rel="canonical" href="https://denisyudin.com/flowe/">
-<link rel="stylesheet" href="style.css?v=20261020-studio"><script type="module" src="app.bundle.js?v=20261111-rotation"></script><script type="module" src="/tools/menu.mjs"></script>
+<link rel="stylesheet" href="style.css?v=20261020-studio"><script type="module" src="app.bundle.js?v=20261113-values-fx"></script><script type="module" src="/tools/menu.mjs"></script>
 </head>
 <body>
 <a class="skip" href="#settings">К настройкам цветка</a>
@@ -17,7 +17,7 @@
 <div id="focus-marker" class="focus-marker" hidden aria-label="Точка фокусировки"><span></span></div>
 <div class="loading" id="loading" role="status"><span class="loader"></span><p>Собираем цветок…</p></div>
 <div class="error" id="error" hidden role="alert"><h2>Не удалось открыть 3D</h2><p id="error-message">Обновите страницу или попробуйте браузер с поддержкой WebGL 2.</p><button onclick="location.reload()">Попробовать снова</button></div>
-<div class="stage-bottom"><p class="gesture">Тяни, чтобы вращать <span>·</span> Колёсико — масштаб</p><div class="views" role="group" aria-label="Ракурс"><button data-view="hero" aria-pressed="true" disabled>Объём</button><button data-view="top" aria-pressed="false" disabled>Сверху</button><button data-view="macro" aria-pressed="false" disabled>Логотип</button><button id="spin" aria-pressed="false" aria-label="Автовращение" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 10 7-10 7Z"/></svg></button></div></div>
+<div class="stage-bottom"><p class="gesture">Тяни, чтобы вращать <span>·</span> Колёсико — масштаб</p><div class="views" role="group" aria-label="Ракурс"><button data-view="hero" aria-pressed="true" disabled>Объём</button><button data-view="top" aria-pressed="false" disabled>Сверху</button><button data-view="poster" aria-pressed="false" disabled>Плакат</button><button data-view="macro" aria-pressed="false" disabled>Логотип</button><button id="spin" aria-pressed="false" aria-label="Автовращение" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 10 7-10 7Z"/></svg></button></div></div>
 </section>
 <aside class="settings" id="settings" aria-label="Настройки цветка">
 <fieldset id="controls" disabled></fieldset>
