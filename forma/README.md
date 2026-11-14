@@ -1,9 +1,9 @@
-# FORMA
+# FORMA — переход на отдельный адрес
 
-Test page: https://denisyudin.com/forma/
+С 14 ноября 2026 года основная версия размещена на https://forma.inkhv.chatgpt.site/.
 
-A promotional concept for creative AI agents for marketing teams. Static HTML/CSS/JS with local assets. Motion uses locally vendored GSAP and Lenis (vendor/); the page works without them. Seven agent profiles, style examples, illustrative subscriptions and a browser-local configuration export.
+`index.html` перенаправляет посетителя на новый адрес, сохраняя query-параметры и якорь раздела. При отключённом JavaScript срабатывает HTML-переход; в документе также есть обычная ссылка. GitHub Pages отдаёт эту страницу с HTTP 200, это клиентское перенаправление, не HTTP 301.
 
-No agent execution, payments or live MCP connections are implemented. Files stay in the visitor’s browser; PDF attachment records metadata only.
+Канонический проект: `../../../10_SIDE/forma-agents`. Точный статус публикации, проверки и дальнейшее обновление — в его `PROJECT-STATE.md`.
 
-The page is unlisted on the main site and marked noindex for testing. Assets are attributed in assets/sources.json; the font license is included.
+Остальные ассеты оставлены для совместимости со старыми прямыми ссылками. Новую версию сайта в эту папку не копировать.
